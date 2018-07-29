@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.IO;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using Mono.Cecil.Rocks;
 
 namespace SpacechemPatch
 {
@@ -55,22 +54,22 @@ namespace SpacechemPatch
 
         static void Main(string[] args)
         {
-            if (!File.Exists("spacechem.exe"))
+            if (!File.Exists("SpaceChem.exe"))
             {
-                Console.WriteLine("This program needs to be placed next to Spacechem.exe to work! Exiting...");
+                Console.WriteLine("This program needs to be placed next to SpaceChem.exe to work! Exiting...");
                 return;
             }
             Console.WriteLine("This program is experimental and was only tested with the Steam version of the game. There is NO WARRANTY on it. Please remember that you can always restore the original game files by verifying game integrity in Steam.");
             Console.WriteLine("Do you want to continue? [y/N]");
             if (Console.ReadKey().Key != ConsoleKey.Y) return;
             Console.WriteLine();
-            if (!File.Exists("spacechem.exe.original"))
+            if (!File.Exists("SpaceChem.exe.original"))
             {
-                Console.WriteLine("Making backup of spacechem.exe");
-                File.Copy("spacechem.exe", "spacechem.exe.original");
+                Console.WriteLine("Making backup of SpaceChem.exe");
+                File.Copy("SpaceChem.exe", "SpaceChem.exe.original");
             }
             Console.WriteLine("Patching...");
-            using (ModuleDefinition spacechemAssembly = ModuleDefinition.ReadModule("spacechem.exe"))
+            using (ModuleDefinition spacechemAssembly = ModuleDefinition.ReadModule("SpaceChem.exe"))
             using (ModuleDefinition ownAssembly = ModuleDefinition.ReadModule(System.Reflection.Assembly.GetExecutingAssembly().Location))
             {
                 Dictionary<TypeReference, TypeReference> typeReplacements;
@@ -103,10 +102,10 @@ namespace SpacechemPatch
                         patcher.ReplaceMethod(replacementMethod, targetMethod);
                     }
                 }
-                spacechemAssembly.Write("spacechem.exe.patched");
+                spacechemAssembly.Write("SpaceChem.exe.patched");
             }
-            File.Delete("spacechem.exe");
-            File.Move("spacechem.exe.patched", "spacechem.exe");
+            File.Delete("SpaceChem.exe");
+            File.Move("SpaceChem.exe.patched", "SpaceChem.exe");
             Console.WriteLine("All OK");
         }
     }
