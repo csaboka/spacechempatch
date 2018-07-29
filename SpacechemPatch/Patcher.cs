@@ -39,6 +39,11 @@ namespace SpacechemPatch
                 variable.VariableType = FixupType(variable.VariableType, target.Module);
                 body.Variables.Add(variable);
             }
+            body.ExceptionHandlers.Clear();
+            foreach (var exHandler in source.Body.ExceptionHandlers)
+            {
+                body.ExceptionHandlers.Add(exHandler);
+            }
         }
 
         private object FixupOperand(object operand, ModuleDefinition targetModule)

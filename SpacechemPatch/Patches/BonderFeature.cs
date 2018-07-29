@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +12,19 @@ namespace SpacechemPatch.Patches
         public BonderFeature(Reactor reactor)
             : base(reactor, new IconMaybe("reactor/bondifier"), false, Localization.Localize("Bonder"), new Vector2i(39, 39))
         {
-            featureTooltip = FeatureTooltip.Make(Localization.Localize("Bonder"), "Hello, world!", new Optional<UnknownStruct1>());
+            int priority = 1;
+            System.Collections.IEnumerable enumerable = reactor.GetMembers();
+            foreach (object member in enumerable)
+            {
+                if (member == this)
+                {
+                    break;
+                } else if (member is BonderFeature)
+                {
+                    priority++;
+                }
+            }
+            featureTooltip = FeatureTooltip.Make(Localization.Localize("Bonder"), "Priority = "+priority, new Optional<UnknownStruct1>());
         }
     }
 }
