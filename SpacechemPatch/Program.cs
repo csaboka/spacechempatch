@@ -54,22 +54,31 @@ namespace SpacechemPatch
 
         static void Main(string[] args)
         {
-            if (!File.Exists("SpaceChem.exe"))
+            string gameFolder = "";
+            if (args.Length >= 1)
             {
-                Console.WriteLine("This program needs to be placed next to SpaceChem.exe to work! Exiting...");
+                gameFolder = args[0];
+            }
+            string originalExecutablePath = Path.Combine(gameFolder, "SpaceChem.exe");
+            string backupPath = Path.Combine(gameFolder, "SpaceChem.exe.original");
+            string patchedPath = Path.Combine(gameFolder, "SpaceChem.exe.patched");
+            if (!File.Exists(originalExecutablePath))
+            {
+                Console.WriteLine("Can't find game executable " + originalExecutablePath + " ! " +
+                    "Please execute this program from the SpaceChem game folder, or give the path of the game folder as a command line argument. Exiting...");
                 return;
             }
             Console.WriteLine("This program is experimental and was only tested with the Steam version of the game. There is NO WARRANTY on it. Please remember that you can always restore the original game files by verifying game integrity in Steam.");
             Console.WriteLine("Do you want to continue? [y/N]");
             if (Console.ReadKey().Key != ConsoleKey.Y) return;
             Console.WriteLine();
-            if (!File.Exists("SpaceChem.exe.original"))
+            if (!File.Exists(backupPath))
             {
                 Console.WriteLine("Making backup of SpaceChem.exe");
-                File.Copy("SpaceChem.exe", "SpaceChem.exe.original");
+                File.Copy(originalExecutablePath, backupPath);
             }
             Console.WriteLine("Patching...");
-            using (ModuleDefinition spacechemAssembly = ModuleDefinition.ReadModule("SpaceChem.exe"))
+            using (ModuleDefinition spacechemAssembly = ModuleDefinition.ReadModule(originalExecutablePath))
             using (ModuleDefinition ownAssembly = ModuleDefinition.ReadModule(System.Reflection.Assembly.GetExecutingAssembly().Location))
             {
                 Dictionary<TypeReference, TypeReference> typeReplacements;
@@ -102,10 +111,10 @@ namespace SpacechemPatch
                         patcher.ReplaceMethod(replacementMethod, targetMethod);
                     }
                 }
-                spacechemAssembly.Write("SpaceChem.exe.patched");
+                spacechemAssembly.Write(patchedPath);
             }
-            File.Delete("SpaceChem.exe");
-            File.Move("SpaceChem.exe.patched", "SpaceChem.exe");
+            File.Delete(originalExecutablePath);
+            File.Move(patchedPath, originalExecutablePath);
             Console.WriteLine("All OK");
         }
     }
