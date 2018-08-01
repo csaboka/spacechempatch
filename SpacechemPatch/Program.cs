@@ -11,42 +11,44 @@ namespace SpacechemPatch
 {
     class Program
     {
+        private static IEnumerable<KeyValuePair<T, CustomAttribute>> FindAnnotated<T>(IEnumerable<T> source, params string[] attributeNames) where T : ICustomAttributeProvider
+        {
+            return from elem in source
+                   from attribute in elem.CustomAttributes
+                   where attributeNames.Contains(attribute.AttributeType.Name)
+                   select new KeyValuePair<T, CustomAttribute>(elem, attribute);
+        }
+
         private static void CollectReplacements(ModuleDefinition spacechemAssembly, ModuleDefinition ownAssembly, out Dictionary<TypeReference, TypeReference> typeReplacements, out Dictionary<MethodReference, MethodReference> methodReplacements, out Dictionary<FieldReference, FieldReference> fieldReplacements)
         {
             typeReplacements = new Dictionary<TypeReference, TypeReference>();
             methodReplacements = new Dictionary<MethodReference, MethodReference>();
             fieldReplacements = new Dictionary<FieldReference, FieldReference>();
-            var decoyTypes = from type in ownAssembly.Types
-                             where type.HasCustomAttributes && type.CustomAttributes.Any(att => att.AttributeType.Name == "DecoyAttribute")
-                             select type;
-            foreach (TypeDefinition type in decoyTypes) {
-                CustomAttribute decoyAttribute = type.CustomAttributes.First(att => att.AttributeType.Name == "DecoyAttribute");
+            foreach (KeyValuePair<TypeDefinition, CustomAttribute> typePair in FindAnnotated(ownAssembly.Types, "DecoyAttribute")) {
+                TypeDefinition type = typePair.Key;
+                CustomAttribute decoyAttribute = typePair.Value;
                 string @namespace = "";
                 if (decoyAttribute.Fields.Count != 0)
                 {
                     @namespace = (string)decoyAttribute.Fields.First(field => field.Name == "namespace").Argument.Value;
                 }
                 string scrambledName = (string)decoyAttribute.ConstructorArguments[0].Value;
-                TypeDefinition targetClass = spacechemAssembly.GetType(@namespace, scrambledName);
-                typeReplacements.Add(type, targetClass);
-                var decoyMethods = from method in type.Methods
-                                         where method.HasCustomAttributes && method.CustomAttributes.Any(att => att.AttributeType.Name == "ReplacedAttribute" || att.AttributeType.Name == "DecoyAttribute")
-                                         select method;
-                foreach (MethodDefinition decoyMethod in decoyMethods)
+                TypeDefinition targetType = spacechemAssembly.GetType(@namespace, scrambledName);
+                typeReplacements.Add(type, targetType);
+                foreach (KeyValuePair<MethodDefinition, CustomAttribute> methodPair in FindAnnotated(type.Methods, "ReplacedAttribute", "DecoyAttribute"))
                 {
-                    CustomAttribute decoyMethodAttribute = decoyMethod.CustomAttributes.First(att => att.AttributeType.Name == "ReplacedAttribute" || att.AttributeType.Name == "DecoyAttribute");
+                    MethodDefinition decoyMethod = methodPair.Key;
+                    CustomAttribute decoyMethodAttribute = methodPair.Value;
                     string targetMethodName = (string)decoyMethodAttribute.ConstructorArguments[0].Value;
-                    MethodDefinition targetMethod = targetClass.Methods.First(method => method.Name == targetMethodName);
+                    MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == targetMethodName);
                     methodReplacements.Add(decoyMethod, targetMethod);
                 }
-                var decoyFields = from field in type.Fields
-                                  where field.HasCustomAttributes && field.CustomAttributes.Any(att => att.AttributeType.Name == "DecoyAttribute")
-                                  select field;
-                foreach (FieldDefinition decoyField in decoyFields)
+                foreach (KeyValuePair<FieldDefinition, CustomAttribute> fieldPair in FindAnnotated(type.Fields, "DecoyAttribute"))
                 {
-                    CustomAttribute decoyFieldAttribute = decoyField.CustomAttributes.First(att => att.AttributeType.Name == "DecoyAttribute");
+                    FieldDefinition decoyField = fieldPair.Key;
+                    CustomAttribute decoyFieldAttribute = fieldPair.Value;
                     string scrambledFieldName = (string)decoyFieldAttribute.ConstructorArguments[0].Value;
-                    FieldDefinition targetField = targetClass.Fields.First(field => field.Name == scrambledFieldName);
+                    FieldDefinition targetField = targetType.Fields.First(field => field.Name == scrambledFieldName);
                     fieldReplacements.Add(decoyField, targetField);
                 }
             }
@@ -86,28 +88,24 @@ namespace SpacechemPatch
                 Dictionary<FieldReference, FieldReference> fieldReplacements;
                 CollectReplacements(spacechemAssembly, ownAssembly, out typeReplacements, out methodReplacements, out fieldReplacements);
                 Patcher patcher = new Patcher(typeReplacements, methodReplacements, fieldReplacements);
-                List<TypeDefinition> decoyClasses = new List<TypeDefinition>(from type in ownAssembly.Types
-                                   where type.HasCustomAttributes && type.CustomAttributes.Any(att => att.AttributeType.Name == "DecoyAttribute")
-                                   select type);
-                foreach (TypeDefinition decoyClass in decoyClasses)
+                foreach (KeyValuePair<TypeDefinition, CustomAttribute> decoyPair in FindAnnotated(ownAssembly.Types, "DecoyAttribute"))
                 {
-                    CustomAttribute decoyAttribute = decoyClass.CustomAttributes.First(att => att.AttributeType.Name == "DecoyAttribute");
+                    TypeDefinition decoyType = decoyPair.Key;
+                    CustomAttribute decoyAttribute = decoyPair.Value;
                     string @namespace = "";
                     if (decoyAttribute.Fields.Count != 0)
                     {
                         @namespace = (string)decoyAttribute.Fields.First(field => field.Name == "namespace").Argument.Value;
                     }
                     string scrambledName = (string) decoyAttribute.ConstructorArguments[0].Value;
-                    TypeDefinition targetClass = spacechemAssembly.GetType(@namespace, scrambledName);
+                    TypeDefinition targetType = spacechemAssembly.GetType(@namespace, scrambledName);
 
-                    var replacementMethods = from method in decoyClass.Methods
-                                             where method.HasCustomAttributes && method.CustomAttributes.Any(att => att.AttributeType.Name == "ReplacedAttribute")
-                                             select method;
-                    foreach (MethodDefinition replacementMethod in replacementMethods)
+                    foreach (KeyValuePair<MethodDefinition, CustomAttribute> methodPair in FindAnnotated(decoyType.Methods, "ReplacedAttribute"))
                     {
-                        CustomAttribute replacementAttribute = replacementMethod.CustomAttributes.First(att => att.AttributeType.Name == "ReplacedAttribute");
+                        MethodDefinition replacementMethod = methodPair.Key;
+                        CustomAttribute replacementAttribute = methodPair.Value;
                         string targetMethodName = (string) replacementAttribute.ConstructorArguments[0].Value;
-                        MethodDefinition targetMethod = targetClass.Methods.First(method => method.Name == targetMethodName && method.Parameters.Count == replacementMethod.Parameters.Count);
+                        MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == targetMethodName && method.Parameters.Count == replacementMethod.Parameters.Count);
                         patcher.ReplaceMethod(replacementMethod, targetMethod);
                     }
                 }
