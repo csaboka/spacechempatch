@@ -112,6 +112,16 @@ namespace SpacechemPatch
         {
             FieldReference replaced;
             fieldReplacements.TryGetValue(field, out replaced);
+            if (replaced == null && field is FieldDefinition && ((FieldDefinition)field).CustomAttributes.Any(attr => attr.AttributeType.Name == "InjectedAttribute"))
+            {
+                FieldDefinition fieldDefinition = (FieldDefinition)field;
+                TypeDefinition targetType = (TypeDefinition)typeReplacements[fieldDefinition.DeclaringType];
+                TypeReference fixedUpFieldType = FixupType(fieldDefinition.FieldType, targetModule);
+                FieldDefinition newField = new FieldDefinition(fieldDefinition.Name, fieldDefinition.Attributes, fixedUpFieldType);
+                targetType.Fields.Add(newField);
+                fieldReplacements[field] = newField;
+                return newField;
+            }
             return replaced ?? field;
         }
     }

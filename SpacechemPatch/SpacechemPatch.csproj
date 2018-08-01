@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InjectedAttribute.cs" />
     <Compile Include="Patcher.cs" />
     <Compile Include="Patches\AbstractFeature.cs" />
     <Compile Include="Patches\AbstractReactorMember.cs" />
