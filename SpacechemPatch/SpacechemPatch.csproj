@@ -80,7 +80,7 @@
     <Compile Include="Patches\Localization.cs" />
     <Compile Include="Patches\MoleculeDefinition.cs" />
     <Compile Include="Patches\Optional.cs" />
-    <Compile Include="Patches\PotentialBound.cs" />
+    <Compile Include="Patches\PotentialBond.cs" />
     <Compile Include="Patches\Reactor.cs" />
     <Compile Include="Patches\UnknownStruct1.cs" />
     <Compile Include="Patches\Vector2i.cs" />
