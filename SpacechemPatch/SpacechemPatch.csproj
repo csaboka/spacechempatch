@@ -72,11 +72,15 @@
     <Compile Include="Patcher.cs" />
     <Compile Include="Patches\AbstractFeature.cs" />
     <Compile Include="Patches\AbstractReactorMember.cs" />
+    <Compile Include="Patches\Atom.cs" />
+    <Compile Include="Patches\BondCount.cs" />
     <Compile Include="Patches\BonderFeature.cs" />
     <Compile Include="Patches\FeatureTooltip.cs" />
     <Compile Include="Patches\IconMaybe.cs" />
     <Compile Include="Patches\Localization.cs" />
+    <Compile Include="Patches\MoleculeDefinition.cs" />
     <Compile Include="Patches\Optional.cs" />
+    <Compile Include="Patches\PotentialBound.cs" />
     <Compile Include="Patches\Reactor.cs" />
     <Compile Include="Patches\UnknownStruct1.cs" />
     <Compile Include="Patches\Vector2i.cs" />
