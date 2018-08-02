@@ -9,11 +9,11 @@ namespace SpacechemPatch
 {
     class Patcher
     {
-        private readonly Dictionary<TypeReference, TypeReference> typeReplacements;
-        private readonly Dictionary<MethodReference, MethodReference> methodReplacements;
-        private readonly Dictionary<FieldReference, FieldReference> fieldReplacements;
+        private readonly Dictionary<string, TypeReference> typeReplacements;
+        private readonly Dictionary<string, MethodReference> methodReplacements;
+        private readonly Dictionary<string, FieldReference> fieldReplacements;
 
-        public Patcher (Dictionary<TypeReference, TypeReference> typeReplacements, Dictionary<MethodReference, MethodReference> methodReplacements, Dictionary<FieldReference, FieldReference> fieldReplacements)
+        public Patcher (Dictionary<string, TypeReference> typeReplacements, Dictionary<string, MethodReference> methodReplacements, Dictionary<string, FieldReference> fieldReplacements)
         {
             this.typeReplacements = typeReplacements;
             this.methodReplacements = methodReplacements;
@@ -64,13 +64,24 @@ namespace SpacechemPatch
 
         private MethodReference FixupMethod(MethodReference method, ModuleDefinition targetModule)
         {
+            MethodReference replaced;
+            methodReplacements.TryGetValue(method.FullName, out replaced);
+            if (replaced == null && (method.ReturnType is GenericInstanceType || method.DeclaringType is GenericInstanceType))
+            {
+                string oldFullName = method.FullName;
+                method.ReturnType = FixupType(method.ReturnType, targetModule);
+                method.DeclaringType = FixupType(method.DeclaringType, targetModule);
+                // Avoid repeated fixups of this instance by mapping the changed type to itself in the replacement map.
+                // Map it to its old name, too, so if a different instance with the exact same signature is encountered, we don't need to process it again.
+                methodReplacements.Add(method.FullName, method);
+                methodReplacements.Add(oldFullName, method);
+            }
+            method = replaced ?? method;
             if (!(method is MethodDefinition))
             {
                 method = targetModule.ImportReference(method);
             }
-            MethodReference replaced;
-            methodReplacements.TryGetValue(method, out replaced);
-            return replaced ?? method;
+            return method;
         }
 
         private TypeReference FixupType(TypeReference type, ModuleDefinition targetModule)
@@ -79,12 +90,16 @@ namespace SpacechemPatch
             {
                 return FixupGenericType((GenericInstanceType)type, targetModule);
             }
+            if (type is GenericParameter)
+            {
+                return type;
+            }
             if (!(type is TypeDefinition))
             {
                 type = targetModule.ImportReference(type);
             }
             TypeReference replaced;
-            typeReplacements.TryGetValue(type, out replaced);
+            typeReplacements.TryGetValue(type.FullName, out replaced);
             type = replaced ?? type;
             /*foreach (GenericParameter param in type.GenericParameters)
             {
@@ -110,15 +125,15 @@ namespace SpacechemPatch
         private FieldReference FixupField(FieldReference field, ModuleDefinition targetModule)
         {
             FieldReference replaced;
-            fieldReplacements.TryGetValue(field, out replaced);
+            fieldReplacements.TryGetValue(field.FullName, out replaced);
             if (replaced == null && field is FieldDefinition && ((FieldDefinition)field).CustomAttributes.Any(attr => attr.AttributeType.Name == "InjectedAttribute"))
             {
                 FieldDefinition fieldDefinition = (FieldDefinition)field;
-                TypeDefinition targetType = (TypeDefinition)typeReplacements[fieldDefinition.DeclaringType];
+                TypeDefinition targetType = (TypeDefinition)typeReplacements[fieldDefinition.DeclaringType.FullName];
                 TypeReference fixedUpFieldType = FixupType(fieldDefinition.FieldType, targetModule);
                 FieldDefinition newField = new FieldDefinition(fieldDefinition.Name, fieldDefinition.Attributes, fixedUpFieldType);
                 targetType.Fields.Add(newField);
-                fieldReplacements[field] = newField;
+                fieldReplacements[field.FullName] = newField;
                 return newField;
             }
             return replaced ?? field;

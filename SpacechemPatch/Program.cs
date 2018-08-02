@@ -18,12 +18,12 @@ namespace SpacechemPatch
                    select new KeyValuePair<T, CustomAttribute>(elem, attribute);
         }
 
-        private static void CollectReplacements(ModuleDefinition spacechemAssembly, ModuleDefinition ownAssembly, out Dictionary<TypeReference, TypeReference> typeReplacements, out Dictionary<MethodReference, MethodReference> methodReplacements, out Dictionary<FieldReference, FieldReference> fieldReplacements)
+        private delegate TypeDefinition TypeFinder(string @namespace, string typeName);
+
+        private static void CollectReplacementsForTypes(IEnumerable<TypeDefinition> typeDefinitions, TypeFinder typeFinder, Dictionary<string, TypeReference> typeReplacements, Dictionary<string, MethodReference> methodReplacements, Dictionary<string, FieldReference> fieldReplacements)
         {
-            typeReplacements = new Dictionary<TypeReference, TypeReference>();
-            methodReplacements = new Dictionary<MethodReference, MethodReference>();
-            fieldReplacements = new Dictionary<FieldReference, FieldReference>();
-            foreach (KeyValuePair<TypeDefinition, CustomAttribute> typePair in FindAnnotated(ownAssembly.Types, "DecoyAttribute")) {
+            foreach (KeyValuePair<TypeDefinition, CustomAttribute> typePair in FindAnnotated(typeDefinitions, "DecoyAttribute"))
+            {
                 TypeDefinition type = typePair.Key;
                 CustomAttribute decoyAttribute = typePair.Value;
                 string @namespace = "";
@@ -32,15 +32,15 @@ namespace SpacechemPatch
                     @namespace = (string)decoyAttribute.Fields.First(field => field.Name == "namespace").Argument.Value;
                 }
                 string scrambledName = (string)decoyAttribute.ConstructorArguments[0].Value;
-                TypeDefinition targetType = spacechemAssembly.GetType(@namespace, scrambledName);
-                typeReplacements.Add(type, targetType);
+                TypeDefinition targetType = typeFinder(@namespace, scrambledName);
+                typeReplacements.Add(type.FullName, targetType);
                 foreach (KeyValuePair<MethodDefinition, CustomAttribute> methodPair in FindAnnotated(type.Methods, "ReplacedAttribute", "DecoyAttribute"))
                 {
                     MethodDefinition decoyMethod = methodPair.Key;
                     CustomAttribute decoyMethodAttribute = methodPair.Value;
                     string targetMethodName = (string)decoyMethodAttribute.ConstructorArguments[0].Value;
                     MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == targetMethodName);
-                    methodReplacements.Add(decoyMethod, targetMethod);
+                    methodReplacements.Add(decoyMethod.FullName, targetMethod);
                 }
                 foreach (KeyValuePair<FieldDefinition, CustomAttribute> fieldPair in FindAnnotated(type.Fields, "DecoyAttribute"))
                 {
@@ -48,9 +48,19 @@ namespace SpacechemPatch
                     CustomAttribute decoyFieldAttribute = fieldPair.Value;
                     string scrambledFieldName = (string)decoyFieldAttribute.ConstructorArguments[0].Value;
                     FieldDefinition targetField = targetType.Fields.First(field => field.Name == scrambledFieldName);
-                    fieldReplacements.Add(decoyField, targetField);
+                    fieldReplacements.Add(decoyField.FullName, targetField);
                 }
+                // Recurse for nested types.
+                CollectReplacementsForTypes(type.NestedTypes, (dummy, typeName) => targetType.NestedTypes.First(t => t.Name == typeName), typeReplacements, methodReplacements, fieldReplacements);
             }
+        }
+
+        private static void CollectReplacements(ModuleDefinition spacechemAssembly, ModuleDefinition ownAssembly, out Dictionary<string, TypeReference> typeReplacements, out Dictionary<string, MethodReference> methodReplacements, out Dictionary<string, FieldReference> fieldReplacements)
+        {
+            typeReplacements = new Dictionary<string, TypeReference>();
+            methodReplacements = new Dictionary<string, MethodReference>();
+            fieldReplacements = new Dictionary<string, FieldReference>();
+            CollectReplacementsForTypes(ownAssembly.Types, spacechemAssembly.GetType, typeReplacements, methodReplacements, fieldReplacements);
         }
 
         static void Main(string[] args)
@@ -82,9 +92,9 @@ namespace SpacechemPatch
             using (ModuleDefinition spacechemAssembly = ModuleDefinition.ReadModule(originalExecutablePath))
             using (ModuleDefinition ownAssembly = ModuleDefinition.ReadModule(System.Reflection.Assembly.GetExecutingAssembly().Location))
             {
-                Dictionary<TypeReference, TypeReference> typeReplacements;
-                Dictionary<MethodReference, MethodReference> methodReplacements;
-                Dictionary<FieldReference, FieldReference> fieldReplacements;
+                Dictionary<string, TypeReference> typeReplacements;
+                Dictionary<string, MethodReference> methodReplacements;
+                Dictionary<string, FieldReference> fieldReplacements;
                 CollectReplacements(spacechemAssembly, ownAssembly, out typeReplacements, out methodReplacements, out fieldReplacements);
                 Patcher patcher = new Patcher(typeReplacements, methodReplacements, fieldReplacements);
                 foreach (KeyValuePair<TypeDefinition, CustomAttribute> decoyPair in FindAnnotated(ownAssembly.Types, "DecoyAttribute"))
