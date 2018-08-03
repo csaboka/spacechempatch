@@ -55,7 +55,7 @@ namespace SpacechemPatch.Patches
             return false;
         }
 
-        [Replaced("#=qcAI4xoajB5c0nSHhfDrzAw==")]
+        [Replaced("#=qcAI4xoajB5c0nSHhfDrzAw==", Patch.FixWrongOutput)]
         public bool Matches(MoleculeDefinition other)
         {
             if (atoms.Count != other.atoms.Count || bonds.Count != other.bonds.Count)
@@ -79,7 +79,7 @@ namespace SpacechemPatch.Patches
             return false;
         }
 
-        [Replaced("#=q1Vpe1ZE6Z0HVwO_GD01w8Q==")]
+        [Replaced("#=q1Vpe1ZE6Z0HVwO_GD01w8Q==", Patch.FixWrongOutput)]
         private static bool MoleculeMatchesRecursive(AtomDefinition atomDefinition1, AtomDefinition atomDefinition2)
         {
             // Make sure we don't match an atom that's already matched with something else. This check also prevents infinite

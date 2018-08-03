@@ -9,10 +9,26 @@ namespace SpacechemPatch
     class ReplacedAttribute : Attribute
     {
         private string scrambledName;
+        public string ScrambledName
+        {
+            get {
+                return scrambledName;
+            }
+        }
 
-        public ReplacedAttribute(string scrambledName)
+        private Patch[] patches;
+        public Patch[] Patches
+        {
+            get
+            {
+                return (Patch[])patches.Clone();
+            }
+        }
+
+        public ReplacedAttribute(string scrambledName, params Patch[] patches)
         {
             this.scrambledName = scrambledName;
+            this.patches = patches;
         }
     }
 }

@@ -88,7 +88,10 @@ namespace SpacechemPatch
                 Console.WriteLine("Making backup of SpaceChem.exe");
                 File.Copy(originalExecutablePath, backupPath);
             }
+            // TODO: Add a way to specify this by the end user.
+            Patch[] enabledPatches = (Patch[])Enum.GetValues(typeof(Patch));
             Console.WriteLine("Patching...");
+            System.Reflection.Module currentModule = typeof(Program).Module;
             using (ModuleDefinition spacechemAssembly = ModuleDefinition.ReadModule(originalExecutablePath))
             using (ModuleDefinition ownAssembly = ModuleDefinition.ReadModule(System.Reflection.Assembly.GetExecutingAssembly().Location))
             {
@@ -99,23 +102,27 @@ namespace SpacechemPatch
                 Patcher patcher = new Patcher(typeReplacements, methodReplacements, fieldReplacements);
                 foreach (KeyValuePair<TypeDefinition, CustomAttribute> decoyPair in FindAnnotated(ownAssembly.Types, "DecoyAttribute"))
                 {
-                    TypeDefinition decoyType = decoyPair.Key;
-                    CustomAttribute decoyAttribute = decoyPair.Value;
+                    TypeDefinition cecilDecoyType = decoyPair.Key;
+                    CustomAttribute cecilDecoyAttribute = decoyPair.Value;
                     string @namespace = "";
-                    if (decoyAttribute.Fields.Count != 0)
+                    if (cecilDecoyAttribute.Fields.Count != 0)
                     {
-                        @namespace = (string)decoyAttribute.Fields.First(field => field.Name == "namespace").Argument.Value;
+                        @namespace = (string)cecilDecoyAttribute.Fields.First(field => field.Name == "namespace").Argument.Value;
                     }
-                    string scrambledName = (string) decoyAttribute.ConstructorArguments[0].Value;
+                    string scrambledName = (string) cecilDecoyAttribute.ConstructorArguments[0].Value;
                     TypeDefinition targetType = spacechemAssembly.GetType(@namespace, scrambledName);
 
-                    foreach (KeyValuePair<MethodDefinition, CustomAttribute> methodPair in FindAnnotated(decoyType.Methods, "ReplacedAttribute"))
+                    foreach (KeyValuePair<MethodDefinition, CustomAttribute> methodPair in FindAnnotated(cecilDecoyType.Methods, "ReplacedAttribute"))
                     {
-                        MethodDefinition replacementMethod = methodPair.Key;
-                        CustomAttribute replacementAttribute = methodPair.Value;
-                        string targetMethodName = (string) replacementAttribute.ConstructorArguments[0].Value;
-                        MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == targetMethodName && method.Parameters.Count == replacementMethod.Parameters.Count);
-                        patcher.ReplaceMethod(replacementMethod, targetMethod);
+                        MethodDefinition cecilReplacementMethod = methodPair.Key;
+                        System.Reflection.MethodBase replacementMethod = currentModule.ResolveMethod(cecilReplacementMethod.MetadataToken.ToInt32());
+                        ReplacedAttribute replacedAttribute = (ReplacedAttribute)Attribute.GetCustomAttribute(replacementMethod, typeof(ReplacedAttribute));
+                        Patch[] patchesToEnableFor = replacedAttribute.Patches;
+                        if (patchesToEnableFor.Length == 0 || patchesToEnableFor.Any(patch => enabledPatches.Contains(patch)))
+                        {
+                            MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == replacedAttribute.ScrambledName && method.Parameters.Count == cecilReplacementMethod.Parameters.Count);
+                            patcher.ReplaceMethod(cecilReplacementMethod, targetMethod);
+                        }
                     }
                 }
                 spacechemAssembly.Write(patchedPath);
