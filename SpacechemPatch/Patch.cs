@@ -8,6 +8,7 @@ namespace SpacechemPatch
     enum Patch
     {
         ShowBonderPriority,
-        FixWrongOutput
+        FixWrongOutput,
+        AllowGreekInResearchNet
     }
 }
