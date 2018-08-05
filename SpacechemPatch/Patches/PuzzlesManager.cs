@@ -8,7 +8,7 @@ namespace SpacechemPatch.Patches
     [Decoy("#=qrCJREAf$Hf9aGa3TuUSykqD5r_3Ab8bBF_TygfhUUAQ=")]
     class PuzzlesManager
     {
-        [Replaced("#=qAgwLmvCteZBjvtnHkOEEwgYmcgQ8QGBZzG19bo74mlw=", Patch.AllowGreekInResearchNet)]
+        [Replaced("#=qAgwLmvCteZBjvtnHkOEEwgYmcgQ8QGBZzG19bo74mlw=", Patch.AllowGreekInResNet)]
         public static bool DoesPuzzleUseGreekElements(string puzzleName)
         {
             // Instead of looking up the puzzle by name and comparing it against
@@ -35,7 +35,7 @@ namespace SpacechemPatch.Patches
             return false;
         }
 
-        [Replaced("#=qAgwLmvCteZBjvtnHkOEEwgYmcgQ8QGBZzG19bo74mlw=", Patch.AllowGreekInResearchNetProductionAndSandbox)]
+        [Replaced("#=qAgwLmvCteZBjvtnHkOEEwgYmcgQ8QGBZzG19bo74mlw=", Patch.AllowGreekInResNetProdAndSandbox)]
         public static bool DoesPuzzleUseGreekElements_NoResearchPuzzle(string puzzleName)
         {
             // Same logic, but return false for ResNet research puzzles. In the unpatched game,

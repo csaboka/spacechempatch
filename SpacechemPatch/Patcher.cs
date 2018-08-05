@@ -85,7 +85,7 @@ namespace SpacechemPatch
             fieldReplacements.Add(originalInSource.Fields[0].FullName, originalType.Fields[0]);
         }
 
-        public void ApplyPatches(Patch[] enabledPatches)
+        public void ApplyPatches(IEnumerable<Patch> enabledPatches)
         {
             InitOriginalType();
             CollectReplacements();
