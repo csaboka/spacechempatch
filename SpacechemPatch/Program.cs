@@ -37,7 +37,7 @@ namespace SpacechemPatch
                 File.Copy(originalExecutablePath, backupPath);
             }
             // TODO: Add a way to specify this by the end user.
-            Patch[] enabledPatches = (Patch[])Enum.GetValues(typeof(Patch));
+            Patch[] enabledPatches = { Patch.ShowBonderPriority, Patch.FixWrongOutput, Patch.AllowGreekInResearchNetProductionAndSandbox };
             Console.WriteLine("Patching...");
             using (ModuleDefinition spacechemAssembly = ModuleDefinition.ReadModule(originalExecutablePath))
             using (ModuleDefinition ownAssembly = ModuleDefinition.ReadModule(System.Reflection.Assembly.GetExecutingAssembly().Location))

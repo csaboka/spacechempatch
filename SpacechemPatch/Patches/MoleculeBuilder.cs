@@ -8,7 +8,7 @@ namespace SpacechemPatch.Patches
     [Decoy("#=qizm4ojOwvlTMpLo$a0WBiCtBqI8HXvlnqWAOG4kqA1CxBzyu3$y4DebuBfVWxRKQ")]
     class MoleculeBuilder
     {
-        [Replaced(".ctor", KeepOriginal = true)]
+        [Replaced(".ctor", Patch.AllowGreekInResearchNet, Patch.AllowGreekInResearchNetProductionAndSandbox, KeepOriginal = true)]
         public MoleculeBuilder(bool bool1, bool bool2, MoleculeDefinition molecule, Action<MoleculeDefinition> action, bool showGreek = false)
             : this(bool1, bool2, molecule, action, true, Original.INSTANCE)
         {

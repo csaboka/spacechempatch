@@ -93,6 +93,7 @@
     <Compile Include="Patches\Optional.cs" />
     <Compile Include="Patches\PotentialBond.cs" />
     <Compile Include="Patches\PuzzlesManager.cs" />
+    <Compile Include="Patches\Puzzle_ResNetResearch.cs" />
     <Compile Include="Patches\Reactor.cs" />
     <Compile Include="Patches\ResearchNetResearchPuzzleDefinition.cs" />
     <Compile Include="Patches\UnknownStruct1.cs" />

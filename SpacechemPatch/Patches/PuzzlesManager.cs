@@ -34,5 +34,36 @@ namespace SpacechemPatch.Patches
             }
             return false;
         }
+
+        [Replaced("#=qAgwLmvCteZBjvtnHkOEEwgYmcgQ8QGBZzG19bo74mlw=", Patch.AllowGreekInResearchNetProductionAndSandbox)]
+        public static bool DoesPuzzleUseGreekElements_NoResearchPuzzle(string puzzleName)
+        {
+            // Same logic, but return false for ResNet research puzzles. In the unpatched game,
+            // you have no way to get Greek sensors in those levels, so enabling them can
+            // be considered cheating.
+            AbstractPuzzle currentPuzzle = GameScreen.GetTopmostScreenWithType<AbstractPuzzle>();
+            if (currentPuzzle is Puzzle_ResNetResearch)
+            {
+                return false;
+            }
+            foreach (KeyValuePair<AbstractDraggable, Vector2i> entry in currentPuzzle.draggableContainer)
+            {
+                AbstractInput input = entry.Key as AbstractInput;
+                if (input != null)
+                {
+                    foreach (KeyValuePair<MoleculeDefinition, double> inputEntry in input)
+                    {
+                        foreach (Atom atom in inputEntry.Key.atoms.Values)
+                        {
+                            if (atom.element.IsUnknownByScience())
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
     }
 }

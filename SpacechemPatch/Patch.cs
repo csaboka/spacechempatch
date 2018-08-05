@@ -9,6 +9,7 @@ namespace SpacechemPatch
     {
         ShowBonderPriority,
         FixWrongOutput,
-        AllowGreekInResearchNet
+        AllowGreekInResearchNet,
+        AllowGreekInResearchNetProductionAndSandbox
     }
 }
