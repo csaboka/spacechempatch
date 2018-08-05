@@ -6,3 +6,5 @@ but if you would like to help, consider picking one of these.
 - Allow using Greek elements in custom ResNet puzzles
 - Show reactor priority, similarly to bonder priority
 - Change simulation speeds
+- Fix forum signature generation on Linux
+
