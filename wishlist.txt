@@ -3,8 +3,6 @@ project is maintained by volunteers, so we don't commit to specific features or 
 but if you would like to help, consider picking one of these.
 
 - Flip the order of puzzles in the ResNet custom puzzle list (i.e. most recent first)
-- Allow using Greek elements in custom ResNet puzzles
 - Show reactor priority, similarly to bonder priority
 - Change simulation speeds
-- Fix forum signature generation on Linux
 
