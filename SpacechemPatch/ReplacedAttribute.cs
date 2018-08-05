@@ -24,6 +24,7 @@ namespace SpacechemPatch
                 return (Patch[])patches.Clone();
             }
         }
+        public bool KeepOriginal;
 
         public ReplacedAttribute(string scrambledName, params Patch[] patches)
         {

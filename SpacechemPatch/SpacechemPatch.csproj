@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InjectedAttribute.cs" />
+    <Compile Include="Original.cs" />
     <Compile Include="Patch.cs" />
     <Compile Include="Patcher.cs" />
     <Compile Include="Patches\AbstractFeature.cs" />

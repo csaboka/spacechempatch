@@ -16,6 +16,8 @@ namespace SpacechemPatch
         private readonly Dictionary<string, MethodReference> methodReplacements = new Dictionary<string, MethodReference>();
         private readonly Dictionary<string, FieldReference> fieldReplacements = new Dictionary<string, FieldReference>();
 
+        private TypeDefinition originalType;
+
         public Patcher (ModuleDefinition source, ModuleDefinition target)
         {
             this.source = source;
@@ -72,8 +74,20 @@ namespace SpacechemPatch
             CollectReplacementsForTypes(source.Types, target.GetType);
         }
 
+        private void InitOriginalType()
+        {
+            TypeDefinition originalInSource = source.GetType("SpacechemPatch", "Original");
+            originalType = new TypeDefinition(originalInSource.Namespace, originalInSource.Name, originalInSource.Attributes);
+            originalType.BaseType = target.TypeSystem.Object;
+            originalType.Fields.Add(new FieldDefinition("INSTANCE", FieldAttributes.Public | FieldAttributes.Static, originalType));
+            target.Types.Add(originalType);
+            typeReplacements.Add(originalInSource.FullName, originalType);
+            fieldReplacements.Add(originalInSource.Fields[0].FullName, originalType.Fields[0]);
+        }
+
         public void ApplyPatches(Patch[] enabledPatches)
         {
+            InitOriginalType();
             CollectReplacements();
             foreach (KeyValuePair<TypeDefinition, CustomAttribute> decoyPair in FindAnnotated(source.Types, "DecoyAttribute"))
             {
@@ -97,6 +111,13 @@ namespace SpacechemPatch
                     if (patchesToEnableFor.Count() == 0 || patchesToEnableFor.Any(patch => enabledPatches.Contains(patch)))
                     {
                         MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == scrambledMethodName && method.Parameters.Count == replacementMethod.Parameters.Count);
+                        if (replacedAttribute.Fields.Any(field => field.Name == "KeepOriginal" && (bool)field.Argument.Value))
+                        {
+                            MethodDefinition copy = CopyMethod(targetMethod);
+                            replacementMethod.Parameters.Add(new ParameterDefinition("dummy", ParameterAttributes.None, originalType));
+                            methodReplacements.Add(replacementMethod.FullName, copy);
+                            replacementMethod.Parameters.RemoveAt(replacementMethod.Parameters.Count - 1);
+                        }
                         ReplaceMethod(replacementMethod, targetMethod);
                     }
                 }
@@ -109,11 +130,7 @@ namespace SpacechemPatch
             body.Instructions.Clear();
             foreach (var instruction in source.Body.Instructions)
             {
-                if (instruction.Operand != null)
-                {
-                    instruction.Operand = FixupOperand(instruction.Operand);
-                }
-                body.Instructions.Add(instruction);
+                body.Instructions.Add(FixupInstruction(instruction));
             }
             body.Variables.Clear();
             foreach (var variable in source.Body.Variables)
@@ -128,21 +145,48 @@ namespace SpacechemPatch
             }
         }
 
-        private object FixupOperand(object operand)
+        private MethodDefinition CopyMethod(MethodDefinition method)
         {
-            if (operand is TypeReference)
+            MethodDefinition copy = new MethodDefinition(method.Name, method.Attributes, method.ReturnType);
+            // Make sure the copy isn't virtual - we don't want subclasses to accidentally override it.
+            copy.IsNewSlot = true;
+            copy.IsVirtual = false;
+            foreach (ParameterDefinition parameterDef in method.Parameters)
             {
-                return FixupType((TypeReference)operand);
-            } else if (operand is MethodReference)
-            {
-                return FixupMethod((MethodReference)operand);
-            } else if (operand is FieldReference)
-            {
-                return FixupField((FieldReference)operand);
-            } else
-            {
-                return operand;
+                copy.Parameters.Add(parameterDef);
             }
+            copy.Parameters.Add(new ParameterDefinition("dummy", ParameterAttributes.None, originalType));
+            foreach (var instruction in method.Body.Instructions)
+            {
+                copy.Body.Instructions.Add(instruction);
+            }
+            foreach (var variable in method.Body.Variables)
+            {
+                copy.Body.Variables.Add(variable);
+            }
+            foreach (var exHandler in method.Body.ExceptionHandlers)
+            {
+                copy.Body.ExceptionHandlers.Add(exHandler);
+            }
+            method.DeclaringType.Methods.Add(copy);
+            return copy;
+        }
+
+        private Instruction FixupInstruction(Instruction instruction)
+        {
+            if (instruction.Operand is TypeReference)
+            {
+                return Instruction.Create(instruction.OpCode, FixupType((TypeReference)instruction.Operand));
+            }
+            if (instruction.Operand is MethodReference)
+            {
+                return Instruction.Create(instruction.OpCode, FixupMethod((MethodReference)instruction.Operand));
+            }
+            if (instruction.Operand is FieldReference)
+            {
+                return Instruction.Create(instruction.OpCode, FixupField((FieldReference)instruction.Operand));
+            }
+            return instruction;
         }
 
         private MethodReference FixupMethod(MethodReference method)
