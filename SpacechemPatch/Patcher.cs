@@ -191,6 +191,16 @@ namespace SpacechemPatch
 
         private MethodReference FixupMethod(MethodReference method)
         {
+            if (method is GenericInstanceMethod)
+            {
+                GenericInstanceMethod genericMethod = (GenericInstanceMethod)method;
+                GenericInstanceMethod fixedUp = new GenericInstanceMethod(FixupMethod(genericMethod.ElementMethod));
+                foreach (TypeReference genericArgument in genericMethod.GenericArguments)
+                {
+                    fixedUp.GenericArguments.Add(FixupType(genericArgument));
+                }
+                return fixedUp;
+            }
             MethodReference replaced;
             methodReplacements.TryGetValue(method.FullName, out replaced);
             if (replaced == null && (method.ReturnType is GenericInstanceType || method.DeclaringType is GenericInstanceType))
