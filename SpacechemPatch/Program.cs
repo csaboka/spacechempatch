@@ -3,11 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using Mono.Cecil;
 using System.Windows.Forms;
+using System.Drawing;
+using System.Linq;
 
 namespace SpacechemPatch
 {
     class Program : Form
     {
+        private string currentExePath;
+        private string originalExePath;
+        private string patchedExePath;
+        HashSet<Patch> enabledPatches = new HashSet<Patch>();
+
         private Label labelPath;
         private TextBox textBoxPath;
         private Button buttonBrowse;
@@ -17,16 +24,14 @@ namespace SpacechemPatch
         private LinkLabel linkLabelGithub;
         private Button buttonRestore;
         private CheckBox checkBoxParanoia;
-
-        private string currentExePath;
-        private string originalExePath;
         private DataGridViewCheckBoxColumn ColumnEnabled;
         private DataGridViewTextBoxColumn ColumnType;
         private DataGridViewTextBoxColumn ColumnName;
         private DataGridViewTextBoxColumn ColumnDescr;
+        private DataGridViewTextBoxColumn ColumnInternalConflicts;
+        private DataGridViewTextBoxColumn ColumnConflicts;
         private Label explanation;
         private Label disclaimer;
-        private string patchedExePath;
 
         Program()
         {
@@ -35,7 +40,8 @@ namespace SpacechemPatch
             foreach (Patch patch in Enum.GetValues(typeof(Patch)))
             {
                 PatchInfo info = PatchInfo.allPatches[patch];
-                dataGridViewPatches.Rows.Add(false, info.Type, patch, info.Description);
+                string conflicts = String.Join(", ", info.ConflictingPatches.Select(p => p.ToString()).ToArray());
+                dataGridViewPatches.Rows.Add(false, info.Type, patch, info.Description, info.ConflictingPatches, conflicts);
             }
 #if DEBUG
             checkBoxParanoia.Checked = true;
@@ -59,7 +65,7 @@ namespace SpacechemPatch
             }
         }
 
-        private void PatchExe(ICollection<Patch> enabledPatches)
+        private void PatchExe()
         {
             if (enabledPatches.Count == 0)
             {
@@ -118,6 +124,8 @@ namespace SpacechemPatch
             this.ColumnType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnDescr = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnInternalConflicts = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ColumnConflicts = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.linkLabelGithub = new System.Windows.Forms.LinkLabel();
             this.buttonRestore = new System.Windows.Forms.Button();
             this.explanation = new System.Windows.Forms.Label();
@@ -130,7 +138,7 @@ namespace SpacechemPatch
             this.labelPath.AutoSize = true;
             this.labelPath.Location = new System.Drawing.Point(14, 66);
             this.labelPath.Name = "labelPath";
-            this.labelPath.Size = new System.Drawing.Size(32, 13);
+            this.labelPath.Size = new System.Drawing.Size(41, 17);
             this.labelPath.TabIndex = 0;
             this.labelPath.Text = "Path:";
             // 
@@ -140,14 +148,14 @@ namespace SpacechemPatch
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPath.Location = new System.Drawing.Point(61, 63);
             this.textBoxPath.Name = "textBoxPath";
-            this.textBoxPath.Size = new System.Drawing.Size(462, 20);
+            this.textBoxPath.Size = new System.Drawing.Size(460, 22);
             this.textBoxPath.TabIndex = 1;
             this.textBoxPath.TextChanged += new System.EventHandler(this.textBoxPath_TextChanged);
             // 
             // buttonBrowse
             // 
             this.buttonBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowse.Location = new System.Drawing.Point(529, 63);
+            this.buttonBrowse.Location = new System.Drawing.Point(527, 63);
             this.buttonBrowse.Name = "buttonBrowse";
             this.buttonBrowse.Size = new System.Drawing.Size(75, 22);
             this.buttonBrowse.TabIndex = 2;
@@ -157,10 +165,9 @@ namespace SpacechemPatch
             // 
             // buttonPatch
             // 
-            this.buttonPatch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPatch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonPatch.Enabled = false;
-            this.buttonPatch.Location = new System.Drawing.Point(12, 496);
+            this.buttonPatch.Location = new System.Drawing.Point(12, 526);
             this.buttonPatch.Name = "buttonPatch";
             this.buttonPatch.Size = new System.Drawing.Size(205, 27);
             this.buttonPatch.TabIndex = 3;
@@ -172,9 +179,9 @@ namespace SpacechemPatch
             // 
             this.checkBoxParanoia.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBoxParanoia.Location = new System.Drawing.Point(17, 433);
+            this.checkBoxParanoia.Location = new System.Drawing.Point(12, 484);
             this.checkBoxParanoia.Name = "checkBoxParanoia";
-            this.checkBoxParanoia.Size = new System.Drawing.Size(585, 36);
+            this.checkBoxParanoia.Size = new System.Drawing.Size(590, 36);
             this.checkBoxParanoia.TabIndex = 4;
             this.checkBoxParanoia.Text = "I understand the risks, enable the PATCH button";
             this.checkBoxParanoia.UseVisualStyleBackColor = true;
@@ -200,47 +207,70 @@ namespace SpacechemPatch
             this.ColumnEnabled,
             this.ColumnType,
             this.ColumnName,
-            this.ColumnDescr});
+            this.ColumnDescr,
+            this.ColumnInternalConflicts,
+            this.ColumnConflicts});
             this.dataGridViewPatches.Location = new System.Drawing.Point(12, 104);
             this.dataGridViewPatches.Name = "dataGridViewPatches";
             this.dataGridViewPatches.RowHeadersVisible = false;
             this.dataGridViewPatches.RowTemplate.Height = 24;
-            this.dataGridViewPatches.Size = new System.Drawing.Size(590, 197);
+            this.dataGridViewPatches.Size = new System.Drawing.Size(590, 208);
             this.dataGridViewPatches.TabIndex = 5;
+            this.dataGridViewPatches.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewPatches_CellContentClick);
+            this.dataGridViewPatches.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewPatches_CellValueChanged);
             // 
             // ColumnEnabled
             // 
+            this.ColumnEnabled.FillWeight = 51.10733F;
             this.ColumnEnabled.HeaderText = "Enabled";
             this.ColumnEnabled.Name = "ColumnEnabled";
-            this.ColumnEnabled.Width = 66;
+            this.ColumnEnabled.Width = 60;
             // 
             // ColumnType
             // 
+            this.ColumnType.FillWeight = 69.49702F;
             this.ColumnType.HeaderText = "Type";
             this.ColumnType.Name = "ColumnType";
             this.ColumnType.ReadOnly = true;
-            this.ColumnType.Width = 80;
+            this.ColumnType.Width = 82;
             // 
             // ColumnName
             // 
+            this.ColumnName.FillWeight = 85.43085F;
             this.ColumnName.HeaderText = "Name";
             this.ColumnName.Name = "ColumnName";
             this.ColumnName.ReadOnly = true;
             // 
             // ColumnDescr
             // 
+            this.ColumnDescr.FillWeight = 243.8279F;
             this.ColumnDescr.HeaderText = "Description";
             this.ColumnDescr.Name = "ColumnDescr";
             this.ColumnDescr.ReadOnly = true;
-            this.ColumnDescr.Width = 300;
+            this.ColumnDescr.Width = 286;
+            // 
+            // ColumnInternalConflicts
+            // 
+            this.ColumnInternalConflicts.HeaderText = "InternalConflicts";
+            this.ColumnInternalConflicts.Name = "ColumnInternalConflicts";
+            this.ColumnInternalConflicts.ReadOnly = true;
+            this.ColumnInternalConflicts.Visible = false;
+            // 
+            // ColumnConflicts
+            // 
+            this.ColumnConflicts.FillWeight = 50.13692F;
+            this.ColumnConflicts.HeaderText = "Conflicts";
+            this.ColumnConflicts.Name = "ColumnConflicts";
+            this.ColumnConflicts.ReadOnly = true;
+            this.ColumnConflicts.Width = 59;
             // 
             // linkLabelGithub
             // 
             this.linkLabelGithub.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.linkLabelGithub.AutoSize = true;
-            this.linkLabelGithub.Location = new System.Drawing.Point(483, 501);
+            this.linkLabelGithub.Location = new System.Drawing.Point(483, 531);
             this.linkLabelGithub.Name = "linkLabelGithub";
-            this.linkLabelGithub.Size = new System.Drawing.Size(88, 13);
+            this.linkLabelGithub.Size = new System.Drawing.Size(119, 17);
             this.linkLabelGithub.TabIndex = 6;
             this.linkLabelGithub.TabStop = true;
             this.linkLabelGithub.Text = "GitHub repository";
@@ -248,9 +278,8 @@ namespace SpacechemPatch
             // 
             // buttonRestore
             // 
-            this.buttonRestore.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRestore.Location = new System.Drawing.Point(223, 496);
+            this.buttonRestore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonRestore.Location = new System.Drawing.Point(223, 526);
             this.buttonRestore.Name = "buttonRestore";
             this.buttonRestore.Size = new System.Drawing.Size(205, 27);
             this.buttonRestore.TabIndex = 3;
@@ -272,15 +301,15 @@ namespace SpacechemPatch
             // 
             this.disclaimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.disclaimer.Location = new System.Drawing.Point(14, 317);
+            this.disclaimer.Location = new System.Drawing.Point(12, 328);
             this.disclaimer.Name = "disclaimer";
-            this.disclaimer.Size = new System.Drawing.Size(588, 113);
+            this.disclaimer.Size = new System.Drawing.Size(590, 153);
             this.disclaimer.TabIndex = 8;
             this.disclaimer.Text = resources.GetString("disclaimer.Text");
             // 
             // Program
             // 
-            this.ClientSize = new System.Drawing.Size(614, 535);
+            this.ClientSize = new System.Drawing.Size(614, 565);
             this.Controls.Add(this.disclaimer);
             this.Controls.Add(this.explanation);
             this.Controls.Add(this.linkLabelGithub);
@@ -307,18 +336,9 @@ namespace SpacechemPatch
 
         private void buttonPatch_Click(object sender, EventArgs e)
         {
-            ICollection<Patch> enabledPatches = new List<Patch>();
-            foreach (DataGridViewRow row in dataGridViewPatches.Rows)
-            {
-                if (Convert.ToBoolean(row.Cells["ColumnEnabled"].Value) == true)
-                {
-                    enabledPatches.Add((Patch)row.Cells["ColumnName"].Value);
-                }
-            }
-
             // game time started
             this.Enabled = false;
-            PatchExe(enabledPatches);
+            PatchExe();
             this.Enabled = true;
         }
 
@@ -356,6 +376,54 @@ namespace SpacechemPatch
             currentExePath = Path.Combine(gameFolder, "SpaceChem.exe");
             originalExePath = Path.Combine(gameFolder, "SpaceChem.exe.original");
             patchedExePath = Path.Combine(gameFolder, "SpaceChem.exe.patched");
+        }
+
+        // thanks https://stackoverflow.com/a/26225746/3288954
+        private void dataGridViewPatches_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            dataGridViewPatches.CommitEdit(DataGridViewDataErrorContexts.Commit);
+        }
+
+        private void dataGridViewPatches_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // this can fire only for checkboxes, or init
+            if (e.RowIndex < 0) return;
+
+            // add patch to candidate patches
+            Patch patch = (Patch)dataGridViewPatches["ColumnName", e.RowIndex].Value;
+            if (Convert.ToBoolean(dataGridViewPatches[e.ColumnIndex, e.RowIndex].Value))
+            {
+                enabledPatches.Add(patch);
+            }
+            else
+            {
+                enabledPatches.Remove(patch);
+            }
+
+            // resolve conflicts
+            foreach (DataGridViewRow row in dataGridViewPatches.Rows)
+            {
+                Patch[] conflictingPatches = (Patch[])row.Cells["ColumnInternalConflicts"].Value;
+                DataGridViewCheckBoxCell CBCell = (DataGridViewCheckBoxCell)row.Cells["ColumnEnabled"];
+                if (conflictingPatches != null && enabledPatches.Overlaps(conflictingPatches))
+                {
+                    CBCell.FlatStyle = FlatStyle.Flat;
+                    CBCell.ReadOnly = true;
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        cell.Style.ForeColor = Color.DarkGray;
+                    }
+                }
+                else
+                {
+                    CBCell.FlatStyle = FlatStyle.System;
+                    CBCell.ReadOnly = false;
+                    foreach (DataGridViewCell cell in row.Cells)
+                    {
+                        cell.Style.ForeColor = default;
+                    }
+                }
+            }
         }
     }
 }

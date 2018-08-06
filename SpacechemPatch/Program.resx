@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <metadata name="openFileDialogSCExe.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
+    <value>10, 13</value>
   </metadata>
   <data name="explanation.Text" xml:space="preserve">
     <value>This tool will alter your SpaceChem executable to modify how the game works. Please specify the game folder (if it isn't automatically detected), select the changes you would like to make to your game, then click the PATCH button below to make the changes. You can also restore your original file to get back to the usual game behavior.</value>
@@ -132,6 +132,6 @@ This program isn't endorsed by Zachtronics. Please don't report any issues to th
 </value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>64</value>
+    <value>52</value>
   </metadata>
 </root>
