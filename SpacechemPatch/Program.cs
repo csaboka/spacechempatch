@@ -24,6 +24,8 @@ namespace SpacechemPatch
         private DataGridViewTextBoxColumn ColumnType;
         private DataGridViewTextBoxColumn ColumnName;
         private DataGridViewTextBoxColumn ColumnDescr;
+        private Label explanation;
+        private Label disclaimer;
         private string patchedExePath;
 
         Program()
@@ -112,21 +114,23 @@ namespace SpacechemPatch
             this.checkBoxParanoia = new System.Windows.Forms.CheckBox();
             this.openFileDialogSCExe = new System.Windows.Forms.OpenFileDialog();
             this.dataGridViewPatches = new System.Windows.Forms.DataGridView();
-            this.linkLabelGithub = new System.Windows.Forms.LinkLabel();
-            this.buttonRestore = new System.Windows.Forms.Button();
             this.ColumnEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ColumnType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ColumnDescr = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.linkLabelGithub = new System.Windows.Forms.LinkLabel();
+            this.buttonRestore = new System.Windows.Forms.Button();
+            this.explanation = new System.Windows.Forms.Label();
+            this.disclaimer = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPatches)).BeginInit();
             this.SuspendLayout();
             // 
             // labelPath
             // 
             this.labelPath.AutoSize = true;
-            this.labelPath.Location = new System.Drawing.Point(12, 32);
+            this.labelPath.Location = new System.Drawing.Point(14, 66);
             this.labelPath.Name = "labelPath";
-            this.labelPath.Size = new System.Drawing.Size(41, 17);
+            this.labelPath.Size = new System.Drawing.Size(32, 13);
             this.labelPath.TabIndex = 0;
             this.labelPath.Text = "Path:";
             // 
@@ -134,16 +138,16 @@ namespace SpacechemPatch
             // 
             this.textBoxPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxPath.Location = new System.Drawing.Point(59, 29);
+            this.textBoxPath.Location = new System.Drawing.Point(61, 63);
             this.textBoxPath.Name = "textBoxPath";
-            this.textBoxPath.Size = new System.Drawing.Size(462, 22);
+            this.textBoxPath.Size = new System.Drawing.Size(462, 20);
             this.textBoxPath.TabIndex = 1;
             this.textBoxPath.TextChanged += new System.EventHandler(this.textBoxPath_TextChanged);
             // 
             // buttonBrowse
             // 
             this.buttonBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBrowse.Location = new System.Drawing.Point(527, 29);
+            this.buttonBrowse.Location = new System.Drawing.Point(529, 63);
             this.buttonBrowse.Name = "buttonBrowse";
             this.buttonBrowse.Size = new System.Drawing.Size(75, 22);
             this.buttonBrowse.TabIndex = 2;
@@ -156,7 +160,7 @@ namespace SpacechemPatch
             this.buttonPatch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonPatch.Enabled = false;
-            this.buttonPatch.Location = new System.Drawing.Point(12, 385);
+            this.buttonPatch.Location = new System.Drawing.Point(12, 496);
             this.buttonPatch.Name = "buttonPatch";
             this.buttonPatch.Size = new System.Drawing.Size(205, 27);
             this.buttonPatch.TabIndex = 3;
@@ -168,11 +172,11 @@ namespace SpacechemPatch
             // 
             this.checkBoxParanoia.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBoxParanoia.Location = new System.Drawing.Point(12, 273);
+            this.checkBoxParanoia.Location = new System.Drawing.Point(17, 433);
             this.checkBoxParanoia.Name = "checkBoxParanoia";
-            this.checkBoxParanoia.Size = new System.Drawing.Size(590, 106);
+            this.checkBoxParanoia.Size = new System.Drawing.Size(585, 36);
             this.checkBoxParanoia.TabIndex = 4;
-            this.checkBoxParanoia.Text = resources.GetString("checkBoxParanoia.Text");
+            this.checkBoxParanoia.Text = "I understand the risks, enable the PATCH button";
             this.checkBoxParanoia.UseVisualStyleBackColor = true;
             this.checkBoxParanoia.CheckedChanged += new System.EventHandler(this.checkBoxParanoia_CheckedChanged);
             // 
@@ -197,36 +201,12 @@ namespace SpacechemPatch
             this.ColumnType,
             this.ColumnName,
             this.ColumnDescr});
-            this.dataGridViewPatches.Location = new System.Drawing.Point(12, 69);
+            this.dataGridViewPatches.Location = new System.Drawing.Point(12, 104);
             this.dataGridViewPatches.Name = "dataGridViewPatches";
             this.dataGridViewPatches.RowHeadersVisible = false;
             this.dataGridViewPatches.RowTemplate.Height = 24;
-            this.dataGridViewPatches.Size = new System.Drawing.Size(590, 198);
+            this.dataGridViewPatches.Size = new System.Drawing.Size(590, 197);
             this.dataGridViewPatches.TabIndex = 5;
-            // 
-            // linkLabelGithub
-            // 
-            this.linkLabelGithub.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkLabelGithub.AutoSize = true;
-            this.linkLabelGithub.Location = new System.Drawing.Point(483, 390);
-            this.linkLabelGithub.Name = "linkLabelGithub";
-            this.linkLabelGithub.Size = new System.Drawing.Size(119, 17);
-            this.linkLabelGithub.TabIndex = 6;
-            this.linkLabelGithub.TabStop = true;
-            this.linkLabelGithub.Text = "GitHub repository";
-            this.linkLabelGithub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelGithub_LinkClicked);
-            // 
-            // buttonRestore
-            // 
-            this.buttonRestore.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRestore.Location = new System.Drawing.Point(223, 385);
-            this.buttonRestore.Name = "buttonRestore";
-            this.buttonRestore.Size = new System.Drawing.Size(205, 27);
-            this.buttonRestore.TabIndex = 3;
-            this.buttonRestore.Text = "Restore from backup";
-            this.buttonRestore.UseVisualStyleBackColor = true;
-            this.buttonRestore.Click += new System.EventHandler(this.buttonRestore_Click);
             // 
             // ColumnEnabled
             // 
@@ -254,9 +234,55 @@ namespace SpacechemPatch
             this.ColumnDescr.ReadOnly = true;
             this.ColumnDescr.Width = 300;
             // 
+            // linkLabelGithub
+            // 
+            this.linkLabelGithub.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkLabelGithub.AutoSize = true;
+            this.linkLabelGithub.Location = new System.Drawing.Point(483, 501);
+            this.linkLabelGithub.Name = "linkLabelGithub";
+            this.linkLabelGithub.Size = new System.Drawing.Size(88, 13);
+            this.linkLabelGithub.TabIndex = 6;
+            this.linkLabelGithub.TabStop = true;
+            this.linkLabelGithub.Text = "GitHub repository";
+            this.linkLabelGithub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelGithub_LinkClicked);
+            // 
+            // buttonRestore
+            // 
+            this.buttonRestore.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonRestore.Location = new System.Drawing.Point(223, 496);
+            this.buttonRestore.Name = "buttonRestore";
+            this.buttonRestore.Size = new System.Drawing.Size(205, 27);
+            this.buttonRestore.TabIndex = 3;
+            this.buttonRestore.Text = "Restore from backup";
+            this.buttonRestore.UseVisualStyleBackColor = true;
+            this.buttonRestore.Click += new System.EventHandler(this.buttonRestore_Click);
+            // 
+            // explanation
+            // 
+            this.explanation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.explanation.Location = new System.Drawing.Point(12, 13);
+            this.explanation.Name = "explanation";
+            this.explanation.Size = new System.Drawing.Size(590, 47);
+            this.explanation.TabIndex = 7;
+            this.explanation.Text = resources.GetString("explanation.Text");
+            // 
+            // disclaimer
+            // 
+            this.disclaimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.disclaimer.Location = new System.Drawing.Point(14, 317);
+            this.disclaimer.Name = "disclaimer";
+            this.disclaimer.Size = new System.Drawing.Size(588, 113);
+            this.disclaimer.TabIndex = 8;
+            this.disclaimer.Text = resources.GetString("disclaimer.Text");
+            // 
             // Program
             // 
-            this.ClientSize = new System.Drawing.Size(614, 424);
+            this.ClientSize = new System.Drawing.Size(614, 535);
+            this.Controls.Add(this.disclaimer);
+            this.Controls.Add(this.explanation);
             this.Controls.Add(this.linkLabelGithub);
             this.Controls.Add(this.dataGridViewPatches);
             this.Controls.Add(this.checkBoxParanoia);

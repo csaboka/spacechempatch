@@ -117,15 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="checkBoxParanoia.Text" xml:space="preserve">
-    <value>This program is experimental and was only tested with the Steam version of the game.
-There is NO WARRANTY on it.
-Please remember that you can always restore the original game files by verifying game integrity in Steam.
-Check this box to enable the patch button.</value>
-  </data>
   <metadata name="openFileDialogSCExe.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="explanation.Text" xml:space="preserve">
+    <value>This tool will alter your SpaceChem executable to modify how the game works. Please specify the game folder (if it isn't automatically detected), select the changes you would like to make to your game, then click the PATCH button below to make the changes. You can also restore your original file to get back to the usual game behavior.</value>
+  </data>
+  <data name="disclaimer.Text" xml:space="preserve">
+    <value>This program is experimental, and might break your game. This is especially true if you haven't bought the game from Steam, since it was only tested on the Steam version.
+
+Please remember that if everything else fails, you can get the original game files again by verifying game integrity in Steam.
+
+This program isn't endorsed by Zachtronics. Please don't report any issues to them that happen while running a patched game.
+</value>
+  </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>64</value>
   </metadata>
