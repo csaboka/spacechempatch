@@ -138,7 +138,7 @@ namespace SpacechemPatch
             this.labelPath.AutoSize = true;
             this.labelPath.Location = new System.Drawing.Point(14, 66);
             this.labelPath.Name = "labelPath";
-            this.labelPath.Size = new System.Drawing.Size(41, 17);
+            this.labelPath.Size = new System.Drawing.Size(32, 13);
             this.labelPath.TabIndex = 0;
             this.labelPath.Text = "Path:";
             // 
@@ -148,7 +148,7 @@ namespace SpacechemPatch
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPath.Location = new System.Drawing.Point(61, 63);
             this.textBoxPath.Name = "textBoxPath";
-            this.textBoxPath.Size = new System.Drawing.Size(460, 22);
+            this.textBoxPath.Size = new System.Drawing.Size(460, 20);
             this.textBoxPath.TabIndex = 1;
             this.textBoxPath.TextChanged += new System.EventHandler(this.textBoxPath_TextChanged);
             // 
@@ -270,7 +270,7 @@ namespace SpacechemPatch
             this.linkLabelGithub.AutoSize = true;
             this.linkLabelGithub.Location = new System.Drawing.Point(483, 531);
             this.linkLabelGithub.Name = "linkLabelGithub";
-            this.linkLabelGithub.Size = new System.Drawing.Size(119, 17);
+            this.linkLabelGithub.Size = new System.Drawing.Size(88, 13);
             this.linkLabelGithub.TabIndex = 6;
             this.linkLabelGithub.TabStop = true;
             this.linkLabelGithub.Text = "GitHub repository";
@@ -320,6 +320,7 @@ namespace SpacechemPatch
             this.Controls.Add(this.buttonBrowse);
             this.Controls.Add(this.textBoxPath);
             this.Controls.Add(this.labelPath);
+            this.MinimumSize = new System.Drawing.Size(580, 455);
             this.Name = "Program";
             this.Text = "SpaceChem Patcher";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPatches)).EndInit();
