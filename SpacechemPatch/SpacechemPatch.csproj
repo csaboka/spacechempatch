@@ -72,6 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExecutableUtils.cs" />
     <Compile Include="InjectedAttribute.cs" />
     <Compile Include="Original.cs" />
     <Compile Include="Patch.cs" />

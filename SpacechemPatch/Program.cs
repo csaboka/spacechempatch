@@ -36,7 +36,7 @@ namespace SpacechemPatch
         Program()
         {
             InitializeComponent();
-            textBoxPath.Text = GetDefaultPath();
+            textBoxPath.Text = ExecutableUtils.GetDefaultPath();
             foreach (Patch patch in Enum.GetValues(typeof(Patch)))
             {
                 PatchInfo info = PatchInfo.allPatches[patch];
@@ -46,23 +46,6 @@ namespace SpacechemPatch
 #if DEBUG
             checkBoxParanoia.Checked = true;
 #endif
-        }
-
-        private static string GetDefaultPath()
-        {
-            switch (Environment.OSVersion.Platform)
-            {
-                case PlatformID.Win32NT:
-                    {
-                        return @"C:\Program Files (x86)\Steam\steamapps\common\SpaceChem";
-                    }
-                case PlatformID.Unix:
-                    {
-                        return Path.Combine(Environment.GetEnvironmentVariable("HOME"), ".steam/steam/steamapps/common/SpaceChem");
-                    }
-                default:
-                    throw new Exception("Unsupported platform: " + Environment.OSVersion.Platform);
-            }
         }
 
         private void PatchExe()
@@ -76,12 +59,19 @@ namespace SpacechemPatch
             if (!File.Exists(currentExePath))
             {
                 MessageBox.Show("Can't find game executable in \"" + currentExePath + "\"!" + Environment.NewLine +
-                    "Please execute this program from the SpaceChem game folder, or give the path of the game folder as a command line argument. Exiting...");
+                                "Please give the correct path in the \"Path\" box");
                 return;
             }
-            if (!File.Exists(originalExePath))
+
+            if (!File.Exists(originalExePath) && ExecutableUtils.IsOriginalExe(currentExePath))
             {
                 File.Copy(currentExePath, originalExePath);
+            }
+
+            if (!ExecutableUtils.IsOriginalExe(originalExePath))
+            {
+                MessageBox.Show("Unrecognized SpaceChem executable, patching will not be executed");
+                return;
             }
 
             using (ModuleDefinition spacechemAssembly = ModuleDefinition.ReadModule(originalExePath))
@@ -358,7 +348,11 @@ namespace SpacechemPatch
 
         private void buttonRestore_Click(object sender, EventArgs e)
         {
-            if (File.Exists(originalExePath))
+            if (ExecutableUtils.IsOriginalExe(currentExePath))
+            {
+                MessageBox.Show("Original exe is already in place");
+            }
+            else if (ExecutableUtils.IsOriginalExe(originalExePath))
             {
                 File.Delete(currentExePath);
                 File.Move(originalExePath, currentExePath);
@@ -366,7 +360,6 @@ namespace SpacechemPatch
             }
             else
             {
-                // TODO: do an hash check to see if current==original
                 MessageBox.Show("It was not possible to restore the original exe");
             }
         }
