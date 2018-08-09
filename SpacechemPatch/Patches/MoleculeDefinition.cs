@@ -62,25 +62,24 @@ namespace SpacechemPatch.Patches
                 return false;
             Dictionary<Vector2i, AtomDefinition> dictionary1 = ToAtomDefinitions(this);
             Dictionary<Vector2i, AtomDefinition> dictionary2 = ToAtomDefinitions(other);
+            // Pre-allocating the undo stack is just an optimization. Every time MoleculeMatchesRecursive()
+            // returns false, it restores the stack to its initial state, so it's safe to reuse
+            // the same object instead of allocating new ones for each call. We quit when
+            // MoleculeMatchesRecursive() returns true, so we don't care about whatever is left there in that case.
+            List<AtomDefinition> undoStack = new List<AtomDefinition>(atoms.Count * 2);
             foreach (AtomDefinition atomDefinition1 in dictionary1.Values)
             {
                 foreach (AtomDefinition atomDefinition2 in dictionary2.Values)
                 {
-                    if (MoleculeMatchesRecursive(atomDefinition1, atomDefinition2))
+                    if (MoleculeMatchesRecursive(atomDefinition1, atomDefinition2, undoStack))
                         return true;
-                    // In case of partial match, the proposedCounterpart field of matched atoms
-                    // is still filled out, so clean everything up before trying with a different starting pair.
-                    foreach (AtomDefinition atomDefinition in dictionary1.Values)
-                        atomDefinition.proposedCounterpart = null;
-                    foreach (AtomDefinition atomDefinition in dictionary2.Values)
-                        atomDefinition.proposedCounterpart = null;
                 }
             }
             return false;
         }
 
-        [Replaced("#=q1Vpe1ZE6Z0HVwO_GD01w8Q==", Patch.FixWrongOutput)]
-        private static bool MoleculeMatchesRecursive(AtomDefinition atomDefinition1, AtomDefinition atomDefinition2)
+        [Injected]
+        private static bool MoleculeMatchesRecursive(AtomDefinition atomDefinition1, AtomDefinition atomDefinition2, List<AtomDefinition> undoStack)
         {
             // Make sure we don't match an atom that's already matched with something else. This check also prevents infinite
             // recursion when an atom is revisited by one of its neighbors.
@@ -90,8 +89,15 @@ namespace SpacechemPatch.Patches
             }
             if (atomDefinition1.atom == atomDefinition2.atom && IdenticalBonds(atomDefinition1, atomDefinition2))
             {
+                int undoStackTop = undoStack.Count;
+                // undoStack contains all atoms that have a proposed counterpart. It's used to clean up counterparts if a full match cannot be made.
+                // Indexes smaller than undoStackTop represent assumptions made by callers in higher levels. At this level, we treat them as
+                // absolute fact. Indexes larger or equal to undoStackTop represent assumptions made in this call, or lower callers. We must undo
+                // these assumptions if we can't make a full match.
                 atomDefinition1.proposedCounterpart = atomDefinition2;
                 atomDefinition2.proposedCounterpart = atomDefinition1;
+                undoStack.Add(atomDefinition1);
+                undoStack.Add(atomDefinition2);
                 bool flag1 = true;
                 foreach (BondDefinition bond in atomDefinition1.bonds)
                 {
@@ -99,11 +105,13 @@ namespace SpacechemPatch.Patches
                     bool flag2 = false;
                     foreach (AtomDefinition subAtom2 in atomDefinition2.GetBondedAtoms(bond.bondCount))
                     {
-                        if (MoleculeMatchesRecursive(subAtom1, subAtom2))
+                        if (MoleculeMatchesRecursive(subAtom1, subAtom2, undoStack))
                         {
                             flag2 = true;
                             break;
                         }
+                        // It's an invariant that whenever MoleculeMatchesRecursive retuns false, it restores undoStack
+                        // to the state it was on method entry, so no need to touch undoStack here.
                     }
                     if (!flag2) // Found no match for subAtomDefinition1, molecule mismatch
                     {
@@ -113,11 +121,13 @@ namespace SpacechemPatch.Patches
                 }
                 if (flag1)
                     return true;
+                // clean up the assumptions
+                while (undoStack.Count > undoStackTop)
+                {
+                    undoStack[undoStack.Count - 1].proposedCounterpart = null;
+                    undoStack.RemoveAt(undoStack.Count - 1);
+                }
             }
-            // Clean up the proposed counterparts on failure, and *only* on failure.
-            // On success, we commit to the counterparts so other parts of the molecules can't be paired with them.
-            atomDefinition1.proposedCounterpart = null;
-            atomDefinition2.proposedCounterpart = null;
             return false;
         }
     }
