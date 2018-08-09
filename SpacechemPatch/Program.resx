@@ -121,14 +121,14 @@
     <value>10, 13</value>
   </metadata>
   <data name="explanation.Text" xml:space="preserve">
-    <value>This tool will alter your SpaceChem executable to modify how the game works. Please specify the game folder (if it isn't automatically detected), select the changes you would like to make to your game, then click the PATCH button below to make the changes. You can also restore your original file to get back to the usual game behavior.</value>
+    <value>This tool modifies your SpaceChem executable to fix bugs and add features. To use the tool, select a game folder (if it isn't automatically detected), select the patches you want to apply, then click the PATCH button.</value>
   </data>
   <data name="disclaimer.Text" xml:space="preserve">
-    <value>This program is experimental, and might break your game. This is especially true if you haven't bought the game from Steam, since it was only tested on the Steam version.
+    <value>This program is provided "as-is", and it may break your game. It is only supported on Steam, version 1012; any other versions may experience crashes or the patcher may function incorrectly. Use this tool at your own risk.
 
-Please remember that if everything else fails, you can get the original game files again by verifying game integrity in Steam.
+This program is not officially endorsed. Please do not report any issues you experience while using the patcher to Zachtronics. Instead, report them at https://github.com/csaboka/spacechempatch/issues
 
-This program isn't endorsed by Zachtronics. Please don't report any issues to them that happen while running a patched game.
+If your game is malfunctioning, you can undo any patches with the "Verify Integrity of Game Files" button in Steam.
 </value>
   </data>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
