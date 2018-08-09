@@ -59,3 +59,5 @@ This way, you can let the C# compiler do the IL generation for you. Refer to the
 
 * Kudos to [gtw123](https://github.com/gtw123), whose [ShenzhenMod](https://github.com/gtw123/ShenzhenMod) project inspired me to give this a try.
   He pointed out the right tools to get this started.
+* [darkid](https://github.com/jbzdarkid) and [12345ieee](https://github.com/12345ieee) for their immense help in understanding game internals.
+* [12345ieee](https://github.com/12345ieee) again, for building the user interface of the tool
