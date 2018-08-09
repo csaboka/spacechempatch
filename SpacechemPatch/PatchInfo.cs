@@ -29,7 +29,7 @@ namespace SpacechemPatch
         {
             AddDef(Patch.ShowBonderPriority, PatchType.Enhancement, "Adds the priority number to the bonder tooltip");
             AddDef(Patch.FixWrongOutput, PatchType.Bugfix, "Fixes the \"Wrong Output\" bug");
-            AddDef(Patch.AllowGreekInResNetProdAndSandbox, PatchType.Bugfix,
+            AddDef(Patch.AllowGreekInResNetProdAndSandbox, PatchType.Enhancement,
                    "Adds full support for Greek sensors/annotations in ResearchNet production and sandbox assignments",
                    Patch.AllowGreekInResNet);
             AddDef(Patch.AllowGreekInResNet, PatchType.Cheat,
