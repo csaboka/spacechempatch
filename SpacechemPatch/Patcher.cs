@@ -172,6 +172,35 @@ namespace SpacechemPatch
             return copy;
         }
 
+        private MethodDefinition InjectMethod(MethodDefinition source)
+        {
+            TypeDefinition targetType = (TypeDefinition)typeReplacements[source.DeclaringType.FullName];
+            MethodDefinition newMethod = new MethodDefinition(source.Name, source.Attributes, FixupType(source.ReturnType));
+            foreach (ParameterDefinition parameterDef in source.Parameters)
+            {
+                ParameterDefinition newParameter = new ParameterDefinition(parameterDef.Name, parameterDef.Attributes, FixupType(parameterDef.ParameterType));
+                newParameter.Constant = parameterDef.Constant;
+                newMethod.Parameters.Add(newParameter);
+            }
+            // The method might make a recursive call to itself, so we need the method added to the replacements
+            // before we start fixing up instructions.
+            methodReplacements.Add(source.FullName, newMethod);
+            foreach (var instruction in source.Body.Instructions)
+            {
+                newMethod.Body.Instructions.Add(FixupInstruction(instruction));
+            }
+            foreach (var variable in source.Body.Variables)
+            {
+                newMethod.Body.Variables.Add(new VariableDefinition(FixupType(variable.VariableType)));
+            }
+            foreach (var exceptionHandler in source.Body.ExceptionHandlers)
+            {
+                newMethod.Body.ExceptionHandlers.Add(exceptionHandler);
+            }
+            targetType.Methods.Add(newMethod);
+            return newMethod;
+        }
+
         private Instruction FixupInstruction(Instruction instruction)
         {
             if (instruction.Operand is TypeReference)
@@ -203,17 +232,25 @@ namespace SpacechemPatch
             }
             MethodReference replaced;
             methodReplacements.TryGetValue(method.FullName, out replaced);
-            if (replaced == null && (method.ReturnType is GenericInstanceType || method.DeclaringType is GenericInstanceType))
+            if (replaced == null)
             {
-                string oldFullName = method.FullName;
-                method.ReturnType = FixupType(method.ReturnType);
-                method.DeclaringType = FixupType(method.DeclaringType);
-                // Avoid repeated fixups of this instance by mapping the changed type to itself in the replacement map.
-                // Map it to its old name, too, so if a different instance with the exact same signature is encountered, we don't need to process it again.
-                methodReplacements.Add(method.FullName, method);
-                methodReplacements.Add(oldFullName, method);
+                if (method.ReturnType is GenericInstanceType || method.DeclaringType is GenericInstanceType)
+                {
+                    string oldFullName = method.FullName;
+                    method.ReturnType = FixupType(method.ReturnType);
+                    method.DeclaringType = FixupType(method.DeclaringType);
+                    // Avoid repeated fixups of this instance by mapping the changed type to itself in the replacement map.
+                    // Map it to its old name, too, so if a different instance with the exact same signature is encountered, we don't need to process it again.
+                    methodReplacements.Add(method.FullName, method);
+                    methodReplacements.Add(oldFullName, method);
+                } else if (method is MethodDefinition && ((MethodDefinition)method).CustomAttributes.Any(attribute => attribute.AttributeType.Name == "InjectedAttribute"))
+                {
+                    method = InjectMethod((MethodDefinition)method);
+                }
+            } else
+            {
+                method = replaced;
             }
-            method = replaced ?? method;
             if (!(method is MethodDefinition))
             {
                 method = target.ImportReference(method);

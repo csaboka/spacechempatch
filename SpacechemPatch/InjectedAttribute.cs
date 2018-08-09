@@ -5,6 +5,7 @@ using System.Text;
 
 namespace SpacechemPatch
 {
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Method)]
     class InjectedAttribute : Attribute
     {
     }
