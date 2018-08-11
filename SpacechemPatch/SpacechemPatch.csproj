@@ -90,7 +90,7 @@
     <Compile Include="Patches\ElementUtil.cs" />
     <Compile Include="Patches\FeatureTooltip.cs" />
     <Compile Include="Patches\GameScreen.cs" />
-    <Compile Include="Patches\IconMaybe.cs" />
+    <Compile Include="Patches\Image.cs" />
     <Compile Include="Patches\Localization.cs" />
     <Compile Include="Patches\MoleculeBuilder.cs" />
     <Compile Include="Patches\MoleculeBuilderWithRatios.cs" />

@@ -6,10 +6,10 @@ using System.Text;
 namespace SpacechemPatch.Patches
 {
     [Decoy("#=qe_isvAJEJ1HEnC6KWOWQu8BOqiUmhc0JXLqzOBrMYIEw8LeJZcXMnIJKXI3j$v4C")]
-    class IconMaybe
+    class Image
     {
         [Decoy(".ctor")]
-        public IconMaybe(string s)
+        public Image(string s)
         {
 
         }
