@@ -15,10 +15,7 @@ namespace SpacechemPatch.Patches
             System.Collections.IEnumerable enumerable = reactor.GetMembers();
             foreach (object member in enumerable)
             {
-                if (member == this)
-                {
-                    break;
-                } else if (member is BonderFeature)
+                if (member is BonderFeature)
                 {
                     priority++;
                 }

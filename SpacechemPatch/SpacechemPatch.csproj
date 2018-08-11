@@ -92,10 +92,12 @@
     <Compile Include="Patches\GameScreen.cs" />
     <Compile Include="Patches\Image.cs" />
     <Compile Include="Patches\Localization.cs" />
+    <Compile Include="Patches\MinusOnlyBonderFeature.cs" />
     <Compile Include="Patches\MoleculeBuilder.cs" />
     <Compile Include="Patches\MoleculeBuilderWithRatios.cs" />
     <Compile Include="Patches\MoleculeDefinition.cs" />
     <Compile Include="Patches\Optional.cs" />
+    <Compile Include="Patches\PlusOnlyBonderFeature.cs" />
     <Compile Include="Patches\PotentialBond.cs" />
     <Compile Include="Patches\PuzzlesManager.cs" />
     <Compile Include="Patches\Puzzle_ResNetResearch.cs" />
