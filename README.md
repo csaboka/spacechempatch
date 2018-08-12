@@ -24,6 +24,8 @@ It'll then be possible to choose the patches to apply, from the list below
   In the vanilla game it's possible to get Greek annotations/sensors in ResNet productions/sandbox, by copying a reactor from EotL, so the latter
   patch is merely a QoL one. It's not possible to have Greek sensors in ResNet research assignment, though, so the former patch makes the game
   easier and it's labeled as "Cheat".
+* `ShowOver100kCycles`: The cycles counter in the game switches to `+INF` after 100k cycles. This patch makes it continue with `100K`,
+  up until `9999K`, then `10M`. The value displayed updates at the start of the new thousand (e.g. `100999` is shown as `100K`).
 
 ## Getting Started With Development
 
