@@ -9,16 +9,13 @@ namespace SpacechemPatch.Patches
     {
         [Replaced(".ctor", Patch.ShowBonderPriority)]
         public BonderFeature(Reactor reactor)
-            : base(reactor, new IconMaybe("reactor/bondifier"), false, Localization.Localize("Bonder"), new Vector2i(39, 39))
+            : base(reactor, new Image("reactor/bondifier"), false, Localization.Localize("Bonder"), new Vector2i(39, 39))
         {
             int priority = 1;
             System.Collections.IEnumerable enumerable = reactor.GetMembers();
             foreach (object member in enumerable)
             {
-                if (member == this)
-                {
-                    break;
-                } else if (member is BonderFeature)
+                if (member is BonderFeature)
                 {
                     priority++;
                 }
