@@ -35,6 +35,8 @@ namespace SpacechemPatch
             AddDef(Patch.AllowGreekInResNet, PatchType.Cheat,
                    "Adds full support for Greek sensors/annotations in all ResearchNet assignments",
                    Patch.AllowGreekInResNetProdAndSandbox);
+            AddDef(Patch.ShowOver100kCycles, PatchType.Enhancement,
+                   "Shows the cycles number even if it's over 100k, by shortening it");
         }
 
         private PatchInfo(PatchType type, string description, Patch[] conflictingPatches)

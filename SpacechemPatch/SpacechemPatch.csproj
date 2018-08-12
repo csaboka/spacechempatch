@@ -82,13 +82,17 @@
     <Compile Include="Patches\AbstractInput.cs" />
     <Compile Include="Patches\AbstractPuzzle.cs" />
     <Compile Include="Patches\AbstractReactorMember.cs" />
+    <Compile Include="Patches\AbstractTextLabel.cs" />
     <Compile Include="Patches\Atom.cs" />
     <Compile Include="Patches\BondCount.cs" />
     <Compile Include="Patches\BonderFeature.cs" />
+    <Compile Include="Patches\BottomRightInfoBox.cs" />
     <Compile Include="Patches\DraggableContainer.cs" />
     <Compile Include="Patches\Element.cs" />
     <Compile Include="Patches\ElementUtil.cs" />
     <Compile Include="Patches\FeatureTooltip.cs" />
+    <Compile Include="Patches\Font.cs" />
+    <Compile Include="Patches\FontManager.cs" />
     <Compile Include="Patches\GameScreen.cs" />
     <Compile Include="Patches\Image.cs" />
     <Compile Include="Patches\Localization.cs" />

@@ -10,6 +10,7 @@ namespace SpacechemPatch
         ShowBonderPriority,
         FixWrongOutput,
         AllowGreekInResNet,
-        AllowGreekInResNetProdAndSandbox
+        AllowGreekInResNetProdAndSandbox,
+        ShowOver100kCycles
     }
 }
