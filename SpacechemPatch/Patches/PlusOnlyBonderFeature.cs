@@ -17,7 +17,7 @@ namespace SpacechemPatch.Patches
                     priority++;
                 }
             }
-            featureTooltip = FeatureTooltip.Make(Localization.Localize("Bonder (Remove Only)") + " (" + priority + ")",
+            featureTooltip = FeatureTooltip.Make(Localization.Localize("Bonder (Add Only)") + " (" + priority + ")",
                 Localization.Localize("A bonder that can only add bonds."), new Optional<UnknownStruct1>());
         }
     }
