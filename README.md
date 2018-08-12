@@ -29,6 +29,8 @@ It'll then be possible to choose the patches to apply, from the list below
 
 The project consists of a Visual Studio 2015 solution file. You should be able to build it with either Visual Studio, or the Mono development tools on Linux.
 
+To add new patches, please read the "How it works" section below, then refer to PATCHING.md for the low-level details.
+
 ### Prerequisites
 
 You will need to get the `Mono.Cecil` library from NuGet. This library does the heavy lifting in assembly modification.
