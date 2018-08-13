@@ -9,12 +9,15 @@ namespace SpacechemPatch.Patches
         {
             this.image = new Image("reactor/bondifier_plusonly");
             int priority = 1;
-            System.Collections.IEnumerable enumerable = reactor.GetMembers();
-            foreach (object member in enumerable)
+            if (reactor != null)    // we may be called with a null reactor in the bonding introduction level
             {
-                if (member is BonderFeature)
+                System.Collections.IEnumerable enumerable = reactor.GetMembers();
+                foreach (object member in enumerable)
                 {
-                    priority++;
+                    if (member is BonderFeature)
+                    {
+                        priority++;
+                    }
                 }
             }
             featureTooltip = FeatureTooltip.Make(Localization.Localize("Bonder (Add Only)") + " (" + priority + ")",
