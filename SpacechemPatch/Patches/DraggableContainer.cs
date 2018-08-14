@@ -9,6 +9,11 @@ namespace SpacechemPatch.Patches
     [Decoy("#=qXybtTWc6YL3Bmjhy$yqnlfUddKSeC7LYrXOWWRjn3Mw=")]
     class DraggableContainer : IEnumerable, IEnumerable<KeyValuePair<AbstractDraggable, Vector2i>>
     {
+        [Decoy("#=qllJBIbK0DPLdvHTYBwLeTg==")]
+        public void PutDraggableAtCoords(int x, int y, AbstractDraggable draggable)
+        {
+        }
+
         [Decoy("GetEnumerator")]
         public IEnumerator<KeyValuePair<AbstractDraggable, Vector2i>> GetEnumerator()
         {

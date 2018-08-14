@@ -37,6 +37,8 @@ namespace SpacechemPatch
                    Patch.AllowGreekInResNetProdAndSandbox);
             AddDef(Patch.ShowOver100kCycles, PatchType.Enhancement,
                    "Shows the cycles number even if it's over 100k, by shortening it");
+            AddDef(Patch.ResNetProdCustomAmount, PatchType.Cheat,
+                   "Allows ResNet production puzzles output count to be specified in the input JSON. Count is 4x JSON count");
         }
 
         private PatchInfo(PatchType type, string description, Patch[] conflictingPatches)

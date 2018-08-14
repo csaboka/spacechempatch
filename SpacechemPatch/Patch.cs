@@ -11,6 +11,7 @@ namespace SpacechemPatch
         FixWrongOutput,
         AllowGreekInResNet,
         AllowGreekInResNetProdAndSandbox,
-        ShowOver100kCycles
+        ShowOver100kCycles,
+        ResNetProdCustomAmount
     }
 }
