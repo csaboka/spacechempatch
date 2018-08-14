@@ -53,7 +53,7 @@ namespace SpacechemPatch
                     MethodDefinition decoyMethod = methodPair.Key;
                     CustomAttribute decoyMethodAttribute = methodPair.Value;
                     string targetMethodName = (string)decoyMethodAttribute.ConstructorArguments[0].Value;
-                    MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == targetMethodName);
+                    MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == targetMethodName && method.Parameters.Count == decoyMethod.Parameters.Count);
                     methodReplacements.Add(decoyMethod.FullName, targetMethod);
                 }
                 foreach (KeyValuePair<FieldDefinition, CustomAttribute> fieldPair in FindAnnotated(type.Fields, "DecoyAttribute"))

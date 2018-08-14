@@ -8,22 +8,8 @@ namespace SpacechemPatch
     [AttributeUsage(AttributeTargets.Constructor | AttributeTargets.Method)]
     class ReplacedAttribute : Attribute
     {
-        private string scrambledName;
-        public string ScrambledName
-        {
-            get {
-                return scrambledName;
-            }
-        }
-
-        private Patch[] patches;
-        public Patch[] Patches
-        {
-            get
-            {
-                return (Patch[])patches.Clone();
-            }
-        }
+        private readonly string scrambledName;
+        private readonly Patch[] patches;
         public bool KeepOriginal;
 
         public ReplacedAttribute(string scrambledName, params Patch[] patches)
