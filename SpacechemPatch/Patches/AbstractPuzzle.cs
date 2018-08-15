@@ -10,5 +10,12 @@ namespace SpacechemPatch.Patches
     {
         [Decoy("#=q_CyJMt57u4kvOhJiMRQahQ==")]
         public DraggableContainer draggableContainer;
+        [Decoy("#=qUD7nJ2IzPuFxt1lQCojlau6Yg$y12maiQ$umgpfT7J8=")]
+        public int maxReactors;
+
+        [Decoy(".ctor")]
+        public AbstractPuzzle(bool flipFlopsAvailable)
+        {
+        }
     }
 }

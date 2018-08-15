@@ -9,13 +9,13 @@ namespace SpacechemPatch.Patches
     class MoleculeBuilderWithRatios
     {
         [Replaced(".ctor", Patch.AllowGreekInResNet, Patch.AllowGreekInResNetProdAndSandbox, KeepOriginal = true)]
-        public MoleculeBuilderWithRatios(ResearchNetResearchPuzzleDefinition.UnknownClass1 unk1, Action<ResearchNetResearchPuzzleDefinition.UnknownClass2> action, bool showGreek = false)
-            : this(unk1, action, true, Original.INSTANCE)
+        public MoleculeBuilderWithRatios(ResearchNetResearchPuzzleDefinition.Inputs inputs, Action<ResearchNetResearchPuzzleDefinition.Inputs> action, bool showGreek = false)
+            : this(inputs, action, true, Original.INSTANCE)
         {
 
         }
 
-        public MoleculeBuilderWithRatios(ResearchNetResearchPuzzleDefinition.UnknownClass1 unk1, Action<ResearchNetResearchPuzzleDefinition.UnknownClass2> action, bool showGreek, Original dummy)
+        public MoleculeBuilderWithRatios(ResearchNetResearchPuzzleDefinition.Inputs inputs, Action<ResearchNetResearchPuzzleDefinition.Inputs> action, bool showGreek, Original dummy)
         {
 
         }
