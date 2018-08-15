@@ -1,8 +1,0 @@
-﻿These are the things people have requested for this tool to do, in no particular order. This
-project is maintained by volunteers, so we don't commit to specific features or deadlines,
-but if you would like to help, consider picking one of these.
-
-- Flip the order of puzzles in the ResNet custom puzzle list (i.e. most recent first)
-- Show reactor priority, similarly to bonder priority
-- Change simulation speeds
-
