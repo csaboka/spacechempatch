@@ -13,5 +13,11 @@ namespace SpacechemPatch.Patches
         {
 
         }
+
+        [Decoy("#=qFQKWIotwwkD7rczoirRCQw==")]
+        public Vector2i GetDimensions()
+        {
+            return new Vector2i();
+        }
     }
 }

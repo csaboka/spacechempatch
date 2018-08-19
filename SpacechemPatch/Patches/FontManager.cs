@@ -5,5 +5,8 @@
     {
         [Decoy("#=qIXbJwgRgDGE22dQ_aekM$w==")]
         public static Font tooltip;
+
+        [Decoy("#=qcVffp43xlvckx_eQjLjqxA==")]
+        public static Font normal;
     }
 }
