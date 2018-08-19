@@ -9,7 +9,7 @@ namespace SpacechemPatch.Patches
     class FeatureTooltip
     {
         [Decoy("#=qUJvQW24ASkOcKQ2UDawVcg==")]
-        public static FeatureTooltip Make(string a, string b, Optional<UnknownStruct1> c)
+        public static FeatureTooltip Make(string a, string b, Optional<TooltipFlavorText> c)
         {
             return null;
         }

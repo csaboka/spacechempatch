@@ -14,7 +14,7 @@ namespace SpacechemPatch.Patches
             if (ownerReactor != null && !forDragAndDrop && imageSize == ImageSize.Normal)
             {
                 int priority = 1;
-                foreach (AbstractReactorMember member in ownerReactor.GetMembers())
+                foreach (ReactorMember member in ownerReactor.GetMembers())
                 {
                     if (member == this)
                     {

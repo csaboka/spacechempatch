@@ -9,14 +9,14 @@ namespace SpacechemPatch.Patches
     sealed class BottomRightInfoBox
     {
         [Replaced("#=qpCRb4anQPm6V7O3YSBWP8Q==", Patch.ShowOver100kCycles)]
-        private AbstractTextLabel MakeStatLabel(int stat)
+        private AbstractRenderable MakeStatLabel(int stat)
         {
             if (stat < 100_000)
-                return AbstractTextLabel.MakeLabel(FontManager.tooltip, stat.ToString());
+                return AbstractRenderable.MakeLabel(FontManager.tooltip, stat.ToString());
             else if (stat < 10_000_000 )
-                return AbstractTextLabel.MakeLabel(FontManager.tooltip, (stat/1000).ToString() + "K");
+                return AbstractRenderable.MakeLabel(FontManager.tooltip, (stat/1000).ToString() + "K");
             else
-                return AbstractTextLabel.MakeLabel(FontManager.tooltip, (stat / 1_000_000).ToString() + "M");
+                return AbstractRenderable.MakeLabel(FontManager.tooltip, (stat / 1_000_000).ToString() + "M");
         }
     }
 }

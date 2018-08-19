@@ -81,8 +81,8 @@
     <Compile Include="Patches\AbstractFeature.cs" />
     <Compile Include="Patches\AbstractInput.cs" />
     <Compile Include="Patches\AbstractPuzzle.cs" />
-    <Compile Include="Patches\AbstractReactorMember.cs" />
-    <Compile Include="Patches\AbstractTextLabel.cs" />
+    <Compile Include="Patches\ReactorMember.cs" />
+    <Compile Include="Patches\AbstractRenderable.cs" />
     <Compile Include="Patches\Atom.cs" />
     <Compile Include="Patches\BondCount.cs" />
     <Compile Include="Patches\BonderFeature.cs" />
@@ -108,7 +108,7 @@
     <Compile Include="Patches\ProductionPuzzle.cs" />
     <Compile Include="Patches\ProductionTerrain.cs" />
     <Compile Include="Patches\ProductionUtils.cs" />
-    <Compile Include="Patches\PuzzlesManager.cs" />
+    <Compile Include="Patches\PuzzleManager.cs" />
     <Compile Include="Patches\Puzzle_ResNetProduction.cs" />
     <Compile Include="Patches\Puzzle_ResNetResearch.cs" />
     <Compile Include="Patches\Reactor.cs" />
@@ -123,7 +123,7 @@
     <Compile Include="Patches\SolutionManager.cs" />
     <Compile Include="Patches\SpriteBatch.cs" />
     <Compile Include="Patches\TextureElement.cs" />
-    <Compile Include="Patches\UnknownStruct1.cs" />
+    <Compile Include="Patches\TooltipFlavorText.cs" />
     <Compile Include="Patches\User.cs" />
     <Compile Include="Patches\UserManager.cs" />
     <Compile Include="Patches\UserUtils.cs" />
