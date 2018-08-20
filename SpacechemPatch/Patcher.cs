@@ -36,6 +36,16 @@ namespace SpacechemPatch
                    select new KeyValuePair<T, CustomAttribute>(elem, attribute);
         }
 
+        private static bool IsAttributePresent(ICustomAttributeProvider element, string attributeName)
+        {
+            return element.CustomAttributes.Any(attribute => attribute.AttributeType.Name == attributeName);
+        }
+
+        private static T GetAttributeFieldValue<T>(CustomAttribute attribute, string fieldName, T fallback = default(T))
+        {
+            return attribute.Fields.Where(field => field.Name == fieldName).Select(field => (T)field.Argument.Value).DefaultIfEmpty(fallback).First();
+        }
+
         private delegate TypeDefinition TypeFinder(string @namespace, string typeName);
 
         private void CollectReplacementsForTypes(IEnumerable<TypeDefinition> typeDefinitions, TypeFinder typeFinder)
@@ -44,11 +54,7 @@ namespace SpacechemPatch
             {
                 TypeDefinition type = typePair.Key;
                 CustomAttribute decoyAttribute = typePair.Value;
-                string @namespace = "";
-                if (decoyAttribute.Fields.Count != 0)
-                {
-                    @namespace = (string)decoyAttribute.Fields.First(field => field.Name == "namespace").Argument.Value;
-                }
+                string @namespace = GetAttributeFieldValue(decoyAttribute, "namespace", "");
                 string scrambledName = (string)decoyAttribute.ConstructorArguments[0].Value;
                 TypeDefinition targetType = typeFinder(@namespace, scrambledName);
                 typeReplacements.Add(type.FullName, target.ImportReference(targetType));
@@ -115,11 +121,7 @@ namespace SpacechemPatch
             {
                 TypeDefinition decoyType = decoyPair.Key;
                 CustomAttribute decoyAttribute = decoyPair.Value;
-                string @namespace = "";
-                if (decoyAttribute.Fields.Count != 0)
-                {
-                    @namespace = (string)decoyAttribute.Fields.First(field => field.Name == "namespace").Argument.Value;
-                }
+                string @namespace = GetAttributeFieldValue(decoyAttribute, "namespace", "");
                 string scrambledName = (string)decoyAttribute.ConstructorArguments[0].Value;
                 TypeDefinition targetType = target.GetType(@namespace, scrambledName);
 
@@ -133,10 +135,10 @@ namespace SpacechemPatch
                     if (patchesToEnableFor.Count() == 0 || patchesToEnableFor.Any(patch => enabledPatches.Contains(patch)))
                     {
                         MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == scrambledMethodName && method.Parameters.Count == replacementMethod.Parameters.Count);
-                        if (replacedAttribute.Fields.Any(field => field.Name == "KeepOriginal" && (bool)field.Argument.Value))
+                        if (GetAttributeFieldValue(replacedAttribute, "KeepOriginal", false))
                         {
                             MethodDefinition copy = CopyMethod(targetMethod);
-                            string newName = (string)replacedAttribute.Fields.Where(field => field.Name == "NewNameForOriginal").Select(field => field.Argument.Value).FirstOrDefault();
+                            string newName = GetAttributeFieldValue<string>(replacedAttribute, "NewNameForOriginal");
                             if (newName == null)
                             {
                                 copy.Parameters.Add(new ParameterDefinition("dummy", ParameterAttributes.None, originalType));
@@ -280,7 +282,7 @@ namespace SpacechemPatch
                     methodReplacements.Add(method.FullName, method);
                     methodReplacements.Add(oldFullName, method);
                 }
-                else if (method is MethodDefinition && ((MethodDefinition)method).CustomAttributes.Any(attribute => attribute.AttributeType.Name == "InjectedAttribute"))
+                else if (method is MethodDefinition && IsAttributePresent((MethodDefinition)method, "InjectedAttribute"))
                 {
                     method = InjectMethod((MethodDefinition)method);
                 }
@@ -331,7 +333,7 @@ namespace SpacechemPatch
         {
             FieldReference replaced;
             fieldReplacements.TryGetValue(field.FullName, out replaced);
-            if (replaced == null && field is FieldDefinition && ((FieldDefinition)field).CustomAttributes.Any(attr => attr.AttributeType.Name == "InjectedAttribute"))
+            if (replaced == null && field is FieldDefinition && IsAttributePresent((FieldDefinition)field, "InjectedAttribute"))
             {
                 FieldDefinition fieldDefinition = (FieldDefinition)field;
                 TypeDefinition targetType = (TypeDefinition)typeReplacements[fieldDefinition.DeclaringType.FullName];
