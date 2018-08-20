@@ -38,12 +38,15 @@ namespace SpacechemPatch
         {
             InitializeComponent();
             textBoxPath.Text = ExecutableUtils.GetDefaultPath();
+            // Fill grid and after enable the `Changed` callback
             foreach (Patch patch in Enum.GetValues(typeof(Patch)))
             {
                 PatchInfo info = PatchInfo.allPatches[patch];
                 string conflicts = String.Join(", ", info.ConflictingPatches.Select(p => p.ToString()).ToArray());
                 dataGridViewPatches.Rows.Add(false, info.Type, patch, info.Description, info.ConflictingPatches, conflicts);
             }
+            this.dataGridViewPatches.CellValueChanged += this.dataGridViewPatches_CellValueChanged;
+
 #if DEBUG
             checkBoxParanoia.Checked = true;
 #endif
@@ -209,7 +212,6 @@ namespace SpacechemPatch
             this.dataGridViewPatches.Size = new System.Drawing.Size(590, 208);
             this.dataGridViewPatches.TabIndex = 5;
             this.dataGridViewPatches.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewPatches_CellContentClick);
-            this.dataGridViewPatches.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewPatches_CellValueChanged);
             // 
             // ColumnEnabled
             // 
@@ -382,8 +384,7 @@ namespace SpacechemPatch
 
         private void dataGridViewPatches_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            // this can fire only for checkboxes, or init
-            if (e.RowIndex < 0) return;
+            // this can fire only for checkboxes
 
             // add patch to candidate patches
             Patch patch = (Patch)dataGridViewPatches["ColumnName", e.RowIndex].Value;
