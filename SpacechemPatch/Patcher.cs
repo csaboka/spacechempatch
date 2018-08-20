@@ -129,14 +129,20 @@ namespace SpacechemPatch
         {
             InitOriginalType();
             CollectReplacements();
-            foreach (KeyValuePair<TypeDefinition, CustomAttribute> decoyPair in FindAnnotated(source.Types, "DecoyAttribute"))
+            // We already have the list of types we should check for replacement methods, it's the contents of
+            // typeReplacements. This dictionary will be modified during fixups, though, so to keep things
+            // consistent, iterate on a copy instead of the field itself.
+            Dictionary<string, TypeReference> typeReplacementsCopy = new Dictionary<string, TypeReference>(typeReplacements);
+            foreach (KeyValuePair<string, TypeReference> nameAndTargetPair in typeReplacementsCopy)
             {
-                TypeDefinition decoyType = decoyPair.Key;
-                CustomAttribute decoyAttribute = decoyPair.Value;
-                string @namespace = GetAttributeFieldValue(decoyAttribute, "namespace", "");
-                string scrambledName = (string)decoyAttribute.ConstructorArguments[0].Value;
-                TypeDefinition targetType = target.GetType(@namespace, scrambledName);
-                ReplaceMethodsOnType(decoyType, targetType, enabledPatches);
+                TypeDefinition decoyType = source.GetType(nameAndTargetPair.Key);
+                TypeDefinition targetType = nameAndTargetPair.Value as TypeDefinition;
+                if (targetType != null)
+                {
+                    // We can only have replacement methods when the target of the parent type
+                    // is inside SpacheChem.exe, and therefore is a method definition, not a reference.
+                    ReplaceMethodsOnType(decoyType, targetType, enabledPatches);
+                }
             }
         }
 
