@@ -9,6 +9,8 @@ namespace SpacechemPatch
 {
     class Patcher
     {
+        private static readonly string[] PATCHER_ATTRIBUTE_NAMES = { "DecoyAttribute", "ReplacedAttribute", "InjectedAttribute" };
+
         private readonly ModuleDefinition source;
         private readonly ModuleDefinition target;
 
@@ -18,7 +20,7 @@ namespace SpacechemPatch
 
         private TypeDefinition originalType;
 
-        public Patcher (ModuleDefinition source, ModuleDefinition target)
+        public Patcher(ModuleDefinition source, ModuleDefinition target)
         {
             this.source = source;
             this.target = target;
@@ -185,6 +187,7 @@ namespace SpacechemPatch
             // The method might make a recursive call to itself, so we need the method added to the replacements
             // before we start fixing up instructions.
             methodReplacements.Add(source.FullName, newMethod);
+            CopyCustomAttributes(source, newMethod);
             foreach (var instruction in source.Body.Instructions)
             {
                 newMethod.Body.Instructions.Add(FixupInstruction(instruction));
@@ -243,11 +246,13 @@ namespace SpacechemPatch
                     // Map it to its old name, too, so if a different instance with the exact same signature is encountered, we don't need to process it again.
                     methodReplacements.Add(method.FullName, method);
                     methodReplacements.Add(oldFullName, method);
-                } else if (method is MethodDefinition && ((MethodDefinition)method).CustomAttributes.Any(attribute => attribute.AttributeType.Name == "InjectedAttribute"))
+                }
+                else if (method is MethodDefinition && ((MethodDefinition)method).CustomAttributes.Any(attribute => attribute.AttributeType.Name == "InjectedAttribute"))
                 {
                     method = InjectMethod((MethodDefinition)method);
                 }
-            } else
+            }
+            else
             {
                 method = replaced;
             }
@@ -299,11 +304,68 @@ namespace SpacechemPatch
                 TypeDefinition targetType = (TypeDefinition)typeReplacements[fieldDefinition.DeclaringType.FullName];
                 TypeReference fixedUpFieldType = FixupType(fieldDefinition.FieldType);
                 FieldDefinition newField = new FieldDefinition(fieldDefinition.Name, fieldDefinition.Attributes, fixedUpFieldType);
+                CopyCustomAttributes(fieldDefinition, newField);
                 targetType.Fields.Add(newField);
                 fieldReplacements[field.FullName] = newField;
                 return newField;
             }
             return replaced ?? field;
         }
+
+        private void CopyCustomAttributes(ICustomAttributeProvider source, ICustomAttributeProvider target)
+        {
+            foreach (CustomAttribute sourceAttribute in source.CustomAttributes)
+            {
+                if (PATCHER_ATTRIBUTE_NAMES.Contains(sourceAttribute.AttributeType.Name))
+                {
+                    continue;
+                }
+                CustomAttribute targetAttribute = new CustomAttribute(FixupMethod(sourceAttribute.Constructor));
+                foreach (CustomAttributeArgument sourceArgument in sourceAttribute.ConstructorArguments)
+                {
+                    targetAttribute.ConstructorArguments.Add(FixupCustomAttributeArgument(sourceArgument));
+                }
+                foreach (CustomAttributeNamedArgument field in sourceAttribute.Fields)
+                {
+                    targetAttribute.Fields.Add(FixupCustomAttributeNamedArgument(field));
+                }
+                foreach (CustomAttributeNamedArgument property in sourceAttribute.Properties)
+                {
+                    targetAttribute.Properties.Add(FixupCustomAttributeNamedArgument(property));
+                }
+                target.CustomAttributes.Add(targetAttribute);
+            }
+        }
+
+        private CustomAttributeArgument FixupCustomAttributeArgument(CustomAttributeArgument source)
+        {
+            TypeReference resultType = FixupType(source.Type);
+            object resultValue = FixupAttributeValue(source.Value);
+            return new CustomAttributeArgument(resultType, resultValue);
+        }
+
+        private CustomAttributeNamedArgument FixupCustomAttributeNamedArgument(CustomAttributeNamedArgument source)
+        {
+            return new CustomAttributeNamedArgument(source.Name, FixupCustomAttributeArgument(source.Argument));
+        }
+
+        private object FixupAttributeValue(object sourceValue)
+        {
+            if (sourceValue is CustomAttributeArgument[])
+            {
+                return ((CustomAttributeArgument[])sourceValue)
+                    .Select(FixupCustomAttributeArgument)
+                    .ToArray();
+            }
+            else if (sourceValue is TypeReference)
+            {
+                return FixupType((TypeReference)sourceValue);
+            }
+            else
+            {
+                return sourceValue;
+            }
+        }
+
     }
 }
