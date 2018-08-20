@@ -58,24 +58,36 @@ namespace SpacechemPatch
                 string scrambledName = (string)decoyAttribute.ConstructorArguments[0].Value;
                 TypeDefinition targetType = typeFinder(@namespace, scrambledName);
                 typeReplacements.Add(type.FullName, target.ImportReference(targetType));
-                foreach (KeyValuePair<MethodDefinition, CustomAttribute> methodPair in FindAnnotated(type.Methods, "ReplacedAttribute", "DecoyAttribute"))
-                {
-                    MethodDefinition decoyMethod = methodPair.Key;
-                    CustomAttribute decoyMethodAttribute = methodPair.Value;
-                    string targetMethodName = (string)decoyMethodAttribute.ConstructorArguments[0].Value;
-                    MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == targetMethodName && method.Parameters.Count == decoyMethod.Parameters.Count);
-                    methodReplacements.Add(decoyMethod.FullName, target.ImportReference(targetMethod));
-                }
-                foreach (KeyValuePair<FieldDefinition, CustomAttribute> fieldPair in FindAnnotated(type.Fields, "DecoyAttribute"))
-                {
-                    FieldDefinition decoyField = fieldPair.Key;
-                    CustomAttribute decoyFieldAttribute = fieldPair.Value;
-                    string scrambledFieldName = (string)decoyFieldAttribute.ConstructorArguments[0].Value;
-                    FieldDefinition targetField = targetType.Fields.First(field => field.Name == scrambledFieldName);
-                    fieldReplacements.Add(decoyField.FullName, target.ImportReference(targetField));
-                }
+
+                CollectMethodReplacementsInType(type, targetType);
+                CollectFieldReplacementsInType(type, targetType);
+
                 // Recurse for nested types.
                 CollectReplacementsForTypes(type.NestedTypes, (dummy, typeName) => targetType.NestedTypes.First(t => t.Name == typeName));
+            }
+        }
+
+        private void CollectMethodReplacementsInType(TypeDefinition sourceType, TypeDefinition targetType)
+        {
+            foreach (KeyValuePair<MethodDefinition, CustomAttribute> methodPair in FindAnnotated(sourceType.Methods, "ReplacedAttribute", "DecoyAttribute"))
+            {
+                MethodDefinition decoyMethod = methodPair.Key;
+                CustomAttribute decoyMethodAttribute = methodPair.Value;
+                string targetMethodName = (string)decoyMethodAttribute.ConstructorArguments[0].Value;
+                MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == targetMethodName && method.Parameters.Count == decoyMethod.Parameters.Count);
+                methodReplacements.Add(decoyMethod.FullName, target.ImportReference(targetMethod));
+            }
+        }
+
+        private void CollectFieldReplacementsInType(TypeDefinition sourceType, TypeDefinition targetType)
+        {
+            foreach (KeyValuePair<FieldDefinition, CustomAttribute> fieldPair in FindAnnotated(sourceType.Fields, "DecoyAttribute"))
+            {
+                FieldDefinition decoyField = fieldPair.Key;
+                CustomAttribute decoyFieldAttribute = fieldPair.Value;
+                string scrambledFieldName = (string)decoyFieldAttribute.ConstructorArguments[0].Value;
+                FieldDefinition targetField = targetType.Fields.First(field => field.Name == scrambledFieldName);
+                fieldReplacements.Add(decoyField.FullName, target.ImportReference(targetField));
             }
         }
 
@@ -124,41 +136,50 @@ namespace SpacechemPatch
                 string @namespace = GetAttributeFieldValue(decoyAttribute, "namespace", "");
                 string scrambledName = (string)decoyAttribute.ConstructorArguments[0].Value;
                 TypeDefinition targetType = target.GetType(@namespace, scrambledName);
+                ReplaceMethodsOnType(decoyType, targetType, enabledPatches);
+            }
+        }
 
-                foreach (KeyValuePair<MethodDefinition, CustomAttribute> methodPair in FindAnnotated(decoyType.Methods, "ReplacedAttribute"))
+        private void ReplaceMethodsOnType(TypeDefinition decoyType, TypeDefinition targetType, IEnumerable<Patch> enabledPatches)
+        {
+            foreach (KeyValuePair<MethodDefinition, CustomAttribute> methodPair in FindAnnotated(decoyType.Methods, "ReplacedAttribute"))
+            {
+                MethodDefinition replacementMethod = methodPair.Key;
+                CustomAttribute replacedAttribute = methodPair.Value;
+                string scrambledMethodName = (string)replacedAttribute.ConstructorArguments[0].Value;
+                IEnumerable<Patch> patchesToEnableFor = from attrib in replacedAttribute.ConstructorArguments[1].Value as CustomAttributeArgument[]
+                                                        select (Patch)attrib.Value;
+                if (patchesToEnableFor.Count() == 0 || patchesToEnableFor.Any(patch => enabledPatches.Contains(patch)))
                 {
-                    MethodDefinition replacementMethod = methodPair.Key;
-                    CustomAttribute replacedAttribute = methodPair.Value;
-                    string scrambledMethodName = (string)replacedAttribute.ConstructorArguments[0].Value;
-                    IEnumerable<Patch> patchesToEnableFor = from attrib in replacedAttribute.ConstructorArguments[1].Value as CustomAttributeArgument[]
-                                                            select (Patch)attrib.Value;
-                    if (patchesToEnableFor.Count() == 0 || patchesToEnableFor.Any(patch => enabledPatches.Contains(patch)))
+                    MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == scrambledMethodName && method.Parameters.Count == replacementMethod.Parameters.Count);
+                    if (GetAttributeFieldValue(replacedAttribute, "KeepOriginal", false))
                     {
-                        MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == scrambledMethodName && method.Parameters.Count == replacementMethod.Parameters.Count);
-                        if (GetAttributeFieldValue(replacedAttribute, "KeepOriginal", false))
-                        {
-                            MethodDefinition copy = CopyMethod(targetMethod);
-                            string newName = GetAttributeFieldValue<string>(replacedAttribute, "NewNameForOriginal");
-                            if (newName == null)
-                            {
-                                copy.Parameters.Add(new ParameterDefinition("dummy", ParameterAttributes.None, originalType));
-                                replacementMethod.Parameters.Add(new ParameterDefinition("dummy", ParameterAttributes.None, originalType));
-                                methodReplacements.Add(replacementMethod.FullName, copy);
-                                replacementMethod.Parameters.RemoveAt(replacementMethod.Parameters.Count - 1);
-                            }
-                            else
-                            {
-                                copy.Name = newName;
-                                copy.IsRuntimeSpecialName = false;
-                                string originalName = replacementMethod.Name;
-                                replacementMethod.Name = newName;
-                                methodReplacements.Add(replacementMethod.FullName, copy);
-                                replacementMethod.Name = originalName;
-                            }
-                        }
-                        ReplaceMethod(replacementMethod, targetMethod);
+                        SaveOriginalMethod(replacementMethod, targetMethod, replacedAttribute);
                     }
+                    ReplaceMethod(replacementMethod, targetMethod);
                 }
+            }
+        }
+
+        private void SaveOriginalMethod(MethodDefinition replacementMethod, MethodDefinition originalMethod, CustomAttribute replacedAttribute)
+        {
+            MethodDefinition copy = CopyMethod(originalMethod);
+            string newName = GetAttributeFieldValue<string>(replacedAttribute, "NewNameForOriginal");
+            if (newName == null)
+            {
+                copy.Parameters.Add(new ParameterDefinition("dummy", ParameterAttributes.None, originalType));
+                replacementMethod.Parameters.Add(new ParameterDefinition("dummy", ParameterAttributes.None, originalType));
+                methodReplacements.Add(replacementMethod.FullName, copy);
+                replacementMethod.Parameters.RemoveAt(replacementMethod.Parameters.Count - 1);
+            }
+            else
+            {
+                copy.Name = newName;
+                copy.IsRuntimeSpecialName = false;
+                string originalName = replacementMethod.Name;
+                replacementMethod.Name = newName;
+                methodReplacements.Add(replacementMethod.FullName, copy);
+                replacementMethod.Name = originalName;
             }
         }
 
@@ -260,13 +281,7 @@ namespace SpacechemPatch
         {
             if (method is GenericInstanceMethod)
             {
-                GenericInstanceMethod genericMethod = (GenericInstanceMethod)method;
-                GenericInstanceMethod fixedUp = new GenericInstanceMethod(FixupMethod(genericMethod.ElementMethod));
-                foreach (TypeReference genericArgument in genericMethod.GenericArguments)
-                {
-                    fixedUp.GenericArguments.Add(FixupType(genericArgument));
-                }
-                return fixedUp;
+                return FixupGenericInstanceMethod((GenericInstanceMethod)method);
             }
             MethodReference replaced;
             methodReplacements.TryGetValue(method.FullName, out replaced);
@@ -296,6 +311,16 @@ namespace SpacechemPatch
                 method = target.ImportReference(method);
             }
             return method;
+        }
+
+        private MethodReference FixupGenericInstanceMethod(GenericInstanceMethod genericMethod)
+        {
+            GenericInstanceMethod fixedUp = new GenericInstanceMethod(FixupMethod(genericMethod.ElementMethod));
+            foreach (TypeReference genericArgument in genericMethod.GenericArguments)
+            {
+                fixedUp.GenericArguments.Add(FixupType(genericArgument));
+            }
+            return fixedUp;
         }
 
         private TypeReference FixupType(TypeReference type)
@@ -335,16 +360,20 @@ namespace SpacechemPatch
             fieldReplacements.TryGetValue(field.FullName, out replaced);
             if (replaced == null && field is FieldDefinition && IsAttributePresent((FieldDefinition)field, "InjectedAttribute"))
             {
-                FieldDefinition fieldDefinition = (FieldDefinition)field;
-                TypeDefinition targetType = (TypeDefinition)typeReplacements[fieldDefinition.DeclaringType.FullName];
-                TypeReference fixedUpFieldType = FixupType(fieldDefinition.FieldType);
-                FieldDefinition newField = new FieldDefinition(fieldDefinition.Name, fieldDefinition.Attributes, fixedUpFieldType);
-                CopyCustomAttributes(fieldDefinition, newField);
-                targetType.Fields.Add(newField);
-                fieldReplacements[field.FullName] = newField;
-                return newField;
+                return InjectField((FieldDefinition)field);
             }
             return replaced ?? field;
+        }
+
+        private FieldReference InjectField(FieldDefinition field)
+        {
+            TypeDefinition targetType = (TypeDefinition)typeReplacements[field.DeclaringType.FullName];
+            TypeReference fixedUpFieldType = FixupType(field.FieldType);
+            FieldDefinition newField = new FieldDefinition(field.Name, field.Attributes, fixedUpFieldType);
+            CopyCustomAttributes(field, newField);
+            targetType.Fields.Add(newField);
+            fieldReplacements[field.FullName] = newField;
+            return newField;
         }
 
         private void CopyCustomAttributes(ICustomAttributeProvider source, ICustomAttributeProvider target)
