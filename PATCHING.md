@@ -124,18 +124,50 @@ your field initialization there.
 
 If you want to change a method just a little bit, it is probably overkill to replicate the whole
 method body, not to mention you need to declare decoys for all the references it makes to make it
-compile. To help with this use case, you can keep the original method around with a different
-signature, and call it from your replacement.
+compile. To help with this use case, you can keep the original method around and call it from
+your replacement.
 
 To do this, first make a regular replacement method, then add the `KeepOriginal` named argument
-to the `Replaced` attribute with the value `true`. Then declare your method again, this time
-without any attributes, and append a new parameter with the type `SpacechemPatch.Original` to the
-parameter list. The new parameter is only there to make a distinct new signature and its value
-won't be used anywhere. Now your replacement method can call this new method to execute what the
-original method would have executed on its own.
+to the `Replaced` attribute with the value `true`. Now you need to declare a method that you can
+call to execute the original functionality. You have two options here:
+* Keep the signature of the method and change its name. You'll need to specify the new name
+  you have chosen in the `NewNameForOriginal` named argument. If you're replacing a class
+  constructor, you can call the original as a static void method. You should prefer this
+  option because it gives you more readable code. It won't work for constructors, though,
+  because they must have a fixed name (`.ctor`) to work properly.
+* Keep the name of the method and change its signature. _Do not_ specify the
+  `NewNameForOriginal` argument. To make a new valid overload, you need to append a new
+  dummy parameter with the type `SpacechemPatch.Original` to the parameter list. The value
+  of this parameter is ignored, it's only used to allow selecting this new overload.
+  If you're replacing a constructor, you can use the constructor delegation syntax to have
+  the original called before the body of your replacement.
 
 To build on the previous example, this is how you would turn noble gases into not-so-noble gases,
 without changing the max. bond count of anything else:
+
+Using the "new name" option:
+
+```csharp
+[Decoy("#=qK2RFoTjRNITZZ33QNcQlMroK$uMcRhqsqBCdwyn2K2I=")]
+internal static class ElementUtil
+{
+  [Replaced("#=q1HwnI$j1OJrBFSWZrDDtGLhHVhrvntzjkQ8$YqHNXOk="), KeepOriginal = true, NewNameForOriginal = "OriginalGetMaxBonds"]
+  public static int GetMaxBonds(this Element element)
+  {
+    int realBondCount = element.OriginalGetMaxBonds();
+    return realBondCount == 0 ? 7 : realBondCount;
+  }
+  
+  public static int OriginalGetMaxBonds(this Element element)
+  {
+    // This body doesn't matter, it won't be ever executed. Just do the minimum to keep the compiler happy.
+    return 0;
+  }
+}
+```
+
+Using the "new signature" option:
+
 ```csharp
 [Decoy("#=qK2RFoTjRNITZZ33QNcQlMroK$uMcRhqsqBCdwyn2K2I=")]
 internal static class ElementUtil
@@ -158,9 +190,6 @@ internal static class ElementUtil
 The `INSTANCE` field of `Original` is just a convenience to get an Original reference. You can also
 write `(Original) null` and it will have the same effect. The passed value is ignored anyway.
 
-You can also keep the original for constructors. The idea is the same, but you'll need the
-constructor delegation syntax to call your original constructor instead of a normal method call.
-
 ## Limitations
 
 The following things don't work at the moment. If you need them, we can implement them for you.
@@ -173,7 +202,5 @@ The following things don't work at the moment. If you need them, we can implemen
 * For similar reasons, `yield return` won't work. When you use this construct, the compiler writes
   a whole new IEnumerable implementation class for you and returns an instance of it. Type
   injection isn't implemented at the moment, so this won't work.
-* Keeping the original won't work for class constructors. You can't overlaod a class constructor,
-  so there is no way to call the original.
 * There is no way to look at the list of active patches at runtime and make a dynamic decision
   based on them.

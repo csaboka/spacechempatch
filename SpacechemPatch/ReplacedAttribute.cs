@@ -11,6 +11,7 @@ namespace SpacechemPatch
         private readonly string scrambledName;
         private readonly Patch[] patches;
         public bool KeepOriginal;
+        public string NewNameForOriginal;
 
         public ReplacedAttribute(string scrambledName, params Patch[] patches)
         {

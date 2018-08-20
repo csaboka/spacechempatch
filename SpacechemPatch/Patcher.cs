@@ -136,9 +136,23 @@ namespace SpacechemPatch
                         if (replacedAttribute.Fields.Any(field => field.Name == "KeepOriginal" && (bool)field.Argument.Value))
                         {
                             MethodDefinition copy = CopyMethod(targetMethod);
-                            replacementMethod.Parameters.Add(new ParameterDefinition("dummy", ParameterAttributes.None, originalType));
-                            methodReplacements.Add(replacementMethod.FullName, copy);
-                            replacementMethod.Parameters.RemoveAt(replacementMethod.Parameters.Count - 1);
+                            string newName = (string)replacedAttribute.Fields.Where(field => field.Name == "NewNameForOriginal").Select(field => field.Argument.Value).FirstOrDefault();
+                            if (newName == null)
+                            {
+                                copy.Parameters.Add(new ParameterDefinition("dummy", ParameterAttributes.None, originalType));
+                                replacementMethod.Parameters.Add(new ParameterDefinition("dummy", ParameterAttributes.None, originalType));
+                                methodReplacements.Add(replacementMethod.FullName, copy);
+                                replacementMethod.Parameters.RemoveAt(replacementMethod.Parameters.Count - 1);
+                            }
+                            else
+                            {
+                                copy.Name = newName;
+                                copy.IsRuntimeSpecialName = false;
+                                string originalName = replacementMethod.Name;
+                                replacementMethod.Name = newName;
+                                methodReplacements.Add(replacementMethod.FullName, copy);
+                                replacementMethod.Name = originalName;
+                            }
                         }
                         ReplaceMethod(replacementMethod, targetMethod);
                     }
@@ -177,7 +191,6 @@ namespace SpacechemPatch
             {
                 copy.Parameters.Add(parameterDef);
             }
-            copy.Parameters.Add(new ParameterDefinition("dummy", ParameterAttributes.None, originalType));
             foreach (var instruction in method.Body.Instructions)
             {
                 copy.Body.Instructions.Add(instruction);
