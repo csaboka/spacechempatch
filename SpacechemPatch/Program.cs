@@ -10,6 +10,7 @@ namespace SpacechemPatch
 {
     class Program : Form
     {
+        private string gameFolder;
         private string currentExePath;
         private string originalExePath;
         private string patchedExePath;
@@ -75,9 +76,10 @@ namespace SpacechemPatch
             }
 
             using (ModuleDefinition spacechemAssembly = ModuleDefinition.ReadModule(originalExePath))
+            using (ModuleDefinition jsonAssembly = ModuleDefinition.ReadModule(Path.Combine(gameFolder, "Newtonsoft.Json.dll")))
             using (ModuleDefinition ownAssembly = ModuleDefinition.ReadModule(System.Reflection.Assembly.GetExecutingAssembly().Location))
             {
-                Patcher patcher = new Patcher(ownAssembly, spacechemAssembly);
+                Patcher patcher = new Patcher(ownAssembly, spacechemAssembly, jsonAssembly);
                 patcher.ApplyPatches(enabledPatches);
                 spacechemAssembly.Write(patchedExePath);
             }
@@ -134,7 +136,7 @@ namespace SpacechemPatch
             // 
             // textBoxPath
             // 
-            this.textBoxPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.textBoxPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxPath.Location = new System.Drawing.Point(61, 63);
             this.textBoxPath.Name = "textBoxPath";
@@ -167,7 +169,7 @@ namespace SpacechemPatch
             // 
             // checkBoxParanoia
             // 
-            this.checkBoxParanoia.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.checkBoxParanoia.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxParanoia.Location = new System.Drawing.Point(12, 484);
             this.checkBoxParanoia.Name = "checkBoxParanoia";
@@ -188,8 +190,8 @@ namespace SpacechemPatch
             this.dataGridViewPatches.AllowUserToAddRows = false;
             this.dataGridViewPatches.AllowUserToDeleteRows = false;
             this.dataGridViewPatches.AllowUserToOrderColumns = true;
-            this.dataGridViewPatches.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.dataGridViewPatches.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridViewPatches.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridViewPatches.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -279,7 +281,7 @@ namespace SpacechemPatch
             // 
             // explanation
             // 
-            this.explanation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.explanation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.explanation.Location = new System.Drawing.Point(12, 13);
             this.explanation.Name = "explanation";
@@ -289,7 +291,7 @@ namespace SpacechemPatch
             // 
             // disclaimer
             // 
-            this.disclaimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.disclaimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.disclaimer.Location = new System.Drawing.Point(12, 328);
             this.disclaimer.Name = "disclaimer";
@@ -366,7 +368,7 @@ namespace SpacechemPatch
 
         private void textBoxPath_TextChanged(object sender, EventArgs e)
         {
-            string gameFolder = textBoxPath.Text;
+            gameFolder = textBoxPath.Text;
             currentExePath = Path.Combine(gameFolder, "SpaceChem.exe");
             originalExePath = Path.Combine(gameFolder, "SpaceChem.exe.original");
             patchedExePath = Path.Combine(gameFolder, "SpaceChem.exe.patched");

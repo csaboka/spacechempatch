@@ -13,6 +13,7 @@ namespace SpacechemPatch
 
         private readonly ModuleDefinition source;
         private readonly ModuleDefinition target;
+        private readonly ModuleDefinition[] libraries;
 
         private readonly Dictionary<string, TypeReference> typeReplacements = new Dictionary<string, TypeReference>();
         private readonly Dictionary<string, MethodReference> methodReplacements = new Dictionary<string, MethodReference>();
@@ -20,10 +21,11 @@ namespace SpacechemPatch
 
         private TypeDefinition originalType;
 
-        public Patcher(ModuleDefinition source, ModuleDefinition target)
+        public Patcher(ModuleDefinition source, ModuleDefinition target, params ModuleDefinition[] libraries)
         {
             this.source = source;
             this.target = target;
+            this.libraries = libraries;
         }
 
         private static IEnumerable<KeyValuePair<T, CustomAttribute>> FindAnnotated<T>(IEnumerable<T> source, params string[] attributeNames) where T : ICustomAttributeProvider
@@ -49,14 +51,14 @@ namespace SpacechemPatch
                 }
                 string scrambledName = (string)decoyAttribute.ConstructorArguments[0].Value;
                 TypeDefinition targetType = typeFinder(@namespace, scrambledName);
-                typeReplacements.Add(type.FullName, targetType);
+                typeReplacements.Add(type.FullName, target.ImportReference(targetType));
                 foreach (KeyValuePair<MethodDefinition, CustomAttribute> methodPair in FindAnnotated(type.Methods, "ReplacedAttribute", "DecoyAttribute"))
                 {
                     MethodDefinition decoyMethod = methodPair.Key;
                     CustomAttribute decoyMethodAttribute = methodPair.Value;
                     string targetMethodName = (string)decoyMethodAttribute.ConstructorArguments[0].Value;
                     MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == targetMethodName && method.Parameters.Count == decoyMethod.Parameters.Count);
-                    methodReplacements.Add(decoyMethod.FullName, targetMethod);
+                    methodReplacements.Add(decoyMethod.FullName, target.ImportReference(targetMethod));
                 }
                 foreach (KeyValuePair<FieldDefinition, CustomAttribute> fieldPair in FindAnnotated(type.Fields, "DecoyAttribute"))
                 {
@@ -64,7 +66,7 @@ namespace SpacechemPatch
                     CustomAttribute decoyFieldAttribute = fieldPair.Value;
                     string scrambledFieldName = (string)decoyFieldAttribute.ConstructorArguments[0].Value;
                     FieldDefinition targetField = targetType.Fields.First(field => field.Name == scrambledFieldName);
-                    fieldReplacements.Add(decoyField.FullName, targetField);
+                    fieldReplacements.Add(decoyField.FullName, target.ImportReference(targetField));
                 }
                 // Recurse for nested types.
                 CollectReplacementsForTypes(type.NestedTypes, (dummy, typeName) => targetType.NestedTypes.First(t => t.Name == typeName));
@@ -73,7 +75,25 @@ namespace SpacechemPatch
 
         private void CollectReplacements()
         {
-            CollectReplacementsForTypes(source.Types, target.GetType);
+            CollectReplacementsForTypes(source.Types, FindTypeDefinition);
+        }
+
+        private TypeDefinition FindTypeDefinition(string @namespace, string name)
+        {
+            TypeDefinition targetDef = target.GetType(@namespace, name);
+            if (targetDef != null)
+            {
+                return targetDef;
+            }
+            foreach (ModuleDefinition library in libraries)
+            {
+                TypeDefinition libraryDef = library.GetType(@namespace, name);
+                if (libraryDef != null)
+                {
+                    return libraryDef;
+                }
+            }
+            return null;
         }
 
         private void InitOriginalType()
