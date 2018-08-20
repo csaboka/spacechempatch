@@ -26,9 +26,8 @@ namespace SpacechemPatch.Patches
                     }
                 }
                 string priorityString = priority.ToString();
-                Vector2i labelSize = FontManager.normal.GetRenderedSize(priorityString);
-                Vector2i labelPosition = new Vector2i(position.x + image.GetDimensions().x - labelSize.x, position.y);
-                spriteBatch.AddText(FontManager.normal, priorityString, labelPosition, GetFeatureColor() * color, 0, new Vector2i(), 1, FlipOptions.None, zOrder);
+                Vector2i labelPosition = new Vector2i(position.x + image.GetDimensions().x - 7, position.y + 7);
+                spriteBatch.AddTextCentered(FontManager.normal, priorityString, labelPosition, GetFeatureColor() * color, zOrder);
             }
         }
 

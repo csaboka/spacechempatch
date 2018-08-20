@@ -13,5 +13,11 @@ namespace SpacechemPatch.Patches
         {
 
         }
+
+        [Decoy("#=qSoNeRR$xCzDxZCl7BvFmLfZnCpfAjVA_7WpITMhrmt0=")]
+        public void AddTextCentered(Font font, string text, Vector2i position, Color color, float zOrder)
+        {
+
+        }
     }
 }
