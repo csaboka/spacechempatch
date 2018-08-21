@@ -293,19 +293,24 @@ namespace SpacechemPatch
             methodReplacements.TryGetValue(method.FullName, out replaced);
             if (replaced == null)
             {
-                if (method.ReturnType is GenericInstanceType || method.DeclaringType is GenericInstanceType)
+                if (method is MethodDefinition && IsAttributePresent((MethodDefinition)method, "InjectedAttribute"))
+                {
+                    method = InjectMethod((MethodDefinition)method);
+                }
+                else
                 {
                     string oldFullName = method.FullName;
                     method.ReturnType = FixupType(method.ReturnType);
                     method.DeclaringType = FixupType(method.DeclaringType);
+                    foreach (ParameterDefinition parameterDefinition in method.Parameters)
+                    {
+                        parameterDefinition.ParameterType = FixupType(parameterDefinition.ParameterType);
+                    }
                     // Avoid repeated fixups of this instance by mapping the changed type to itself in the replacement map.
                     // Map it to its old name, too, so if a different instance with the exact same signature is encountered, we don't need to process it again.
                     methodReplacements.Add(method.FullName, method);
-                    methodReplacements.Add(oldFullName, method);
-                }
-                else if (method is MethodDefinition && IsAttributePresent((MethodDefinition)method, "InjectedAttribute"))
-                {
-                    method = InjectMethod((MethodDefinition)method);
+                    // Don't use Add in the next line: if the type didn't have any reference to SpaceChem types, the old full name will match the new one, and we don't want an error on duplicate keys.
+                    methodReplacements[oldFullName] = method;
                 }
             }
             else
@@ -338,6 +343,11 @@ namespace SpacechemPatch
             if (type is GenericParameter)
             {
                 return type;
+            }
+            if (type is ByReferenceType)
+            {
+                ByReferenceType byRefType = (ByReferenceType)type;
+                return new ByReferenceType(FixupType(byRefType.ElementType));
             }
             if (!(type is TypeDefinition))
             {
