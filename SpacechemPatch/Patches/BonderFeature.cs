@@ -7,6 +7,13 @@ namespace SpacechemPatch.Patches
     [Decoy("#=qxxRrE0U2EIfozdVZOaULNbKFnOET_UqJAsKEIpyyF8I=")]
     class BonderFeature : AbstractFeature
     {
+        [Decoy(".ctor")]
+        public BonderFeature(Reactor reactor)
+            : base(reactor, null, false, null, new Vector2i())  // This is just to make the compiler happy, it's _not_ the real base constructor call!
+        {
+
+        }
+
         [Replaced("#=qWQJ$dMDcjxjokRp8n71Fzg==", Patch.ShowBonderPriority, KeepOriginal = true)]
         public override void Render(SpriteBatch spriteBatch, Vector2i position, ReactorLayer layer, Color color, float zOrder, ImageSize imageSize, bool forDragAndDrop)
         {

@@ -13,6 +13,12 @@ namespace SpacechemPatch.Patches
         [Decoy("#=qGgv6HTvjLM$FgBaHDKEweA==")]
         protected FeatureTooltip featureTooltip;
 
+        [Decoy(".ctor")]
+        public AbstractFeature(Reactor reactor, Image image, bool unknown, string title, Vector2i size)
+        {
+
+        }
+
         [Decoy("#=qWQJ$dMDcjxjokRp8n71Fzg==")]
         public override void Render(SpriteBatch spriteBatch, Vector2i position, ReactorLayer layer, Color color, float zOrder, ImageSize imageSize, bool forDragAndDrop)
         {

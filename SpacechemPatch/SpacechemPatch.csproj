@@ -81,6 +81,8 @@
     <Compile Include="Patches\AbstractFeature.cs" />
     <Compile Include="Patches\AbstractInput.cs" />
     <Compile Include="Patches\AbstractPuzzle.cs" />
+    <Compile Include="Patches\MinusOnlyBonderFeature.cs" />
+    <Compile Include="Patches\PlusOnlyBonderFeature.cs" />
     <Compile Include="Patches\ReactorMember.cs" />
     <Compile Include="Patches\AbstractRenderable.cs" />
     <Compile Include="Patches\Atom.cs" />
