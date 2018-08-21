@@ -14,10 +14,10 @@ namespace SpacechemPatch.Patches
 
         }
 
-        [Replaced("#=qWQJ$dMDcjxjokRp8n71Fzg==", Patch.ShowBonderPriority, KeepOriginal = true)]
+        [Replaced("#=qWQJ$dMDcjxjokRp8n71Fzg==", Patch.ShowBonderPriority, KeepOriginal = true, NewNameForOriginal = "OriginalRender")]
         public override void Render(SpriteBatch spriteBatch, Vector2i position, ReactorLayer layer, Color color, float zOrder, ImageSize imageSize, bool forDragAndDrop)
         {
-            Render(spriteBatch, position, layer, color, zOrder, imageSize, forDragAndDrop, Original.INSTANCE);
+            OriginalRender(spriteBatch, position, layer, color, zOrder, imageSize, forDragAndDrop);
             if (ownerReactor != null && !forDragAndDrop && imageSize == ImageSize.Normal)
             {
                 int priority = 1;
@@ -38,7 +38,7 @@ namespace SpacechemPatch.Patches
             }
         }
 
-        public void Render(SpriteBatch spriteBatch, Vector2i position, ReactorLayer layer, Color color, float zOrder, ImageSize imageSize, bool forDragAndDrop, Original dummy)
+        public void OriginalRender(SpriteBatch spriteBatch, Vector2i position, ReactorLayer layer, Color color, float zOrder, ImageSize imageSize, bool forDragAndDrop)
         {
 
         }
