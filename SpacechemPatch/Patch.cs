@@ -7,12 +7,12 @@ namespace SpacechemPatch
 {
     enum Patch
     {
-        ShowBonderPriority,
-        FixWrongOutput,
         AllowGreekInResNet,
         AllowGreekInResNetProdAndSandbox,
-        ShowOver100kCycles,
+        FixWrongOutput,
         ResNetProdCustomAmount,
-        ReverseOrderCustomResNetAssignments
+        ReverseOrderCustomResNetAssignments,
+        ShowBonderPriority,
+        ShowOver100kCycles
     }
 }
