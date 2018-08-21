@@ -81,6 +81,8 @@
     <Compile Include="Patches\AbstractFeature.cs" />
     <Compile Include="Patches\AbstractInput.cs" />
     <Compile Include="Patches\AbstractPuzzle.cs" />
+    <Compile Include="Patches\AbstractUiElement.cs" />
+    <Compile Include="Patches\CustomResNetPuzzleButton.cs" />
     <Compile Include="Patches\MinusOnlyBonderFeature.cs" />
     <Compile Include="Patches\PlusOnlyBonderFeature.cs" />
     <Compile Include="Patches\ReactorMember.cs" />
@@ -116,8 +118,10 @@
     <Compile Include="Patches\Reactor.cs" />
     <Compile Include="Patches\ReactorLayer.cs" />
     <Compile Include="Patches\ReactorResearchCustom.cs" />
+    <Compile Include="Patches\ResearchNetCustomAssignmentsScreen.cs" />
     <Compile Include="Patches\ResearchNetProductionPuzzleDefinition.cs" />
     <Compile Include="Patches\ResearchNetPuzzleDefinition.cs" />
+    <Compile Include="Patches\ResearchNetPuzzleManager.cs" />
     <Compile Include="Patches\ResearchNetResearchPuzzleDefinition.cs" />
     <Compile Include="Patches\ResearchPuzzle.cs" />
     <Compile Include="Patches\Resource.cs" />

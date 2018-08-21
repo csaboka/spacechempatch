@@ -12,6 +12,7 @@ namespace SpacechemPatch
         AllowGreekInResNet,
         AllowGreekInResNetProdAndSandbox,
         ShowOver100kCycles,
-        ResNetProdCustomAmount
+        ResNetProdCustomAmount,
+        ReverseOrderCustomResNetAssignments
     }
 }
