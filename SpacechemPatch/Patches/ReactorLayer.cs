@@ -5,8 +5,8 @@ using System.Text;
 
 namespace SpacechemPatch.Patches
 {
-    [Decoy("#=qjtkaL9XOMfxT9LJNuytDG$iEf0irrJwwOnVcUGQFyBI=")]
-    struct UnknownStruct1
+    [Decoy("#=qh2pSYbUJLebVWoIXIt7zQSEPMTK12GgkFAme864uKfs=")]
+    enum ReactorLayer
     {
     }
 }

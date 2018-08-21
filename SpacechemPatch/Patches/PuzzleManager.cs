@@ -6,7 +6,7 @@ using System.Text;
 namespace SpacechemPatch.Patches
 {
     [Decoy("#=qrCJREAf$Hf9aGa3TuUSykqD5r_3Ab8bBF_TygfhUUAQ=")]
-    class PuzzlesManager
+    class PuzzleManager
     {
         [Replaced("#=qAgwLmvCteZBjvtnHkOEEwgYmcgQ8QGBZzG19bo74mlw=", Patch.AllowGreekInResNet)]
         public static bool DoesPuzzleUseGreekElements(string puzzleName)

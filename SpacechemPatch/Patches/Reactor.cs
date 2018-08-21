@@ -9,7 +9,7 @@ namespace SpacechemPatch.Patches
     class Reactor
     {
         [Decoy("#=qZ3mqnGc9DDHuYhhM_UXxgQ==")]
-        public IEnumerable<AbstractReactorMember> GetMembers()
+        public IEnumerable<ReactorMember> GetMembers()
         {
             return null;
         }

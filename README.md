@@ -11,11 +11,9 @@ It'll then be possible to choose the patches to apply, from the list below
 
 ## Available patches
 
-* `ShowBonderPriority`: The priority of a bonder is shown in parentheses when you hover over it while editing a reactor.
+* `ShowBonderPriority`: The priority of a bonder is shown in the top right corner of the cell.
   Bonder priority is something used by experienced players to predict which bonds will form when not all of the possible bonds can be formed
-  during a Bond+ instruction (usually because of the maximum bonds limit of one of the atoms involved). There is a known bug with this change:
-  when you first open a Research puzzle you haven't worked on before, all bonders will show up with `max+1` priority.
-  As a workaround, you can just close and reopen the puzzle to make the right priorities show up.
+  during a Bond+ instruction (usually because of the maximum bonds limit of one of the atoms involved).
 * `FixWrongOutput`: The "wrong output" bug is fixed. The game is known to sometimes accept a molecule for output even when it doesn't
   completely match the expected molecule. The easiest way to reproduce this is to open the "Swapite" puzzle in ResearchNet 2-11-1:
   the game will accept the input molecule without any changes. This change will apply a different molecule matching algorithm that

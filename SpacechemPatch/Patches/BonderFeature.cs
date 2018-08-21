@@ -7,25 +7,40 @@ namespace SpacechemPatch.Patches
     [Decoy("#=qxxRrE0U2EIfozdVZOaULNbKFnOET_UqJAsKEIpyyF8I=")]
     class BonderFeature : AbstractFeature
     {
-        [Replaced(".ctor", Patch.ShowBonderPriority)]
+        [Decoy(".ctor")]
         public BonderFeature(Reactor reactor)
-            : base(reactor, new Image("reactor/bondifier"), false, Localization.Localize("Bonder"), new Vector2i(39, 39))
+            : base(reactor, null, false, null, new Vector2i())  // This is just to make the compiler happy, it's _not_ the real base constructor call!
         {
-            int priority = 1;
-            if (reactor != null)    // we may be called with a null reactor in the bonding introduction level
+
+        }
+
+        [Replaced("#=qWQJ$dMDcjxjokRp8n71Fzg==", Patch.ShowBonderPriority, KeepOriginal = true)]
+        public override void Render(SpriteBatch spriteBatch, Vector2i position, ReactorLayer layer, Color color, float zOrder, ImageSize imageSize, bool forDragAndDrop)
+        {
+            Render(spriteBatch, position, layer, color, zOrder, imageSize, forDragAndDrop, Original.INSTANCE);
+            if (ownerReactor != null && !forDragAndDrop && imageSize == ImageSize.Normal)
             {
-                System.Collections.IEnumerable enumerable = reactor.GetMembers();
-                foreach (object member in enumerable)
+                int priority = 1;
+                foreach (ReactorMember member in ownerReactor.GetMembers())
                 {
-                    if (member is BonderFeature)
+                    if (member == this)
+                    {
+                        break;
+                    }
+                    else if (member is BonderFeature)
                     {
                         priority++;
                     }
                 }
+                string priorityString = priority.ToString();
+                Vector2i labelPosition = new Vector2i(position.x + image.GetDimensions().x - 7, position.y + 7);
+                spriteBatch.AddTextCentered(FontManager.normal, priorityString, labelPosition, GetFeatureColor() * color, zOrder);
             }
-            featureTooltip = FeatureTooltip.Make(Localization.Localize("Bonder") + " (" + priority + ")",
-                Localization.Localize("Adds or removes bonds from atoms when activated by the \"Add / Remove Bond\" instruction. Bonders can be connected by placing them adjacent to each other."),
-                new Optional<UnknownStruct1>());
+        }
+
+        public void Render(SpriteBatch spriteBatch, Vector2i position, ReactorLayer layer, Color color, float zOrder, ImageSize imageSize, bool forDragAndDrop, Original dummy)
+        {
+
         }
     }
 }

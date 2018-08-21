@@ -5,8 +5,8 @@ using System.Text;
 
 namespace SpacechemPatch.Patches
 {
-    [Decoy("#=qNtQ6M$n5GEyPT_eGy9tmGcKb1_bGpAp9vbBykXUJPzAet7HHK1Nm57igQr8Ldv6G")]
-    class AbstractReactorMember
+    [Decoy("#=qjtkaL9XOMfxT9LJNuytDG$iEf0irrJwwOnVcUGQFyBI=")]
+    struct TooltipFlavorText
     {
     }
 }
