@@ -21,11 +21,17 @@ It'll then be possible to choose the patches to apply, from the list below
   hopefully fixes these issues without introducing new ones. Please report any performance issues or unexpected results you encounter.
 * `ResNetProdCustomAmount`: Allows changing the amount of outputs needed for ResNet production puzzles. The amount can be specified in
   the JSON, like for researchs. The output count used by the game is 4x the amount in the file, to keep the 10 -> 40 behaviour of the vanilla game.
+* `ReverseOrderCustomResNetAssignments`: The ResearchNet custom assignments are normally sorted by ascending creation date, meaning
+  that you need to scroll the most to get to the latest puzzles. By enabling this patch, the order is reversed, so you can quickly open
+  your most recent assignments and only need to scroll for the older ones.
 * `ShowBonderPriority`: The priority of a bonder is shown in the top right corner of the cell.
   Bonder priority is something used by experienced players to predict which bonds will form when not all of the possible bonds can be formed
   during a Bond+ instruction (usually because of the maximum bonds limit of one of the atoms involved).
 * `ShowOver100kCycles`: The cycles counter in the game switches to `+INF` after 100k cycles. This patch makes it continue with `100K`,
   up until `9999K`, then `10M`. The value displayed updates at the start of the new thousand (e.g. `100999` is shown as `100K`).
+* `ShowReactorPriority`: The priority of inputs, outputs and reactors is shown in production and defense puzzles.
+  Priority is useful for cycles optimization: in some cases, you can save one cycle by making sure that the reactor that's outputting
+  a molecule has lower priority than the reactor accepting it, allowing the molecule to be accepted in the same cycle.
 
 ## Getting Started With Development
 
