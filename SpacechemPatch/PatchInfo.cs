@@ -41,6 +41,8 @@ namespace SpacechemPatch
                    "Allows ResNet production puzzles output count to be specified in the input JSON. Count is 4x JSON count");
             AddDef(Patch.ReverseOrderCustomResNetAssignments, PatchType.Enhancement,
                    "Reverses the display order of custom ResearchNet puzzles so the most recent is listed first.");
+            AddDef(Patch.ShowReactorPriority, PatchType.Enhancement,
+                "Shows the priority of inputs, outputs and reactors in the tooltip.");
         }
 
         private PatchInfo(PatchType type, string description, Patch[] conflictingPatches)

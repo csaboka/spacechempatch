@@ -13,6 +13,7 @@ namespace SpacechemPatch
         ResNetProdCustomAmount,
         ReverseOrderCustomResNetAssignments,
         ShowBonderPriority,
-        ShowOver100kCycles
+        ShowOver100kCycles,
+        ShowReactorPriority
     }
 }
