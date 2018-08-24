@@ -27,20 +27,20 @@ namespace SpacechemPatch
 
         static PatchInfo()
         {
-            AddDef(Patch.ShowBonderPriority, PatchType.Enhancement, "Adds the priority number next to the bonder");
-            AddDef(Patch.FixWrongOutput, PatchType.Bugfix, "Fixes the \"Wrong Output\" bug");
-            AddDef(Patch.AllowGreekInResNetProdAndSandbox, PatchType.Enhancement,
-                   "Adds full support for Greek sensors/annotations in ResearchNet production and sandbox assignments",
-                   Patch.AllowGreekInResNet);
             AddDef(Patch.AllowGreekInResNet, PatchType.Cheat,
                    "Adds full support for Greek sensors/annotations in all ResearchNet assignments",
                    Patch.AllowGreekInResNetProdAndSandbox);
-            AddDef(Patch.ShowOver100kCycles, PatchType.Enhancement,
-                   "Shows the cycles number even if it's over 100k, by shortening it");
+            AddDef(Patch.AllowGreekInResNetProdAndSandbox, PatchType.Enhancement,
+                   "Adds full support for Greek sensors/annotations in ResearchNet production and sandbox assignments",
+                   Patch.AllowGreekInResNet);
+            AddDef(Patch.FixWrongOutput, PatchType.Bugfix, "Fixes the \"Wrong Output\" bug");
             AddDef(Patch.ResNetProdCustomAmount, PatchType.Cheat,
                    "Allows ResNet production puzzles output count to be specified in the input JSON. Count is 4x JSON count");
             AddDef(Patch.ReverseOrderCustomResNetAssignments, PatchType.Enhancement,
                    "Reverses the display order of custom ResearchNet puzzles so the most recent is listed first.");
+            AddDef(Patch.ShowBonderPriority, PatchType.Enhancement, "Adds the priority number next to the bonder");
+            AddDef(Patch.ShowOver100kCycles, PatchType.Enhancement,
+                   "Shows the cycles number even if it's over 100k, by shortening it");
             AddDef(Patch.ShowReactorPriority, PatchType.Enhancement,
                 "Shows the priority of inputs, outputs and reactors in the tooltip.");
         }

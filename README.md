@@ -11,21 +11,21 @@ It'll then be possible to choose the patches to apply, from the list below
 
 ## Available patches
 
-* `ShowBonderPriority`: The priority of a bonder is shown in the top right corner of the cell.
-  Bonder priority is something used by experienced players to predict which bonds will form when not all of the possible bonds can be formed
-  during a Bond+ instruction (usually because of the maximum bonds limit of one of the atoms involved).
-* `FixWrongOutput`: The "wrong output" bug is fixed. The game is known to sometimes accept a molecule for output even when it doesn't
-  completely match the expected molecule. The easiest way to reproduce this is to open the "Swapite" puzzle in ResearchNet 2-11-1:
-  the game will accept the input molecule without any changes. This change will apply a different molecule matching algorithm that
-  hopefully fixes these issues without introducing new ones. Please report any performance issues or unexpected results you encounter.
 * `AllowGreekInResNet` & `AllowGreekInResNetProdAndSandbox`: Gives complete support for Greek annotations/sensors in ResearchNet levels.
   In the vanilla game it's possible to get Greek annotations/sensors in ResNet productions/sandbox, by copying a reactor from EotL, so the latter
   patch is merely a QoL one. It's not possible to have Greek sensors in ResNet research assignment, though, so the former patch makes the game
   easier and it's labeled as "Cheat".
-* `ShowOver100kCycles`: The cycles counter in the game switches to `+INF` after 100k cycles. This patch makes it continue with `100K`,
-  up until `9999K`, then `10M`. The value displayed updates at the start of the new thousand (e.g. `100999` is shown as `100K`).
+* `FixWrongOutput`: The "wrong output" bug is fixed. The game is known to sometimes accept a molecule for output even when it doesn't
+  completely match the expected molecule. The easiest way to reproduce this is to open the "Swapite" puzzle in ResearchNet 2-11-1:
+  the game will accept the input molecule without any changes. This change will apply a different molecule matching algorithm that
+  hopefully fixes these issues without introducing new ones. Please report any performance issues or unexpected results you encounter.
 * `ResNetProdCustomAmount`: Allows changing the amount of outputs needed for ResNet production puzzles. The amount can be specified in
   the JSON, like for researchs. The output count used by the game is 4x the amount in the file, to keep the 10 -> 40 behaviour of the vanilla game.
+* `ShowBonderPriority`: The priority of a bonder is shown in the top right corner of the cell.
+  Bonder priority is something used by experienced players to predict which bonds will form when not all of the possible bonds can be formed
+  during a Bond+ instruction (usually because of the maximum bonds limit of one of the atoms involved).
+* `ShowOver100kCycles`: The cycles counter in the game switches to `+INF` after 100k cycles. This patch makes it continue with `100K`,
+  up until `9999K`, then `10M`. The value displayed updates at the start of the new thousand (e.g. `100999` is shown as `100K`).
 
 ## Getting Started With Development
 
