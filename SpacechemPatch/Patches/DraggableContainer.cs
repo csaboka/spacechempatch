@@ -10,7 +10,7 @@ namespace SpacechemPatch.Patches
     class DraggableContainer : IEnumerable, IEnumerable<KeyValuePair<AbstractDraggable, Vector2i>>
     {
         [Decoy("#=qDQbKsgZeTgbZH6Pf_xOGPA==")]
-        protected Dictionary<AbstractDraggable, Vector2i> draggableToPositionMapping = new Dictionary<AbstractDraggable, Vector2i>();
+        protected Dictionary<AbstractDraggable, Vector2i> draggableToPositionMapping;
 
         [Decoy("#=qllJBIbK0DPLdvHTYBwLeTg==")]
         public void PutDraggableAtCoords(int x, int y, AbstractDraggable draggable)
