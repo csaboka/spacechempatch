@@ -42,7 +42,7 @@ namespace SpacechemPatch
             AddDef(Patch.ShowOver100kCycles, PatchType.Enhancement,
                    "Shows the cycles number even if it's over 100k, by shortening it");
             AddDef(Patch.ShowReactorPriority, PatchType.Enhancement,
-                "Shows the priority of inputs, outputs and reactors in the tooltip.");
+                "Shows the priority of reactors, tanks and printers in the tooltip.");
         }
 
         private PatchInfo(PatchType type, string description, Patch[] conflictingPatches)

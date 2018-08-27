@@ -29,9 +29,10 @@ It'll then be possible to choose the patches to apply, from the list below
   during a Bond+ instruction (usually because of the maximum bonds limit of one of the atoms involved).
 * `ShowOver100kCycles`: The cycles counter in the game switches to `+INF` after 100k cycles. This patch makes it continue with `100K`,
   up until `9999K`, then `10M`. The value displayed updates at the start of the new thousand (e.g. `100999` is shown as `100K`).
-* `ShowReactorPriority`: The priority of inputs, outputs and reactors is shown in production and defense puzzles.
+* `ShowReactorPriority`: The priority of reactors, tanks and printers is shown in production and defense puzzles.
   Priority is useful for cycles optimization: in some cases, you can save one cycle by making sure that the reactor that's outputting
   a molecule has lower priority than the reactor accepting it, allowing the molecule to be accepted in the same cycle.
+  Inputs' and outputs' priority isn't shown, as they both trigger before anything else.
 
 ## Getting Started With Development
 
