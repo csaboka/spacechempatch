@@ -37,7 +37,8 @@ namespace SpacechemPatch
         Program()
         {
             InitializeComponent();
-            textBoxPath.Text = ExecutableUtils.GetDefaultPath();
+            string prevPath = (string)Properties.Settings.Default["SCPath"];
+            textBoxPath.Text = String.IsNullOrEmpty(prevPath) ? ExecutableUtils.GetDefaultPath() : prevPath;
             // Fill grid and after enable the `Changed` callback
             foreach (Patch patch in Enum.GetValues(typeof(Patch)))
             {
@@ -46,6 +47,12 @@ namespace SpacechemPatch
                 dataGridViewPatches.Rows.Add(false, info.Type, patch, info.Description, info.ConflictingPatches, conflicts);
             }
             this.dataGridViewPatches.CellValueChanged += this.dataGridViewPatches_CellValueChanged;
+
+            // restore checkboxes
+            foreach (int cbox in (int[])Properties.Settings.Default["TickedCheckboxes"])
+            {
+                dataGridViewPatches.Rows[cbox].Cells[0].Value = true;
+            }
 
 #if DEBUG
             checkBoxParanoia.Checked = true;
@@ -331,8 +338,13 @@ namespace SpacechemPatch
 
         private void buttonPatch_Click(object sender, EventArgs e)
         {
-            // game time started
             this.Enabled = false;
+            // store settings
+            Properties.Settings.Default["SCPath"] = textBoxPath.Text;
+            Properties.Settings.Default["TickedCheckboxes"] = Enumerable.Range(0, dataGridViewPatches.RowCount)
+                                                                        .Where(i => Convert.ToBoolean(dataGridViewPatches[0, i].Value)).ToArray();
+            Properties.Settings.Default.Save();
+            // game time started
             PatchExe();
             this.Enabled = true;
         }
