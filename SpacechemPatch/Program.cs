@@ -429,7 +429,7 @@ namespace SpacechemPatch
                     CBCell.ReadOnly = false;
                     foreach (DataGridViewCell cell in row.Cells)
                     {
-                        cell.Style.ForeColor = default;
+                        cell.Style.ForeColor = default(Color);
                     }
                 }
             }
