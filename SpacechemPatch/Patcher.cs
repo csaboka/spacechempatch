@@ -349,6 +349,10 @@ namespace SpacechemPatch
                 ByReferenceType byRefType = (ByReferenceType)type;
                 return new ByReferenceType(FixupType(byRefType.ElementType));
             }
+            if (type is ArrayType)
+            {
+                return FixupArrayType((ArrayType)type);
+            }
             if (!(type is TypeDefinition))
             {
                 type = target.ImportReference(type);
@@ -368,6 +372,17 @@ namespace SpacechemPatch
                 newType.GenericArguments.Add(FixupType(genericArg));
             }
             return target.ImportReference(newType);
+        }
+
+        private TypeReference FixupArrayType(ArrayType arrayType)
+        {
+            TypeReference fixedUpElementType = FixupType(arrayType.ElementType);
+            ArrayType fixedUp = new ArrayType(fixedUpElementType, 0);
+            foreach (ArrayDimension dimension in arrayType.Dimensions)
+            {
+                fixedUp.Dimensions.Add(dimension);
+            }
+            return fixedUp;
         }
 
         private FieldReference FixupField(FieldReference field)
