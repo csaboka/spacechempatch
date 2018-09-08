@@ -34,6 +34,9 @@ namespace SpacechemPatch
                    "Adds full support for Greek sensors/annotations in ResearchNet production and sandbox assignments",
                    Patch.AllowGreekInResNet);
             AddDef(Patch.FixWrongOutput, PatchType.Bugfix, "Fixes the \"Wrong Output\" bug");
+            AddDef(Patch.MoreFeaturesInResNetResearch, PatchType.Cheat,
+                "Adds the ability to have more fusers, splitters, sensors and quantum tunnels " +
+                "in custom ResearchNet research puzzles");
             AddDef(Patch.ResNetProdCustomAmount, PatchType.Cheat,
                    "Allows ResNet production puzzles output count to be specified in the input JSON. Count is 4x JSON count");
             AddDef(Patch.ReverseOrderCustomResNetAssignments, PatchType.Enhancement,

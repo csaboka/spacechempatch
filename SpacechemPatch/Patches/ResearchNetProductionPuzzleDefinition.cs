@@ -11,6 +11,17 @@ namespace SpacechemPatch.Patches
         [Decoy("#=quAUiCG0iVpegt_Nx53a9nQ==")]
         public static readonly List<Terrain> terrains;
 
+        public override bool IsIncompatibleWith(ResearchNetPuzzleDefinition definition)
+        {
+            // This method isn't used by the patcher, it's just here to make the compiler happy.
+            return false;
+        }
+
+        public override void Init()
+        {
+            // This method isn't used by the patcher, it's just here to make the compiler happy.
+        }
+
         [Decoy("#=q27GLFggBQpBRmxqpzGoSmYHSren0WfM$WTa8xWwai0A=")]
         public Dictionary<int, ResearchNetResearchPuzzleDefinition.Inputs> randomInputZones;
         [Decoy("#=qRfAz7EkMvr7GSaljUFjNku45U5grS57mK199HJRl0JA=")]

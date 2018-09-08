@@ -10,6 +10,7 @@ namespace SpacechemPatch
         AllowGreekInResNet,
         AllowGreekInResNetProdAndSandbox,
         FixWrongOutput,
+        MoreFeaturesInResNetResearch,
         ResNetProdCustomAmount,
         ReverseOrderCustomResNetAssignments,
         ShowBonderPriority,
