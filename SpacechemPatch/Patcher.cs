@@ -85,9 +85,27 @@ namespace SpacechemPatch
                 MethodDefinition decoyMethod = methodPair.Key;
                 CustomAttribute decoyMethodAttribute = methodPair.Value;
                 string targetMethodName = (string)decoyMethodAttribute.ConstructorArguments[0].Value;
-                MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == targetMethodName && method.Parameters.Count == decoyMethod.Parameters.Count);
+                MethodDefinition targetMethod = targetType.Methods.First(method => PartialMethodMatch(method, decoyMethod, targetMethodName));
                 methodReplacements.Add(decoyMethod.FullName, target.ImportReference(targetMethod));
             }
+        }
+
+        private bool PartialMethodMatch(MethodDefinition candidateMethod, MethodDefinition decoyMethod, string targetName)
+        {
+            if (candidateMethod.Name != targetName || candidateMethod.Parameters.Count != decoyMethod.Parameters.Count)
+            {
+                return false;
+            }
+            for (int i=0; i<candidateMethod.Parameters.Count; i++)
+            {
+                TypeReference sourceParamType = candidateMethod.Parameters[i].ParameterType;
+                TypeReference targetParamType = decoyMethod.Parameters[i].ParameterType;
+                if ((sourceParamType.IsPrimitive || targetParamType.IsPrimitive) && sourceParamType.FullName != targetParamType.FullName)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private void CollectFieldReplacementsInType(TypeDefinition sourceType, TypeDefinition targetType)
