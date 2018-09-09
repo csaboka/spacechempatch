@@ -6,5 +6,11 @@
         public void Dispose()
         {
         }
+
+        [Decoy("#=q8W2Rrq76dQbGDyilfEvipg==")]
+        public Vector2i GetDimensions()
+        {
+            return new Vector2i();
+        }
     }
 }

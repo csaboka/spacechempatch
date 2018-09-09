@@ -11,6 +11,9 @@ namespace SpacechemPatch.Patches
         [Decoy("#=qPRtjshyAGg65zmuG_PZxVA==")]
         public Reactor ownerReactor;
 
+        [Decoy("#=qfAtAQSKG30HVyrwGtFokIg==")]
+        public BoundingBox boundingBox;
+
         [Decoy("#=qWQJ$dMDcjxjokRp8n71Fzg==")]
         public virtual void Render(SpriteBatch spriteBatch, Vector2i position, ReactorLayer layer, Color color, float zOrder, ImageSize imageSize, bool forDragAndDrop)
         {

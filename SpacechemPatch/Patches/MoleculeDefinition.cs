@@ -130,5 +130,11 @@ namespace SpacechemPatch.Patches
             }
             return false;
         }
+
+        [Decoy("#=qsoCro4fIXL_XiE72I3Qawg==")]
+        public void Translate(Vector2i translation)
+        {
+
+        }
     }
 }

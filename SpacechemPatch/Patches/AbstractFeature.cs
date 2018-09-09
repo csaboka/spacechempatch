@@ -31,5 +31,11 @@ namespace SpacechemPatch.Patches
             return new Color();
         }
 
+        [Decoy("#=qPyTV6ED7qEyGENL$3FfBa141FeUQQnZFSvDZkig_3DM=")]
+        protected void Activate(bool forRed)
+        {
+
+        }
+
     }
 }

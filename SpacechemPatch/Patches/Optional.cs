@@ -9,8 +9,20 @@ namespace SpacechemPatch.Patches
     struct Optional<T>
     {
         [Decoy("#=qn51$HnaqmlmIaen7axiKig==")]
-        public readonly bool present;
+        public readonly bool isPresent;
         [Decoy("#=qRCwFqSCqte76EEPxr$2SMQ==")]
         public readonly T value;
+
+        [Decoy("#=qE7ovXWVF5_HojnPCLTh8nA==")]
+        public T GetValue()
+        {
+            return default(T);
+        }
+
+        [Decoy("op_Implicit")]
+        public static implicit operator Optional<T>(T value)
+        {
+            return default(T);
+        }
     }
 }

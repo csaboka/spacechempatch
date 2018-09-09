@@ -19,5 +19,11 @@ namespace SpacechemPatch.Patches
         {
 
         }
+
+        [Decoy("#=qAaMb2ZaXzTzgm9zzN8o_lg==")]
+        public void AddSprite(TextureElement textureElement, BoundingBox boundingBox, BoundingBox? textureCoords, Color color, AngleInRadians rotationAngle, Vector2i translationVector, FlipOptions flipOptions, float zOrder)
+        {
+
+        }
     }
 }

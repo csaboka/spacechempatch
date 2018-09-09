@@ -85,8 +85,11 @@
     <Compile Include="Patches\AbstractPuzzle.cs" />
     <Compile Include="Patches\AbstractReactorType.cs" />
     <Compile Include="Patches\AbstractUiElement.cs" />
+    <Compile Include="Patches\AngleInRadians.cs" />
     <Compile Include="Patches\BondInstruction.cs" />
+    <Compile Include="Patches\BoundingBox.cs" />
     <Compile Include="Patches\Constants.cs" />
+    <Compile Include="Patches\CoordsLayer.cs" />
     <Compile Include="Patches\CustomResNetPuzzleButton.cs" />
     <Compile Include="Patches\DraggableStorageTank.cs" />
     <Compile Include="Patches\FeatureType.cs" />
@@ -99,6 +102,8 @@
     <Compile Include="Patches\LargeOutputReactorArea.cs" />
     <Compile Include="Patches\MathUtils.cs" />
     <Compile Include="Patches\MinusOnlyBonderFeature.cs" />
+    <Compile Include="Patches\Molecule.cs" />
+    <Compile Include="Patches\MoleculeList.cs" />
     <Compile Include="Patches\OutputPipe.cs" />
     <Compile Include="Patches\PipeList.cs" />
     <Compile Include="Patches\PlusOnlyBonderFeature.cs" />
@@ -150,18 +155,22 @@
     <Compile Include="Patches\ResourceUtils.cs" />
     <Compile Include="Patches\SensorFeature.cs" />
     <Compile Include="Patches\SensorInstruction.cs" />
+    <Compile Include="Patches\SimulationGlobals.cs" />
     <Compile Include="Patches\SolutionManager.cs" />
     <Compile Include="Patches\SplitInstruction.cs" />
     <Compile Include="Patches\SplitterFeature.cs" />
     <Compile Include="Patches\SpriteBatch.cs" />
+    <Compile Include="Patches\SpriteHelper.cs" />
     <Compile Include="Patches\SwapInstruction.cs" />
     <Compile Include="Patches\TextureElement.cs" />
     <Compile Include="Patches\TooltipFlavorText.cs" />
     <Compile Include="Patches\User.cs" />
     <Compile Include="Patches\UserManager.cs" />
     <Compile Include="Patches\UserUtils.cs" />
+    <Compile Include="Patches\Vector2f.cs" />
     <Compile Include="Patches\Vector2i.cs" />
     <Compile Include="Patches\VerticalAlignment.cs" />
+    <Compile Include="Patches\Waldo.cs" />
     <Compile Include="PatchInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
