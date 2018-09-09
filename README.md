@@ -19,6 +19,12 @@ It'll then be possible to choose the patches to apply, from the list below
   completely match the expected molecule. The easiest way to reproduce this is to open the "Swapite" puzzle in ResearchNet 2-11-1:
   the game will accept the input molecule without any changes. This change will apply a different molecule matching algorithm that
   hopefully fixes these issues without introducing new ones. Please report any performance issues or unexpected results you encounter.
+* `MoreFeaturesInResNetResearch`: Increase the upper limit of allowed reactor features in custom ResearchNet reserach puzzles.
+  You can have up to 4 sensors, fusion lasers, fission lasers and quantum tunnels in a puzzle now. A Split instruction triggers all
+  fission lasers in a reactor and a Fuse instruction triggers all fusion lasers. Sensing instructions will activate if any of
+  the sensors detects the specified element. Quantum tunnels work in a "round-robin" fashion: tunnel #1 will teleport atoms to
+  tunnel #2, tunnel #2 will teleport to tunnel #3 and so on, except for the highest-numbered tunnel, which will teleport to tunnel #1.
+  Please read the "Compatibility Notes" section below if you also want to run the original game alongside the modified version.
 * `ResNetProdCustomAmount`: Allows changing the amount of outputs needed for ResNet production puzzles. The amount can be specified in
   the JSON, like for researchs. The output count used by the game is 4x the amount in the file, to keep the 10 -> 40 behaviour of the vanilla game.
 * `ReverseOrderCustomResNetAssignments`: The ResearchNet custom assignments are normally sorted by ascending creation date, meaning
@@ -33,6 +39,20 @@ It'll then be possible to choose the patches to apply, from the list below
   Priority is useful for cycles optimization: in some cases, you can save one cycle by making sure that the reactor that's outputting
   a molecule has lower priority than the reactor accepting it, allowing the molecule to be accepted in the same cycle.
   Inputs' and outputs' priority isn't shown, as they both trigger before anything else.
+
+## Compatibility Notes
+
+There is currently one patch that may cause compatibility issues with the vanilla game:
+
+* When `MoreFeaturesInResNetResearch` is active, the puzzle descriptions used by the game are extended with new fields to store the
+  selected feature counts. When the vanilla game loads these descriptions, it will ignore the new fields and enforce the old limits.
+  When it's loading a puzzle solution, it will also remove the "extra" features it finds that are above the expected limits. The result is,
+  whenever you open the Custom Assignments screen in ResearchNet with the vanilla game, you will lose features in your existing solutions,
+  and restoring those features is tricky at the moment. If you wish to switch between the vanilla and patched versions of the game,
+  it's better to avoid opening this screen, or even to use different game profiles for the two versions.  
+  Exporting puzzles should work normally, but if you publish your puzzle somewhere, please let the players know that they will need to
+  patch their game to be able to play the puzzle properly. The `MoreFeaturesInResNetResearch` is the only patch necessary, all others
+  can stay disabled if the player prefers the original game behavior.
 
 ## Getting Started With Development
 
