@@ -18,6 +18,7 @@ namespace SpacechemPatch
         private readonly Dictionary<string, TypeReference> typeReplacements = new Dictionary<string, TypeReference>();
         private readonly Dictionary<string, MethodReference> methodReplacements = new Dictionary<string, MethodReference>();
         private readonly Dictionary<string, FieldReference> fieldReplacements = new Dictionary<string, FieldReference>();
+        private readonly Dictionary<string, Dictionary<string, GenericParameter>> genericParameterReplacements = new Dictionary<string, Dictionary<string, GenericParameter>>();
 
         private TypeDefinition originalType;
 
@@ -58,6 +59,16 @@ namespace SpacechemPatch
                 string scrambledName = (string)decoyAttribute.ConstructorArguments[0].Value;
                 TypeDefinition targetType = typeFinder(@namespace, scrambledName);
                 typeReplacements.Add(type.FullName, target.ImportReference(targetType));
+
+                if (type.GenericParameters.Count > 0)
+                {
+                    Dictionary<string, GenericParameter> genericReplacementsForThisType = new Dictionary<string, GenericParameter>();
+                    for (int i = 0; i < type.GenericParameters.Count; i++)
+                    {
+                        genericReplacementsForThisType.Add(type.GenericParameters[i].FullName, targetType.GenericParameters[i]);
+                    }
+                    genericParameterReplacements.Add(type.FullName, genericReplacementsForThisType);
+                }
 
                 CollectMethodReplacementsInType(type, targetType);
                 CollectFieldReplacementsInType(type, targetType);
@@ -299,12 +310,33 @@ namespace SpacechemPatch
                 }
                 else
                 {
+                    if (method.DeclaringType is GenericInstanceType)
+                    {
+                        // the replacement could be defined on the raw version of the type
+                        GenericInstanceType oldDeclaringType = (GenericInstanceType)method.DeclaringType;
+                        method.DeclaringType = oldDeclaringType.ElementType;
+                        methodReplacements.TryGetValue(method.FullName, out replaced);
+                        method.DeclaringType = oldDeclaringType;
+                        if (replaced != null)
+                        {
+                            MethodReference result = new MethodReference(replaced.Name, FixupType(method.ReturnType, oldDeclaringType), FixupType(oldDeclaringType));
+                            result.CallingConvention = method.CallingConvention;
+                            result.ExplicitThis = method.ExplicitThis;
+                            result.HasThis = method.HasThis;
+                            foreach (ParameterDefinition parameterDefinition in method.Parameters)
+                            {
+                                result.Parameters.Add(new ParameterDefinition(parameterDefinition.Name, parameterDefinition.Attributes, FixupType(parameterDefinition.ParameterType, oldDeclaringType)));
+                            }
+                            return target.ImportReference(result);
+                        }
+                    }
                     string oldFullName = method.FullName;
-                    method.ReturnType = FixupType(method.ReturnType);
+                    method.ReturnType = FixupType(method.ReturnType, method.DeclaringType);
+                    TypeReference originalDeclaringType = method.DeclaringType;
                     method.DeclaringType = FixupType(method.DeclaringType);
                     foreach (ParameterDefinition parameterDefinition in method.Parameters)
                     {
-                        parameterDefinition.ParameterType = FixupType(parameterDefinition.ParameterType);
+                        parameterDefinition.ParameterType = FixupType(parameterDefinition.ParameterType, originalDeclaringType);
                     }
                     // Avoid repeated fixups of this instance by mapping the changed type to itself in the replacement map.
                     // Map it to its old name, too, so if a different instance with the exact same signature is encountered, we don't need to process it again.
@@ -334,15 +366,28 @@ namespace SpacechemPatch
             return fixedUp;
         }
 
-        private TypeReference FixupType(TypeReference type)
+        private TypeReference FixupType(TypeReference type, TypeReference context = null)
         {
             if (type is GenericInstanceType)
             {
-                return FixupGenericType((GenericInstanceType)type);
+                return FixupGenericType((GenericInstanceType)type, context);
             }
             if (type is GenericParameter)
             {
-                return type;
+                GenericParameter newParameter = null;
+                if (context != null)
+                {
+                    if (context is GenericInstanceType)
+                    {
+                        context = ((GenericInstanceType)context).ElementType;
+                    }
+                    Dictionary<string, GenericParameter> replacementsForThisType;
+                    if (genericParameterReplacements.TryGetValue(context.FullName, out replacementsForThisType))
+                    {
+                        replacementsForThisType.TryGetValue(type.FullName, out newParameter);
+                    }
+                }
+                return newParameter ?? type;
             }
             if (type is ByReferenceType)
             {
@@ -363,13 +408,13 @@ namespace SpacechemPatch
             return type;
         }
 
-        private TypeReference FixupGenericType(GenericInstanceType type)
+        private TypeReference FixupGenericType(GenericInstanceType type, TypeReference context = null)
         {
-            TypeReference elementType = FixupType(type.ElementType);
+            TypeReference elementType = FixupType(type.ElementType, context);
             GenericInstanceType newType = new GenericInstanceType(elementType);
             foreach (TypeReference genericArg in type.GenericArguments)
             {
-                newType.GenericArguments.Add(FixupType(genericArg));
+                newType.GenericArguments.Add(FixupType(genericArg, context));
             }
             return target.ImportReference(newType);
         }
@@ -393,7 +438,20 @@ namespace SpacechemPatch
             {
                 return InjectField((FieldDefinition)field);
             }
+            if (replaced == null && field.DeclaringType is GenericInstanceType)
+            {
+                return FixupGenericInstanceField(field);
+            }
             return replaced ?? field;
+        }
+
+        private FieldReference FixupGenericInstanceField(FieldReference field)
+        {
+            GenericInstanceType declaringType = (GenericInstanceType)field.DeclaringType;
+            TypeReference rawType = declaringType.ElementType;
+            TypeReference fixedUpType = FixupType(declaringType);
+            FieldReference fieldOnRaw = FixupField(new FieldReference(field.Name, field.FieldType, rawType));
+            return new FieldReference(fieldOnRaw.Name, fieldOnRaw.FieldType, fixedUpType);
         }
 
         private FieldReference InjectField(FieldDefinition field)
