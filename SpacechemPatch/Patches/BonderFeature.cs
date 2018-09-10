@@ -32,9 +32,7 @@ namespace SpacechemPatch.Patches
                         priority++;
                     }
                 }
-                string priorityString = priority.ToString();
-                Vector2i labelPosition = new Vector2i(position.x + image.GetDimensions().x - 7, position.y + 7);
-                spriteBatch.AddTextCentered(FontManager.normal, priorityString, labelPosition, GetFeatureColor() * color, zOrder);
+                RenderPriority(spriteBatch, position, color, zOrder, priority);
             }
         }
 

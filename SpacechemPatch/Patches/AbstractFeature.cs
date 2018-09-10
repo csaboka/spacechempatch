@@ -37,5 +37,12 @@ namespace SpacechemPatch.Patches
 
         }
 
+        [Injected]
+        protected void RenderPriority(SpriteBatch spriteBatch, Vector2i position, Color color, float zOrder, int priority)
+        {
+            string priorityString = priority.ToString();
+            Vector2i labelPosition = new Vector2i(position.x + image.GetDimensions().x - 7, position.y + 7);
+            spriteBatch.AddTextCentered(FontManager.normal, priorityString, labelPosition, GetFeatureColor() * color, zOrder);
+        }
     }
 }

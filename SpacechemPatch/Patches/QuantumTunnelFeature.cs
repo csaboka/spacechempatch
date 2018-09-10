@@ -111,8 +111,7 @@ namespace SpacechemPatch.Patches
             List<Vector2i> tunnelPositions;
             CollectTunnels(ownerReactor, out allTunnels, out tunnelPositions);
             int tunnelIndex = allTunnels.IndexOf(this);
-            Vector2i labelPosition = new Vector2i(position.x + image.GetDimensions().x - 7, position.y + 7);
-            spriteBatch.AddTextCentered(FontManager.normal, (tunnelIndex + 1).ToString(), labelPosition, GetFeatureColor() * color, zOrder);
+            RenderPriority(spriteBatch, position, color, zOrder, tunnelIndex + 1);
 
             if (!laserState.isPresent && !sensorCircleState.isPresent)
                 return;

@@ -15,5 +15,28 @@ namespace SpacechemPatch.Patches
 
         }
 
+        [Replaced("#=qWQJ$dMDcjxjokRp8n71Fzg==", Patch.MoreFeaturesInResNetResearch, KeepOriginal = true, NewNameForOriginal = "OriginalRender")]
+        public override void Render(SpriteBatch spriteBatch, Vector2i position, ReactorLayer layer, Color color, float zOrder, ImageSize imageSize, bool forDragAndDrop)
+        {
+            OriginalRender(spriteBatch, position, layer, color, zOrder, imageSize, forDragAndDrop);
+            int priority = 1;
+            foreach (ReactorMember member in ownerReactor.GetMembers())
+            {
+                if (member == this)
+                {
+                    break;
+                }
+                else if (member is SplitterFeature)
+                {
+                    priority++;
+                }
+            }
+            RenderPriority(spriteBatch, position, color, zOrder, priority);
+        }
+
+        public void OriginalRender(SpriteBatch spriteBatch, Vector2i position, ReactorLayer layer, Color color, float zOrder, ImageSize imageSize, bool forDragAndDrop)
+        {
+
+        }
     }
 }
