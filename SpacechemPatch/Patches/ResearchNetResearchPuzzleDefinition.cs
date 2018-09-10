@@ -86,13 +86,13 @@ namespace SpacechemPatch.Patches
                 case FeatureType.Bonder:
                     return bonderCount;
                 case FeatureType.Fuser:
-                    return fuserCount;
+                    return (hasFuser) ? MathUtils.Clamp(1, 4, fuserCount) : 0;
                 case FeatureType.Sensor:
-                    return sensorCount;
+                    return (hasSensor) ? MathUtils.Clamp(1, 4, sensorCount) : 0;
                 case FeatureType.Splitter:
-                    return splitterCount;
+                    return (hasSplitter) ? MathUtils.Clamp(1, 4, splitterCount) : 0;
                 case FeatureType.Teleporter:
-                    return teleporterCount;
+                    return (hasTeleporter) ? MathUtils.Clamp(2, 4, teleporterCount) : 0;
                 default:
                     return 0;
             }
