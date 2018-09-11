@@ -19,7 +19,7 @@ It'll then be possible to choose the patches to apply, from the list below
   completely match the expected molecule. The easiest way to reproduce this is to open the "Swapite" puzzle in ResearchNet 2-11-1:
   the game will accept the input molecule without any changes. This change will apply a different molecule matching algorithm that
   hopefully fixes these issues without introducing new ones. Please report any performance issues or unexpected results you encounter.
-* `MoreFeaturesInResNetResearch`: Increase the upper limit of allowed reactor features in custom ResearchNet reserach puzzles.
+* `MoreFeaturesInResNetResearch`: Increase the upper limit of allowed reactor features in custom ResearchNet research puzzles.
   You can have up to 4 sensors, fusion lasers, fission lasers and quantum tunnels in a puzzle now. A Split instruction triggers all
   fission lasers in a reactor and a Fuse instruction triggers all fusion lasers. Sensing instructions will activate if any of
   the sensors detects the specified element. Quantum tunnels work in a "round-robin" fashion: tunnel #1 will teleport atoms to
