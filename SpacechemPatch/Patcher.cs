@@ -7,6 +7,100 @@ using Mono.Cecil.Cil;
 
 namespace SpacechemPatch
 {
+    interface ISymbolTranslator
+    {
+        string TranslateType(string typeName);
+        Func<string, string> GetMethodTranslator(string typeName);
+        Func<string, string> GetFieldTranslator(string typeName);
+        ISymbolTranslator GetTranslatorForNestedTypes(string containerTypeName);
+    }
+
+    class NoOpSymbolTranslator : ISymbolTranslator
+    {
+        public Func<string, string> GetFieldTranslator(string typeName)
+        {
+            return x => x;
+        }
+
+        public Func<string, string> GetMethodTranslator(string typeName)
+        {
+            return x => x;
+        }
+
+        public ISymbolTranslator GetTranslatorForNestedTypes(string containerTypeName)
+        {
+            return this;
+        }
+
+        public string TranslateType(string typeName)
+        {
+            return typeName;
+        }
+    }
+
+    class DictBasedSymbolTranslator : ISymbolTranslator
+    {
+        private Dictionary<string, TypeMapping> mapping;
+
+        private static bool IsObfuscated(string name)
+        {
+            return name.StartsWith("#=q") || name == "Vector2i";
+        }
+
+        public DictBasedSymbolTranslator(Dictionary<string, TypeMapping> mapping)
+        {
+            this.mapping = mapping;
+        }
+
+        public Func<string, string> GetFieldTranslator(string typeName)
+        {
+            if (IsObfuscated(typeName))
+            {
+                return x => mapping[typeName].fieldEquivalences[x];
+            }
+            else
+            {
+                return x => x;
+            }
+        }
+
+        public Func<string, string> GetMethodTranslator(string typeName)
+        {
+            if (IsObfuscated(typeName))
+            {
+                return x => mapping[typeName].methodEquivalences[x];
+            }
+            else
+            {
+                return x => x;
+            }
+        }
+
+        public ISymbolTranslator GetTranslatorForNestedTypes(string containerTypeName)
+        {
+            if (IsObfuscated(containerTypeName))
+            {
+                return new DictBasedSymbolTranslator(mapping[containerTypeName].nestedTypeEquivalences);
+            }
+            else
+            {
+                return new NoOpSymbolTranslator();
+            }
+        }
+
+        public string TranslateType(string typeName)
+        {
+            if (IsObfuscated(typeName))
+            {
+                return mapping[typeName].typeName;
+            }
+            else
+            {
+                return typeName;
+            }
+        }
+    }
+
     class Patcher
     {
         private static readonly string[] PATCHER_ATTRIBUTE_NAMES = { "DecoyAttribute", "ReplacedAttribute", "InjectedAttribute" };
@@ -49,7 +143,7 @@ namespace SpacechemPatch
 
         private delegate TypeDefinition TypeFinder(string @namespace, string typeName);
 
-        private void CollectReplacementsForTypes(IEnumerable<TypeDefinition> typeDefinitions, TypeFinder typeFinder)
+        private void CollectReplacementsForTypes(IEnumerable<TypeDefinition> typeDefinitions, TypeFinder typeFinder, ISymbolTranslator symbolTranslator)
         {
             foreach (KeyValuePair<TypeDefinition, CustomAttribute> typePair in FindAnnotated(typeDefinitions, "DecoyAttribute"))
             {
@@ -57,7 +151,8 @@ namespace SpacechemPatch
                 CustomAttribute decoyAttribute = typePair.Value;
                 string @namespace = GetAttributeFieldValue(decoyAttribute, "namespace", "");
                 string scrambledName = (string)decoyAttribute.ConstructorArguments[0].Value;
-                TypeDefinition targetType = typeFinder(@namespace, scrambledName);
+                string translatedScrambledName = symbolTranslator.TranslateType(scrambledName);
+                TypeDefinition targetType = typeFinder(@namespace, translatedScrambledName);
                 typeReplacements.Add(type.FullName, target.ImportReference(targetType));
 
                 if (type.GenericParameters.Count > 0)
@@ -70,22 +165,23 @@ namespace SpacechemPatch
                     genericParameterReplacements.Add(type.FullName, genericReplacementsForThisType);
                 }
 
-                CollectMethodReplacementsInType(type, targetType);
-                CollectFieldReplacementsInType(type, targetType);
+                CollectMethodReplacementsInType(type, targetType, symbolTranslator.GetMethodTranslator(scrambledName));
+                CollectFieldReplacementsInType(type, targetType, symbolTranslator.GetFieldTranslator(scrambledName));
 
                 // Recurse for nested types.
-                CollectReplacementsForTypes(type.NestedTypes, (dummy, typeName) => targetType.NestedTypes.First(t => t.Name == typeName));
+                CollectReplacementsForTypes(type.NestedTypes, (dummy, typeName) => targetType.NestedTypes.First(t => t.Name == typeName), symbolTranslator.GetTranslatorForNestedTypes(scrambledName));
             }
         }
 
-        private void CollectMethodReplacementsInType(TypeDefinition sourceType, TypeDefinition targetType)
+        private void CollectMethodReplacementsInType(TypeDefinition sourceType, TypeDefinition targetType, Func<string, string> nameTranslator)
         {
             foreach (KeyValuePair<MethodDefinition, CustomAttribute> methodPair in FindAnnotated(sourceType.Methods, "ReplacedAttribute", "DecoyAttribute"))
             {
                 MethodDefinition decoyMethod = methodPair.Key;
                 CustomAttribute decoyMethodAttribute = methodPair.Value;
                 string targetMethodName = (string)decoyMethodAttribute.ConstructorArguments[0].Value;
-                MethodDefinition targetMethod = targetType.Methods.First(method => PartialMethodMatch(method, decoyMethod, targetMethodName));
+                string translatedTargetMethodName = nameTranslator(targetMethodName);
+                MethodDefinition targetMethod = targetType.Methods.First(method => PartialMethodMatch(method, decoyMethod, translatedTargetMethodName));
                 methodReplacements.Add(decoyMethod.FullName, target.ImportReference(targetMethod));
             }
         }
@@ -96,7 +192,7 @@ namespace SpacechemPatch
             {
                 return false;
             }
-            for (int i=0; i<candidateMethod.Parameters.Count; i++)
+            for (int i = 0; i < candidateMethod.Parameters.Count; i++)
             {
                 TypeReference sourceParamType = candidateMethod.Parameters[i].ParameterType;
                 TypeReference targetParamType = decoyMethod.Parameters[i].ParameterType;
@@ -108,21 +204,22 @@ namespace SpacechemPatch
             return true;
         }
 
-        private void CollectFieldReplacementsInType(TypeDefinition sourceType, TypeDefinition targetType)
+        private void CollectFieldReplacementsInType(TypeDefinition sourceType, TypeDefinition targetType, Func<string, string> nameTranslator)
         {
             foreach (KeyValuePair<FieldDefinition, CustomAttribute> fieldPair in FindAnnotated(sourceType.Fields, "DecoyAttribute"))
             {
                 FieldDefinition decoyField = fieldPair.Key;
                 CustomAttribute decoyFieldAttribute = fieldPair.Value;
                 string scrambledFieldName = (string)decoyFieldAttribute.ConstructorArguments[0].Value;
-                FieldDefinition targetField = targetType.Fields.First(field => field.Name == scrambledFieldName);
+                string translatedScrambledFieldName = nameTranslator(scrambledFieldName);
+                FieldDefinition targetField = targetType.Fields.First(field => field.Name == translatedScrambledFieldName);
                 fieldReplacements.Add(decoyField.FullName, target.ImportReference(targetField));
             }
         }
 
-        private void CollectReplacements()
+        private void CollectReplacements(ISymbolTranslator symbolTranslator)
         {
-            CollectReplacementsForTypes(source.Types, FindTypeDefinition);
+            CollectReplacementsForTypes(source.Types, FindTypeDefinition, symbolTranslator);
         }
 
         private TypeDefinition FindTypeDefinition(string @namespace, string name)
@@ -154,10 +251,10 @@ namespace SpacechemPatch
             fieldReplacements.Add(originalInSource.Fields[0].FullName, originalType.Fields[0]);
         }
 
-        public void ApplyPatches(IEnumerable<Patch> enabledPatches)
+        public void ApplyPatches(IEnumerable<Patch> enabledPatches, ISymbolTranslator symbolTranslator)
         {
             InitOriginalType();
-            CollectReplacements();
+            CollectReplacements(symbolTranslator);
             // We already have the list of types we should check for replacement methods, it's the contents of
             // typeReplacements. This dictionary will be modified during fixups, though, so to keep things
             // consistent, iterate on a copy instead of the field itself.
@@ -181,12 +278,11 @@ namespace SpacechemPatch
             {
                 MethodDefinition replacementMethod = methodPair.Key;
                 CustomAttribute replacedAttribute = methodPair.Value;
-                string scrambledMethodName = (string)replacedAttribute.ConstructorArguments[0].Value;
                 IEnumerable<Patch> patchesToEnableFor = from attrib in replacedAttribute.ConstructorArguments[1].Value as CustomAttributeArgument[]
                                                         select (Patch)attrib.Value;
                 if (patchesToEnableFor.Count() == 0 || patchesToEnableFor.Any(patch => enabledPatches.Contains(patch)))
                 {
-                    MethodDefinition targetMethod = targetType.Methods.First(method => method.Name == scrambledMethodName && method.Parameters.Count == replacementMethod.Parameters.Count);
+                    MethodDefinition targetMethod = (MethodDefinition)methodReplacements[replacementMethod.FullName];
                     if (GetAttributeFieldValue(replacedAttribute, "KeepOriginal", false))
                     {
                         SaveOriginalMethod(replacementMethod, targetMethod, replacedAttribute);

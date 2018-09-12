@@ -74,23 +74,34 @@ namespace SpacechemPatch
                 return;
             }
 
-            if (!File.Exists(originalExePath) && ExecutableUtils.IsOriginalExe(currentExePath))
+            if (!File.Exists(originalExePath) && ExecutableUtils.IsRecognizedExe(currentExePath))
             {
                 File.Copy(currentExePath, originalExePath);
             }
 
-            if (!ExecutableUtils.IsOriginalExe(originalExePath))
+            if (!ExecutableUtils.IsRecognizedExe(originalExePath))
             {
                 MessageBox.Show("Unrecognized SpaceChem executable, patching will not be executed");
                 return;
             }
+
+            bool isSteam = ExecutableUtils.IsSteamExe(originalExePath);
 
             using (ModuleDefinition spacechemAssembly = ModuleDefinition.ReadModule(originalExePath))
             using (ModuleDefinition jsonAssembly = ModuleDefinition.ReadModule(Path.Combine(gameFolder, "Newtonsoft.Json.dll")))
             using (ModuleDefinition ownAssembly = ModuleDefinition.ReadModule(System.Reflection.Assembly.GetExecutingAssembly().Location))
             {
                 Patcher patcher = new Patcher(ownAssembly, spacechemAssembly, jsonAssembly);
-                patcher.ApplyPatches(enabledPatches);
+                ISymbolTranslator translator;
+                if (isSteam)
+                {
+                    translator = new NoOpSymbolTranslator();
+                }
+                else
+                {
+                    translator = new DictBasedSymbolTranslator(Equivalences.GOG_MAPPINGS);
+                }
+                patcher.ApplyPatches(enabledPatches, translator);
                 spacechemAssembly.Write(patchedExePath);
             }
 
@@ -364,11 +375,11 @@ namespace SpacechemPatch
 
         private void buttonRestore_Click(object sender, EventArgs e)
         {
-            if (ExecutableUtils.IsOriginalExe(currentExePath))
+            if (ExecutableUtils.IsRecognizedExe(currentExePath))
             {
                 MessageBox.Show("Original exe is already in place");
             }
-            else if (ExecutableUtils.IsOriginalExe(originalExePath))
+            else if (ExecutableUtils.IsRecognizedExe(originalExePath))
             {
                 File.Delete(currentExePath);
                 File.Move(originalExePath, currentExePath);
