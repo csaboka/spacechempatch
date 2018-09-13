@@ -2,6 +2,13 @@
 
 This program will modify your [SpaceChem](http://www.zachtronics.com/spacechem/) game executable to add new features to the game.
 
+## Supported game versions
+
+Development is done against the Steam version of the game that includes the 63 Corvi DLC, so this is the officially supported
+version. The GOG version of the game is also supported in an experimental basis. We would like to get feedback from players
+who have the GOG version before considering the support mature. If you have the GOG version, please try the patcher and
+send your feedback to the development team; both positive and negative feedback is valuable at this point.
+
 ## Running it
 
 There is a simple GUI. The program tries to automatically detect the steam installation folder, if it can't it must be selected manually.

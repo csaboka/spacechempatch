@@ -190,6 +190,30 @@ internal static class ElementUtil
 The `INSTANCE` field of `Original` is just a convenience to get an Original reference. You can also
 write `(Original) null` and it will have the same effect. The passed value is ignored anyway.
 
+## GOG version support
+
+The patcher was originally written to only handle the Steam executable of the game, then support
+for the GOG version was added later. We didn't want to update all existing patches to add GOG
+obfuscated names, so an alternative approach was chosen. The mapping between a Steam obfuscated
+symbol and a GOG obfuscated symbol is defined in the Equivalences class, then the patcher uses
+this mapping to translate between the two names if it needs to patch a GOG executable. The
+mapping is built automatically, but the mapper tool has some limitations that sometimes
+necessitate manual editing. See the README.md file of the ElementMatcher project for more details.
+
+What this means to you is that you should either update the mapping file (if you have a GOG
+executable and you're willing to match things up manually), or notify another developer
+who has access to a GOG executable in the following cases:
+
+* You add a new decoy or replacement for a nested type, or for any member of a nested type.
+* You add a new decoy for an enum type.
+* You add a new decoy or replacement for something else, and the obfuscated Steam name
+  doesn't show up in the uncommented part of Equivalences.
+
+Don't worry too much about double-checking GOG support, though. Before each release,
+we'll test the code against a GOG executable, and any missing mappings will trigger
+obvious crashes. By debugging those crashes, we can figure out what's missing from
+the mapping and add it manually.
+
 ## Limitations
 
 The following things don't work at the moment. If you need them, we can implement them for you.
