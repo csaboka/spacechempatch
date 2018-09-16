@@ -82,12 +82,14 @@
     <Compile Include="Patches\AbstractDraggablePrinter.cs" />
     <Compile Include="Patches\AbstractFeature.cs" />
     <Compile Include="Patches\AbstractInput.cs" />
+    <Compile Include="Patches\AbstractInstruction.cs" />
     <Compile Include="Patches\AbstractPipe.cs" />
     <Compile Include="Patches\AbstractPuzzle.cs" />
     <Compile Include="Patches\AbstractReactorType.cs" />
     <Compile Include="Patches\AbstractUiElement.cs" />
     <Compile Include="Patches\AngleInRadians.cs" />
     <Compile Include="Patches\BondInstruction.cs" />
+    <Compile Include="Patches\BondType.cs" />
     <Compile Include="Patches\BoundingBox.cs" />
     <Compile Include="Patches\Constants.cs" />
     <Compile Include="Patches\CoordsLayer.cs" />
@@ -100,6 +102,7 @@
     <Compile Include="Patches\InputPipe.cs" />
     <Compile Include="Patches\InstructionsPanel.cs" />
     <Compile Include="Patches\JsonPropertyAttribute.cs" />
+    <Compile Include="Patches\KeyboardButton.cs" />
     <Compile Include="Patches\LargeOutputReactorArea.cs" />
     <Compile Include="Patches\MathUtils.cs" />
     <Compile Include="Patches\MinusOnlyBonderFeature.cs" />
@@ -142,6 +145,7 @@
     <Compile Include="Patches\Puzzle_ResNetResearch.cs" />
     <Compile Include="Patches\Reactor.cs" />
     <Compile Include="Patches\ReactorLayer.cs" />
+    <Compile Include="Patches\ReactorProductionDisassembly.cs" />
     <Compile Include="Patches\ReactorResearchCustom.cs" />
     <Compile Include="Patches\ReactorScreen.cs" />
     <Compile Include="Patches\ReactorSimulationEngine.cs" />

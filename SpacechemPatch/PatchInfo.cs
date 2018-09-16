@@ -33,6 +33,8 @@ namespace SpacechemPatch
             AddDef(Patch.AllowGreekInResNetProdAndSandbox, PatchType.Enhancement,
                    "Adds full support for Greek sensors/annotations in ResearchNet production and sandbox assignments",
                    Patch.AllowGreekInResNet);
+            AddDef(Patch.DefaultDebondInDisassemblyReactors, PatchType.Enhancement,
+                   "Replace the Bond+ instruction with Bond- in disassembly reactor toolbars, since Bond+ is useless in them");
             AddDef(Patch.FixWrongOutput, PatchType.Bugfix, "Fixes the \"Wrong Output\" bug");
             AddDef(Patch.MoreFeaturesInResNetResearch, PatchType.Cheat,
                 "Adds the ability to have more fusers, splitters, sensors and quantum tunnels " +

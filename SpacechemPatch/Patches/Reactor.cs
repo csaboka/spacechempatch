@@ -12,6 +12,8 @@ namespace SpacechemPatch.Patches
         public MoleculeList moleculeList;
         [Decoy("#=qh3XgfGHlRPf7$f$mMuy6AA==")]
         public Dictionary<ReactorLayer, Waldo> waldos;
+        [Decoy("#=q9jpD6KA9Jz2vQ6PWazoFrQ==")]
+        public ReactorScreen reactorScreen;
 
         [Decoy(".ctor")]
         public Reactor(ReactorScreen reactorScreen, Vector2i position, Vector2i dimensions, ReactorLayout genum2_1, bool bool_2 = false)

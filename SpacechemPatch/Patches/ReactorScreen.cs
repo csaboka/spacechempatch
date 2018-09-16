@@ -14,6 +14,8 @@ namespace SpacechemPatch.Patches
         public InstructionsPanel instructionsPanel;
         [Decoy("#=qcP5VH5B2Hp3JLQ3d7aJr7g==")]
         public ReactorSimulationEngine simulationEngine;
+        [Decoy("#=qewhLLetiJUEdPF9Z5MRVhA==")]
+        public AbstractReactorType reactorType;
 
         [Decoy(".ctor")]
         public ReactorScreen(AbstractReactorType reactoryType)

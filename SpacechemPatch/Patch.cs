@@ -9,6 +9,7 @@ namespace SpacechemPatch
     {
         AllowGreekInResNet,
         AllowGreekInResNetProdAndSandbox,
+        DefaultDebondInDisassemblyReactors,
         FixWrongOutput,
         MoreFeaturesInResNetResearch,
         ResNetProdCustomAmount,
