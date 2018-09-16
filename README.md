@@ -22,6 +22,9 @@ It'll then be possible to choose the patches to apply, from the list below
   In the vanilla game it's possible to get Greek annotations/sensors in ResNet productions/sandbox, by copying a reactor from EotL, so the latter
   patch is merely a QoL one. It's not possible to have Greek sensors in ResNet research assignment, though, so the former patch makes the game
   easier and it's labeled as "Cheat".
+* `DefaultDebondInDisassemblyReactors`: In disassembly reactors, the Bond+ instruction is always ignored because the bonders
+  can only remove bonds in them. This patch replaces Bond+ with Bond- in the instruction toolbar for these reactors, so
+  you don't need to manually switch them to the Bond- state.
 * `FixWrongOutput`: The "wrong output" bug is fixed. The game is known to sometimes accept a molecule for output even when it doesn't
   completely match the expected molecule. The easiest way to reproduce this is to open the "Swapite" puzzle in ResearchNet 2-11-1:
   the game will accept the input molecule without any changes. This change will apply a different molecule matching algorithm that
