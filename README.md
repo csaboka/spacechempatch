@@ -49,6 +49,10 @@ It'll then be possible to choose the patches to apply, from the list below
   Priority is useful for cycles optimization: in some cases, you can save one cycle by making sure that the reactor that's outputting
   a molecule has lower priority than the reactor accepting it, allowing the molecule to be accepted in the same cycle.
   Inputs' and outputs' priority isn't shown, as they both trigger before anything else.
+* `SuperFastForward`: Allows you to run the simulation at maximum speed (i.e. whatever your computer can handle) by holding down Ctrl
+  and clicking on the fastest speed button in the bottom left corner. (Technically, the simulation is set up to run at 10,000 cycles
+  per second, but even today's computers won't be able to run the simulation that quickly.) Expect heavy lagging when triggering this
+  speed.
 
 ## Compatibility Notes
 

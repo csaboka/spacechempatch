@@ -48,6 +48,8 @@ namespace SpacechemPatch
                    "Shows the cycles number even if it's over 100k, by shortening it");
             AddDef(Patch.ShowReactorPriority, PatchType.Enhancement,
                 "Shows the priority of reactors, tanks and printers in the tooltip.");
+            AddDef(Patch.SuperFastForward, PatchType.Enhancement,
+                   "Runs the simulation at maximum speed if you click on the fastest speed button while holding down Ctrl");
         }
 
         private PatchInfo(PatchType type, string description, Patch[] conflictingPatches)

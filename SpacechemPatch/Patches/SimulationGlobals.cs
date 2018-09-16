@@ -10,5 +10,10 @@ namespace SpacechemPatch.Patches
     {
         [Decoy("#=qiJEVeNpgE3SzfB6flblo$Q==")]
         public static float partialCycle;
+
+        [Decoy("#=qlrlsVc2m2To5$LC_pd0kjQ==")]
+        public static void SetSimulatorSpeed(SimulatorSpeed newSpeed)
+        {
+        }
     }
 }

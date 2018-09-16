@@ -16,6 +16,7 @@ namespace SpacechemPatch
         ReverseOrderCustomResNetAssignments,
         ShowBonderPriority,
         ShowOver100kCycles,
-        ShowReactorPriority
+        ShowReactorPriority,
+        SuperFastForward
     }
 }

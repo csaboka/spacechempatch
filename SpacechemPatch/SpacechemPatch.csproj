@@ -90,10 +90,12 @@
     <Compile Include="Patches\AngleInRadians.cs" />
     <Compile Include="Patches\BondInstruction.cs" />
     <Compile Include="Patches\BondType.cs" />
+    <Compile Include="Patches\BottomLeftButtonsGroup.cs" />
     <Compile Include="Patches\BoundingBox.cs" />
     <Compile Include="Patches\Constants.cs" />
     <Compile Include="Patches\CoordsLayer.cs" />
     <Compile Include="Patches\CustomResNetPuzzleButton.cs" />
+    <Compile Include="Patches\DefensePuzzle.cs" />
     <Compile Include="Patches\DraggableStorageTank.cs" />
     <Compile Include="Patches\FeatureType.cs" />
     <Compile Include="Patches\FuseInstruction.cs" />
@@ -103,6 +105,7 @@
     <Compile Include="Patches\InstructionsPanel.cs" />
     <Compile Include="Patches\JsonPropertyAttribute.cs" />
     <Compile Include="Patches\KeyboardButton.cs" />
+    <Compile Include="Patches\KeyboardHelper.cs" />
     <Compile Include="Patches\LargeOutputReactorArea.cs" />
     <Compile Include="Patches\MathUtils.cs" />
     <Compile Include="Patches\MinusOnlyBonderFeature.cs" />
@@ -161,6 +164,7 @@
     <Compile Include="Patches\SensorFeature.cs" />
     <Compile Include="Patches\SensorInstruction.cs" />
     <Compile Include="Patches\SimulationGlobals.cs" />
+    <Compile Include="Patches\SimulatorSpeed.cs" />
     <Compile Include="Patches\SolutionManager.cs" />
     <Compile Include="Patches\SplitInstruction.cs" />
     <Compile Include="Patches\SplitterFeature.cs" />
