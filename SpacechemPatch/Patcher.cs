@@ -268,6 +268,26 @@ namespace SpacechemPatch
                     // We can only have replacement methods when the target of the parent type
                     // is inside SpacheChem.exe, and therefore is a method definition, not a reference.
                     ReplaceMethodsOnType(decoyType, targetType, enabledPatches);
+                    if (decoyType.IsEnum)
+                    {
+                        HandleEnumFieldInjections(decoyType, enabledPatches);
+                    }
+                }
+            }
+        }
+
+        private void HandleEnumFieldInjections(TypeDefinition source, IEnumerable<Patch> enabledPatches)
+        {
+            foreach (KeyValuePair<FieldDefinition, CustomAttribute> fieldPair in FindAnnotated(source.Fields, "InjectedAttribute"))
+            {
+                FieldDefinition fieldToInject = fieldPair.Key;
+                CustomAttribute injectedAttribute = fieldPair.Value;
+                CustomAttributeArgument[] patchesArgument = injectedAttribute.Fields.First(att => att.Name == "Patches").Argument.Value as CustomAttributeArgument[];
+                IEnumerable<Patch> patchesToEnableFor = from patchArgument in patchesArgument
+                                                        select (Patch)patchArgument.Value;
+                if (patchesToEnableFor.Any(patch => enabledPatches.Contains(patch)))
+                {
+                    InjectField(fieldToInject);
                 }
             }
         }
@@ -575,6 +595,13 @@ namespace SpacechemPatch
             FieldDefinition newField = new FieldDefinition(field.Name, field.Attributes, fixedUpFieldType);
             CopyCustomAttributes(field, newField);
             targetType.Fields.Add(newField);
+            // Handle enum fields. This must happen after the field is already added to the target type
+            // and therefore has a valid module reference. When the field has no module, the Constant
+            // property can't be updated properly.
+            if (field.HasConstant)
+            {
+                newField.Constant = field.Constant;
+            }
             fieldReplacements[field.FullName] = newField;
             return newField;
         }
