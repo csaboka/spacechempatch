@@ -35,6 +35,9 @@ It'll then be possible to choose the patches to apply, from the list below
   the sensors detects the specified element. Quantum tunnels work in a "round-robin" fashion: tunnel #1 will teleport atoms to
   tunnel #2, tunnel #2 will teleport to tunnel #3 and so on, except for the highest-numbered tunnel, which will teleport to tunnel #1.
   Please read the "Compatibility Notes" section below if you also want to run the original game alongside the modified version.
+* `RemoveYouTubeUpload`: Remove the "Upload to YouTube" option from the solution recording UI. This option hasn't been working
+  for years because it's trying to use services that have been removed by Google. By enabling this patch, the game will simply save the
+  recorded video file on your desktop and won't offer you the broken YouTube upload option.
 * `ResNetProdCustomAmount`: Allows changing the amount of outputs needed for ResNet production puzzles. The amount can be specified in
   the JSON, like for researchs. The output count used by the game is 4x the amount in the file, to keep the 10 -> 40 behaviour of the vanilla game.
 * `ReverseOrderCustomResNetAssignments`: The ResearchNet custom assignments are normally sorted by ascending creation date, meaning

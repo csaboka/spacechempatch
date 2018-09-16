@@ -12,6 +12,7 @@ namespace SpacechemPatch
         DefaultDebondInDisassemblyReactors,
         FixWrongOutput,
         MoreFeaturesInResNetResearch,
+        RemoveYouTubeUpload,
         ResNetProdCustomAmount,
         ReverseOrderCustomResNetAssignments,
         ShowBonderPriority,

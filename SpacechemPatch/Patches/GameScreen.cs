@@ -13,5 +13,10 @@ namespace SpacechemPatch.Patches
         {
             return null;
         }
+
+        [Decoy("#=qW$Hysl4nzW7knqDRBYFlVA==")]
+        public static void RemoveTopmostScreen()
+        {
+        }
     }
 }

@@ -11741,6 +11741,10 @@ namespace SpacechemPatch
             ["#=qtXuEH31$Qt9ie_6L9YKlTA=="] = new TypeMapping()
             {
                 typeName = "#=qo$mwG7BbEptJpMcCBvGW7g=="
+            },
+            ["#=qemlibnROmcyhIxcbT6K1ryf3zk0HbkC8fGl_FK$lJyA="] = new TypeMapping()
+            {
+                typeName = "#=q0cebqUOFU_WefUEJ6ouUB07cpSgPqaqDf9oywNsfEBg="
             }
 
             // Unmatched top-level non-enum types: #=q6nFQ7j0czfMML633KX3NXw==, #=qBqzSCxNWjNPtABUjoHPdXdmmMLWNmfIdJZwq3qjbt$8=, #=qBW3QpGFIuxV5sSCs5OT5dbAwAeGDje_UNAdyp8bmiII=, #=qG4fRLTF7VgPjIT82MmidAKaNZJLG$uA83rXzQGp40b0=, #=qnH6iBO6MQt97JINRbHwrsw==, #=qqC60YH9eL7nVxVeHV2L4D707tbZfxtYtT3Yl9jgfZj_W39CBigyUDQPzPEj4I01c, #=qy0XryZJ1YjnJepAdJT57$Q==

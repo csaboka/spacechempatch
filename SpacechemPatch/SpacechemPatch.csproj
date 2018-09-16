@@ -81,6 +81,7 @@
     <Compile Include="Patches\AbstractDraggable.cs" />
     <Compile Include="Patches\AbstractDraggablePrinter.cs" />
     <Compile Include="Patches\AbstractFeature.cs" />
+    <Compile Include="Patches\AbstractGame.cs" />
     <Compile Include="Patches\AbstractInput.cs" />
     <Compile Include="Patches\AbstractInstruction.cs" />
     <Compile Include="Patches\AbstractPipe.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="Patches\BondType.cs" />
     <Compile Include="Patches\BottomLeftButtonsGroup.cs" />
     <Compile Include="Patches\BoundingBox.cs" />
+    <Compile Include="Patches\CapturedVideo.cs" />
     <Compile Include="Patches\Constants.cs" />
     <Compile Include="Patches\CoordsLayer.cs" />
     <Compile Include="Patches\CustomResNetPuzzleButton.cs" />
@@ -152,6 +154,7 @@
     <Compile Include="Patches\ReactorResearchCustom.cs" />
     <Compile Include="Patches\ReactorScreen.cs" />
     <Compile Include="Patches\ReactorSimulationEngine.cs" />
+    <Compile Include="Patches\RecordingDestinationDialog.cs" />
     <Compile Include="Patches\ResearchNetCustomAssignmentsScreen.cs" />
     <Compile Include="Patches\ResearchNetProductionPuzzleDefinition.cs" />
     <Compile Include="Patches\ResearchNetPuzzleDefinition.cs" />
@@ -161,11 +164,14 @@
     <Compile Include="Patches\ResNetResearchEditorScreen.cs" />
     <Compile Include="Patches\Resource.cs" />
     <Compile Include="Patches\ResourceUtils.cs" />
+    <Compile Include="Patches\RunState.cs" />
+    <Compile Include="Patches\Score.cs" />
     <Compile Include="Patches\SensorFeature.cs" />
     <Compile Include="Patches\SensorInstruction.cs" />
     <Compile Include="Patches\SimulationGlobals.cs" />
     <Compile Include="Patches\SimulatorSpeed.cs" />
     <Compile Include="Patches\SolutionManager.cs" />
+    <Compile Include="Patches\SpaceChemGame.cs" />
     <Compile Include="Patches\SplitInstruction.cs" />
     <Compile Include="Patches\SplitterFeature.cs" />
     <Compile Include="Patches\SpriteBatch.cs" />
@@ -192,6 +198,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Patches\SolutionRecordingScreen.cs" />
     <Compile Include="TypeMapping.cs" />
   </ItemGroup>
   <ItemGroup>

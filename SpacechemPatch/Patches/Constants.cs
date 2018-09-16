@@ -10,5 +10,7 @@ namespace SpacechemPatch.Patches
     {
         [Decoy("#=qFtPAlMBAgbAujkVFYaKG8w==")]
         public static bool unknown1;
+        [Decoy("#=qfpQbWzoxJ$ye5a3QjKCnPw==")]
+        public static SpaceChemGame spaceChemGame;
     }
 }
