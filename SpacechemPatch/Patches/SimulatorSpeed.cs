@@ -13,7 +13,7 @@ namespace SpacechemPatch.Patches
         Fast = 15, // 0x000F
         DefenseRealtime = 200, // 0x00C8
         Realtime = 400, // 0x0190
-        [Injected(Patches = new Patch[]{Patch.SuperFastForward})]
-        SuperFastForward = 10_000
+        [Injected(Patches = new Patch[] { Patch.SuperFastForward })]
+        SuperFastForward = 32_767   //0x7FFF
     }
 }
