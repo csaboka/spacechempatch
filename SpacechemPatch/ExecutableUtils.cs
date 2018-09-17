@@ -9,8 +9,8 @@ namespace SpacechemPatch
 {
     static class ExecutableUtils
     {
-        private const string SteamExeSHA1 = "mGvK5S+QaCd6d9WLVVvweqcOcuAzidc8gXoRdbyr304=";
-        private const string GogExeSHA1 = "u4jC5h8SZ/5HrpseHNelRP/JVkC1/3UjN0v9FYtBpSU=";
+        private const string SteamExeSHA256 = "mGvK5S+QaCd6d9WLVVvweqcOcuAzidc8gXoRdbyr304=";
+        private const string GogExeSHA256 = "u4jC5h8SZ/5HrpseHNelRP/JVkC1/3UjN0v9FYtBpSU=";
 
         public static string GetDefaultPath()
         {
@@ -49,12 +49,12 @@ namespace SpacechemPatch
         public static bool IsRecognizedExe(string exePath)
         {
             string hashString = HashExe(exePath);
-            return (hashString == SteamExeSHA1 || hashString == GogExeSHA1);
+            return (hashString == SteamExeSHA256 || hashString == GogExeSHA256);
         }
 
         public static bool IsSteamExe(string exePath)
         {
-            return HashExe(exePath) == SteamExeSHA1;
+            return HashExe(exePath) == SteamExeSHA256;
         }
 
     }
