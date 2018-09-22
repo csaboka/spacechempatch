@@ -15,7 +15,11 @@ namespace SpacechemPatch.Patches
         public static void SetSimulatorSpeed(SimulatorSpeed newSpeed)
         {
         }
-
+        [Decoy("#=q$Ny1aQDzjuVBPAZI$vtgEw==")]
+        public static RunState GetRunState()
+        {
+            return RunState.Stopped;
+        }
         [Decoy("#=qQ3mOqdihhsB6qb23lBtIbw==")]
         public static void SetRunState(RunState newRunState)
         {

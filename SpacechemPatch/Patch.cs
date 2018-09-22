@@ -18,6 +18,7 @@ namespace SpacechemPatch
         ShowBonderPriority,
         ShowOver100kCycles,
         ShowReactorPriority,
+        StricterCollisionChecks,
         SuperFastForward
     }
 }

@@ -11,7 +11,20 @@ namespace SpacechemPatch.Patches
         [Decoy(".ctor")]
         public ReactorSimulationEngine(Reactor reactor)
         {
+        }
 
+        [Replaced("#=qhuLH3W6G8OouJ4C7pmV0hA==", Patch.StricterCollisionChecks, KeepOriginal = true, NewNameForOriginal = "OriginalDoCollisionChecks")]
+        public void DoCollisionChecks()
+        {
+            // Don't bother with duplicate checks if the simulation is already paused because of an earlier collision.
+            if (SimulationGlobals.GetRunState() == RunState.Running)
+            {
+                OriginalDoCollisionChecks();
+            }
+        }
+
+        public void OriginalDoCollisionChecks()
+        {
         }
     }
 }

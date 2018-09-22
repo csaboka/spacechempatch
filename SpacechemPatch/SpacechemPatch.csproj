@@ -99,11 +99,13 @@
     <Compile Include="Patches\CoordsLayer.cs" />
     <Compile Include="Patches\CustomResNetPuzzleButton.cs" />
     <Compile Include="Patches\DefensePuzzle.cs" />
+    <Compile Include="Patches\Direction.cs" />
     <Compile Include="Patches\DraggableStorageTank.cs" />
     <Compile Include="Patches\FeatureType.cs" />
     <Compile Include="Patches\FuseInstruction.cs" />
     <Compile Include="Patches\FuserFeature.cs" />
     <Compile Include="Patches\HorizontalAlignment.cs" />
+    <Compile Include="Patches\InputInstruction.cs" />
     <Compile Include="Patches\InputPipe.cs" />
     <Compile Include="Patches\InstructionsPanel.cs" />
     <Compile Include="Patches\JsonPropertyAttribute.cs" />

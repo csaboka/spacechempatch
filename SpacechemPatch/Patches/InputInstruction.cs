@@ -5,8 +5,8 @@ using System.Text;
 
 namespace SpacechemPatch.Patches
 {
-    [Decoy("#=qmRKruzdPDMsXNhEp62qMReG6mf4FO6qI_QHkxfiyNk5F01P8jqqy6oBWleFKbp0z")]
-    internal sealed class SplitInstruction : AbstractInstruction
+    [Decoy("#=qoinRHCGTiQixtVtIh0H07yWk_nNdyBrOGhz8ILY2PSRS5jaTYN1Cehgw_BItc122")]
+    internal sealed class InputInstruction : AbstractInstruction
     {
         [Replaced("#=qIURk5R1i5M$y_uNmDTNhPQ==", Patch.StricterCollisionChecks, KeepOriginal = true, NewNameForOriginal = "OriginalActivate")]
         public override Direction Activate(Waldo waldo)
