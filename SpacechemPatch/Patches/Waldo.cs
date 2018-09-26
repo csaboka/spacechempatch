@@ -22,5 +22,11 @@ namespace SpacechemPatch.Patches
         {
 
         }
+
+        [Decoy("#=qR3WuvRHzZw1vww9iqq$mQw==")]
+        public void Move()
+        {
+
+        }
     }
 }

@@ -13,5 +13,11 @@ namespace SpacechemPatch.Patches
         {
 
         }
+
+        [Decoy("#=qiOxgsKMOsYVwecwafCU5Aw==")]
+        public void PrepareForNewCycle()
+        {
+
+        }
     }
 }

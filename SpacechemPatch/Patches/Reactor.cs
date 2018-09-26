@@ -38,5 +38,20 @@ namespace SpacechemPatch.Patches
         {
             return null;
         }
+
+        [Replaced("#=qWRMFkk4TfVLPMRWPoTWvsA==", Patch.StricterCollisionChecks)]
+        public void OnCyclePhase1()
+        {
+            foreach (Molecule molecule in moleculeList)
+                molecule.PrepareForNewCycle();
+            // The next line is our only change. By forcing a collision check after the
+            // molecule positions are finalized but before instructions are executed,
+            // we can catch rotate-based smash attempts.
+            reactorScreen.simulationEngine.DoCollisionChecks();
+            foreach (Waldo waldo in waldos.Values)
+                waldo.Move();
+        }
+
+
     }
 }
