@@ -51,7 +51,7 @@ namespace SpacechemPatch
             AddDef(Patch.ShowReactorPriority, PatchType.Enhancement,
                 "Shows the priority of reactors, tanks and printers in the tooltip.");
             AddDef(Patch.StricterCollisionChecks, PatchType.Bugfix,
-                "Introduces more collision checks to the simulation, fixing most collision bugs.");
+                "Fix most collision bugs by introducing some new collision checks and changing the timing of some others.");
             AddDef(Patch.SuperFastForward, PatchType.Enhancement,
                    "Runs the simulation at maximum speed if you click on the fastest speed button while holding down Ctrl");
         }

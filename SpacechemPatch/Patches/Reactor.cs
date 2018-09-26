@@ -47,7 +47,7 @@ namespace SpacechemPatch.Patches
             // The next line is our only change. By forcing a collision check after the
             // molecule positions are finalized but before instructions are executed,
             // we can catch rotate-based smash attempts.
-            reactorScreen.simulationEngine.DoCollisionChecks();
+            reactorScreen.simulationEngine.DoForcedCollisionChecks();
             foreach (Waldo waldo in waldos.Values)
                 waldo.Move();
         }

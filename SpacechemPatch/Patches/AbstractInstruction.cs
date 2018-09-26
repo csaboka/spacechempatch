@@ -11,7 +11,7 @@ namespace SpacechemPatch.Patches
         [Injected]
         protected void ForceCollisionCheck()
         {
-            ownerReactor.reactorScreen.simulationEngine.DoCollisionChecks();
+            ownerReactor.reactorScreen.simulationEngine.DoForcedCollisionChecks();
         }
 
         [Decoy("#=qIURk5R1i5M$y_uNmDTNhPQ==")]
