@@ -10,6 +10,7 @@ namespace SpacechemPatch
         AllowGreekInResNet,
         AllowGreekInResNetProdAndSandbox,
         DefaultDebondInDisassemblyReactors,
+        FixTelekinesis,
         FixWrongOutput,
         MoreFeaturesInResNetResearch,
         RemoveYouTubeUpload,

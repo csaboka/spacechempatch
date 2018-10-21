@@ -39,6 +39,12 @@ namespace SpacechemPatch.Patches
             return null;
         }
 
+        [Decoy("#=qHfGpWDg52XCeMIMOdiBKAMFXDL67m0oXWMSKfQzzASs=")]
+        public void AddBondEffect(Vector2f position, BondEffectStyle style, bool forRed)
+        {
+
+        }
+      
         [Replaced("#=qWRMFkk4TfVLPMRWPoTWvsA==", Patch.StricterCollisionChecks)]
         public void OnCyclePhase1()
         {
@@ -51,7 +57,5 @@ namespace SpacechemPatch.Patches
             foreach (Waldo waldo in waldos.Values)
                 waldo.Move();
         }
-
-
     }
 }
