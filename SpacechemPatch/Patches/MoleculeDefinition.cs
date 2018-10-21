@@ -136,5 +136,35 @@ namespace SpacechemPatch.Patches
         {
 
         }
+
+        [Decoy("#=qUcmoUVau7Ojk9o6cxOlrfw==")]
+        public void CopyAtomsAndBonds(MoleculeDefinition source)
+        {
+
+        }
+
+        [Decoy("#=qEOwPCzqdYEPHZzccOMAjsQ==")]
+        public BondCount? GetBondCount(PotentialBond potentialBond)
+        {
+            return null;
+        }
+
+        [Decoy("#=qqX78R1WZtC9w50e$D7ubig==")]
+        public bool SetBondCountWithMaxBondsCheck(PotentialBond potentialBond, BondCount bondCount)
+        {
+            return false;
+        }
+
+        [Decoy("#=qh7iU6l7yfahEIFu0I6WHVA==")]
+        public static IEnumerable<MoleculeDefinition> BreakBond(MoleculeDefinition moleculeDefinition, PotentialBond bondToRemove)
+        {
+            return null;
+        }
+
+        [Decoy("#=qCaZyX4916r1WTQ4t11XP8w==")]
+        public void SetBondCount(PotentialBond potentialBond, BondCount? bondCount)
+        {
+
+        }
     }
 }

@@ -8,6 +8,9 @@ namespace SpacechemPatch.Patches
     [Decoy("Vector2i", @namespace = "Impeller")]
     public struct Vector2i
     {
+        [Decoy("#=qGV0w7kQYbQhuIHYpzGvEkA==")]
+        public static readonly Vector2i NULL = new Vector2i();
+
         [Decoy("#=qQeZspJ4Xad5R9_RFi53Asw==")]
         public int x;
         [Decoy("#=qPkNd7qcHpcMBBXqDfc5GPQ==")]

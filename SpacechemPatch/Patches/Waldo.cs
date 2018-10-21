@@ -22,5 +22,11 @@ namespace SpacechemPatch.Patches
         {
 
         }
+
+        [Decoy("#=qUdvZTN40ugU4trowTONjfQ==")]
+        public void GrabDrop()
+        {
+
+        }
     }
 }

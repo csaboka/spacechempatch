@@ -35,6 +35,7 @@ namespace SpacechemPatch
                    Patch.AllowGreekInResNet);
             AddDef(Patch.DefaultDebondInDisassemblyReactors, PatchType.Enhancement,
                    "Replace the Bond+ instruction with Bond- in disassembly reactor toolbars, since Bond+ is useless in them");
+            AddDef(Patch.FixTelekinesis, PatchType.Bugfix, "Fixes the \"Telekinesis\" bug");
             AddDef(Patch.FixWrongOutput, PatchType.Bugfix, "Fixes the \"Wrong Output\" bug");
             AddDef(Patch.MoreFeaturesInResNetResearch, PatchType.Cheat,
                 "Adds the ability to have more fusers, splitters, sensors and quantum tunnels " +

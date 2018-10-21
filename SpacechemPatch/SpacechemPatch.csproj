@@ -90,6 +90,7 @@
     <Compile Include="Patches\AbstractReactorType.cs" />
     <Compile Include="Patches\AbstractUiElement.cs" />
     <Compile Include="Patches\AngleInRadians.cs" />
+    <Compile Include="Patches\BondEffectStyle.cs" />
     <Compile Include="Patches\BondInstruction.cs" />
     <Compile Include="Patches\BondType.cs" />
     <Compile Include="Patches\BottomLeftButtonsGroup.cs" />

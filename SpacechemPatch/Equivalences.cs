@@ -11656,7 +11656,12 @@ namespace SpacechemPatch
                     ["#=qTd598wTpL30A8GqUuGFkdhSGZcGtw8vhkCEuOPZjfj0="] = "#=q65juUjzUlEdp1XnJIX$WivYuGdJl3qTbhoNth$Epgr4=",
                     ["#=qBSpkp4g1gcs3G8qeUnlTEAvDsZNAXSZt0HFSUvl197U="] = "#=qrIT5KPGTJtZ7PMTk1n8uqFQGDNt0QwXPv6CzzoXRt1M=",
                     ["#=qcAI4xoajB5c0nSHhfDrzAw=="] = "#=qsLj4azzXwidTQYGE3Rj5EQ==",
-                    ["#=qsoCro4fIXL_XiE72I3Qawg=="] = "#=qgbYcn6unS$APtMWWtxmEqg=="
+                    ["#=qsoCro4fIXL_XiE72I3Qawg=="] = "#=qgbYcn6unS$APtMWWtxmEqg==",
+                    ["#=qUcmoUVau7Ojk9o6cxOlrfw=="] = "#=qdSqZN$L85N8nO4DNJYzpTw==",
+                    ["#=qEOwPCzqdYEPHZzccOMAjsQ=="] = "#=qrOL0ggnSSW5rp1Rm8yy0ig==",
+                    ["#=qqX78R1WZtC9w50e$D7ubig=="] = "#=qQ$ijIDaoro$pu$6HymKTUw==",
+                    ["#=qh7iU6l7yfahEIFu0I6WHVA=="] = "#=q$CLQXXCRQ4jqzUCnJPNkIw==",
+                    ["#=qCaZyX4916r1WTQ4t11XP8w=="] = "#=quir8t2RfdqEn26RH$fM_qw=="
                 },
                 nestedTypeEquivalences = new Dictionary<string, TypeMapping>()
                 {
@@ -11745,7 +11750,11 @@ namespace SpacechemPatch
             ["#=qemlibnROmcyhIxcbT6K1ryf3zk0HbkC8fGl_FK$lJyA="] = new TypeMapping()
             {
                 typeName = "#=q0cebqUOFU_WefUEJ6ouUB07cpSgPqaqDf9oywNsfEBg="
-            }
+            },
+            ["#=q12z$4f4l7QpZR5agQsrR9VhdD48v$cSJsw1LolJLeIl1J4uDUvJNYGS5T0rTb3vh"] = new TypeMapping()
+            {
+                typeName = "#=q2NRLPZgfZey0JQjkfO$$FvFXE69OZwVyuPeZuQedsqIzU48Hn56EtikI5H0zdeFR"
+            },
 
             // Unmatched top-level non-enum types: #=q6nFQ7j0czfMML633KX3NXw==, #=qBqzSCxNWjNPtABUjoHPdXdmmMLWNmfIdJZwq3qjbt$8=, #=qBW3QpGFIuxV5sSCs5OT5dbAwAeGDje_UNAdyp8bmiII=, #=qG4fRLTF7VgPjIT82MmidAKaNZJLG$uA83rXzQGp40b0=, #=qnH6iBO6MQt97JINRbHwrsw==, #=qqC60YH9eL7nVxVeHV2L4D707tbZfxtYtT3Yl9jgfZj_W39CBigyUDQPzPEj4I01c, #=qy0XryZJ1YjnJepAdJT57$Q==
 

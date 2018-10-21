@@ -38,5 +38,11 @@ namespace SpacechemPatch.Patches
         {
             return null;
         }
+
+        [Decoy("#=qHfGpWDg52XCeMIMOdiBKAMFXDL67m0oXWMSKfQzzASs=")]
+        public void AddBondEffect(Vector2f position, BondEffectStyle style, bool forRed)
+        {
+
+        }
     }
 }
