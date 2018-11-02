@@ -5,6 +5,7 @@ using Mono.Cecil;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Linq;
+using System.Collections.Specialized;
 
 namespace SpacechemPatch
 {
@@ -49,9 +50,13 @@ namespace SpacechemPatch
             this.dataGridViewPatches.CellValueChanged += this.dataGridViewPatches_CellValueChanged;
 
             // restore checkboxes
-            foreach (int cbox in (int[])Properties.Settings.Default["TickedCheckboxes"])
-            {
-                dataGridViewPatches.Rows[cbox].Cells[0].Value = true;
+            StringCollection selectedPatches = (StringCollection)Properties.Settings.Default["SelectedPatches"];
+            if (selectedPatches != null) {
+                foreach (DataGridViewRow row in dataGridViewPatches.Rows)
+                {
+                    string patch = ((Patch)row.Cells["ColumnName"].Value).ToString();
+                    row.Cells[0].Value = selectedPatches.Contains(patch);
+                }
             }
 
 #if DEBUG
@@ -352,8 +357,11 @@ namespace SpacechemPatch
             this.Enabled = false;
             // store settings
             Properties.Settings.Default["SCPath"] = textBoxPath.Text;
-            Properties.Settings.Default["TickedCheckboxes"] = Enumerable.Range(0, dataGridViewPatches.RowCount)
-                                                                        .Where(i => Convert.ToBoolean(dataGridViewPatches[0, i].Value)).ToArray();
+            StringCollection selectedPatches = new StringCollection();
+            selectedPatches.AddRange(Enumerable.Range(0, dataGridViewPatches.RowCount)
+                                               .Where(i => Convert.ToBoolean(dataGridViewPatches[0, i].Value))
+                                               .Select(i => ((Patch)i).ToString()).ToArray());
+            Properties.Settings.Default["SelectedPatches"] = selectedPatches;
             Properties.Settings.Default.Save();
             // game time started
             PatchExe();
