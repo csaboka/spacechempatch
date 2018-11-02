@@ -37,6 +37,12 @@ namespace SpacechemPatch
                    "Replace the Bond+ instruction with Bond- in disassembly reactor toolbars, since Bond+ is useless in them");
             AddDef(Patch.FixTelekinesis, PatchType.Bugfix, "Fixes the \"Telekinesis\" bug");
             AddDef(Patch.FixWrongOutput, PatchType.Bugfix, "Fixes the \"Wrong Output\" bug");
+            AddDef(Patch.ForceLinuxMoleculeOrder, PatchType.Enhancement,
+                "Generate random input molecules the same way the vanilla Linux version does, regardless of OS",
+                Patch.ForceWindowsMoleculeOrder);
+            AddDef(Patch.ForceWindowsMoleculeOrder, PatchType.Enhancement,
+                "Generate random input molecules the same way the vanilla Windows version does, regardless of OS",
+                Patch.ForceLinuxMoleculeOrder);
             AddDef(Patch.MoreFeaturesInResNetResearch, PatchType.Cheat,
                 "Adds the ability to have more fusers, splitters, sensors and quantum tunnels " +
                 "in custom ResearchNet research puzzles");

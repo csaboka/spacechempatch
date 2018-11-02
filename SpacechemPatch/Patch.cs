@@ -12,6 +12,8 @@ namespace SpacechemPatch
         DefaultDebondInDisassemblyReactors,
         FixTelekinesis,
         FixWrongOutput,
+        ForceLinuxMoleculeOrder,
+        ForceWindowsMoleculeOrder,
         MoreFeaturesInResNetResearch,
         RemoveYouTubeUpload,
         ResNetProdCustomAmount,
