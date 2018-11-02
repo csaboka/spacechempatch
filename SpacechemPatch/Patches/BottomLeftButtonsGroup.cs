@@ -11,20 +11,42 @@ namespace SpacechemPatch.Patches
         [Decoy("#=qgUNLK6tSfosHo2yDxXPYug==")]
         private SimulatorSpeed selectedSpeed;
 
+        [Replaced("#=qWQOaP3dOJorpHmmJjSLdeA==", Patch.SuperFastForward)]
+        private void SlowSpeedIf(bool active)
+        {
+            SetSpeedIf(SimulatorSpeed.Slow, active);
+        }
+
+        [Replaced("#=qPjHU2DKU481_78OpmYgWKw==", Patch.SuperFastForward)]
+        private void MediumSpeedIf(bool active)
+        {
+            SetSpeedIf(SimulatorSpeed.Medium, active);
+        }
+
+        [Replaced("#=qoX67tNBq6rVeIST0_p9qLQ==", Patch.SuperFastForward)]
+        private void FastSpeedIf(bool active)
+        {
+            SetSpeedIf(SimulatorSpeed.Fast, active);
+        }
+
         [Replaced("#=qKuh4p5czvINuecfirp9O2g==", Patch.SuperFastForward)]
         private void RealtimeSpeedIf(bool active)
         {
-            if (!active)
+            SetSpeedIf(GameScreen.GetTopmostScreenWithType<DefensePuzzle>() != null ? SimulatorSpeed.DefenseRealtime : SimulatorSpeed.Realtime, active);
+        }
+
+        [Injected]
+        private void SetSpeedIf(SimulatorSpeed speed, bool active)
+        {
+            if (active)
             {
-                return;
+                if (KeyboardHelper.IsControlPressed())
+                {
+                    speed = SimulatorSpeed.SuperFastForward;
+                }
+                SimulationGlobals.SetSimulatorSpeed(speed);
+                selectedSpeed = speed;
             }
-            SimulatorSpeed speed = GameScreen.GetTopmostScreenWithType<DefensePuzzle>() != null ? SimulatorSpeed.DefenseRealtime : SimulatorSpeed.Realtime;
-            if (KeyboardHelper.IsControlPressed())
-            {
-                speed = SimulatorSpeed.SuperFastForward;
-            }
-            SimulationGlobals.SetSimulatorSpeed(speed);
-            selectedSpeed = speed;
         }
     }
 }

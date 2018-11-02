@@ -62,7 +62,7 @@ It'll then be possible to choose the patches to apply, from the list below
   including particle smashing. It does not fix missed collisions mid-rotation: fixing those would require more frequent collision checks,
   which is a lot harder to do. It's also stricter than the Reddit leaderboard rules, which allow Input+Fuse and Split+Out in certain
   cases: this patch will always report a collision caused by the red waldo even if the blue waldo would have resolved it afterwards.
-* `SuperFastForward`: Allows you to run the simulation at maximum speed by holding down Ctrl and clicking on the fastest speed button
+* `SuperFastForward`: Allows you to run the simulation at maximum speed by holding down Ctrl and clicking on any of the speed buttons
   in the bottom left corner. (The game can handle 32,767 cycles per second without pervasive changes to the engine. If your computer
   can't handle a level at this speed, it will just go as fast as it can.) Expect heavy lagging when triggering this speed.
 
