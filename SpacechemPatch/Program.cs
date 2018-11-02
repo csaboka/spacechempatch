@@ -5,6 +5,7 @@ using Mono.Cecil;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Linq;
+using System.Collections.Specialized;
 
 namespace SpacechemPatch
 {
@@ -32,7 +33,7 @@ namespace SpacechemPatch
         private DataGridViewTextBoxColumn ColumnInternalConflicts;
         private DataGridViewTextBoxColumn ColumnConflicts;
         private Label explanation;
-        private Label disclaimer;
+        private LinkLabel disclaimer;
 
         Program()
         {
@@ -49,9 +50,13 @@ namespace SpacechemPatch
             this.dataGridViewPatches.CellValueChanged += this.dataGridViewPatches_CellValueChanged;
 
             // restore checkboxes
-            foreach (int cbox in (int[])Properties.Settings.Default["TickedCheckboxes"])
-            {
-                dataGridViewPatches.Rows[cbox].Cells[0].Value = true;
+            StringCollection selectedPatches = (StringCollection)Properties.Settings.Default["SelectedPatches"];
+            if (selectedPatches != null) {
+                foreach (DataGridViewRow row in dataGridViewPatches.Rows)
+                {
+                    string patch = ((Patch)row.Cells["ColumnName"].Value).ToString();
+                    row.Cells[0].Value = selectedPatches.Contains(patch);
+                }
             }
 
 #if DEBUG
@@ -142,7 +147,7 @@ namespace SpacechemPatch
             this.linkLabelGithub = new System.Windows.Forms.LinkLabel();
             this.buttonRestore = new System.Windows.Forms.Button();
             this.explanation = new System.Windows.Forms.Label();
-            this.disclaimer = new System.Windows.Forms.Label();
+            this.disclaimer = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPatches)).BeginInit();
             this.SuspendLayout();
             // 
@@ -313,11 +318,15 @@ namespace SpacechemPatch
             // 
             this.disclaimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.disclaimer.LinkArea = new System.Windows.Forms.LinkArea(377, 48);
             this.disclaimer.Location = new System.Drawing.Point(12, 328);
             this.disclaimer.Name = "disclaimer";
             this.disclaimer.Size = new System.Drawing.Size(590, 153);
             this.disclaimer.TabIndex = 8;
+            this.disclaimer.TabStop = true;
             this.disclaimer.Text = resources.GetString("disclaimer.Text");
+            this.disclaimer.UseCompatibleTextRendering = true;
+            this.disclaimer.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.disclaimer_LinkClicked);
             // 
             // Program
             // 
@@ -352,8 +361,11 @@ namespace SpacechemPatch
             this.Enabled = false;
             // store settings
             Properties.Settings.Default["SCPath"] = textBoxPath.Text;
-            Properties.Settings.Default["TickedCheckboxes"] = Enumerable.Range(0, dataGridViewPatches.RowCount)
-                                                                        .Where(i => Convert.ToBoolean(dataGridViewPatches[0, i].Value)).ToArray();
+            StringCollection selectedPatches = new StringCollection();
+            selectedPatches.AddRange(Enumerable.Range(0, dataGridViewPatches.RowCount)
+                                               .Where(i => Convert.ToBoolean(dataGridViewPatches[0, i].Value))
+                                               .Select(i => ((Patch)i).ToString()).ToArray());
+            Properties.Settings.Default["SelectedPatches"] = selectedPatches;
             Properties.Settings.Default.Save();
             // game time started
             PatchExe();
@@ -444,6 +456,11 @@ namespace SpacechemPatch
                     }
                 }
             }
+        }
+
+        private void disclaimer_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/csaboka/spacechempatch/issues");
         }
     }
 }
