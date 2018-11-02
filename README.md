@@ -29,6 +29,12 @@ It'll then be possible to choose the patches to apply, from the list below
   completely match the expected molecule. The easiest way to reproduce this is to open the "Swapite" puzzle in ResearchNet 2-11-1:
   the game will accept the input molecule without any changes. This change will apply a different molecule matching algorithm that
   hopefully fixes these issues without introducing new ones. Please report any performance issues or unexpected results you encounter.
+* `ForceLinuxMoleculeOrder` and `ForceWindowsMoleculeOrder`: The game tries to make sure that every time a puzzle has random
+  molecule inputs, the sequence of those molecules is the same every time you start the puzzle. The Linux port, however, relies
+  on an old version of Mono that has a different random number generation algorithm, yielding a different random sequence
+  compared to Windows. This can make the same solution have a different cycle score, or sometimes even fail, when played
+  on a different OS than where it was created. This pair of patches allows you to pick either algorithm explicitly, instead
+  of relying on what your .NET implementation provides.
 * `MoreFeaturesInResNetResearch`: Increase the upper limit of allowed reactor features in custom ResearchNet research puzzles.
   You can have up to 4 sensors, fusion lasers, fission lasers and quantum tunnels in a puzzle now. A Split instruction triggers all
   fission lasers in a reactor and a Fuse instruction triggers all fusion lasers. Sensing instructions will activate if any of
