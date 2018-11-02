@@ -33,7 +33,7 @@ namespace SpacechemPatch
         private DataGridViewTextBoxColumn ColumnInternalConflicts;
         private DataGridViewTextBoxColumn ColumnConflicts;
         private Label explanation;
-        private Label disclaimer;
+        private LinkLabel disclaimer;
 
         Program()
         {
@@ -147,7 +147,7 @@ namespace SpacechemPatch
             this.linkLabelGithub = new System.Windows.Forms.LinkLabel();
             this.buttonRestore = new System.Windows.Forms.Button();
             this.explanation = new System.Windows.Forms.Label();
-            this.disclaimer = new System.Windows.Forms.Label();
+            this.disclaimer = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewPatches)).BeginInit();
             this.SuspendLayout();
             // 
@@ -318,11 +318,15 @@ namespace SpacechemPatch
             // 
             this.disclaimer.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.disclaimer.LinkArea = new System.Windows.Forms.LinkArea(377, 48);
             this.disclaimer.Location = new System.Drawing.Point(12, 328);
             this.disclaimer.Name = "disclaimer";
             this.disclaimer.Size = new System.Drawing.Size(590, 153);
             this.disclaimer.TabIndex = 8;
+            this.disclaimer.TabStop = true;
             this.disclaimer.Text = resources.GetString("disclaimer.Text");
+            this.disclaimer.UseCompatibleTextRendering = true;
+            this.disclaimer.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.disclaimer_LinkClicked);
             // 
             // Program
             // 
@@ -452,6 +456,11 @@ namespace SpacechemPatch
                     }
                 }
             }
+        }
+
+        private void disclaimer_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/csaboka/spacechempatch/issues");
         }
     }
 }
