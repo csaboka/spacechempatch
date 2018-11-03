@@ -39,6 +39,7 @@ namespace SpacechemPatch
             AddDef(Patch.AllowIllegalBondsInResNet, PatchType.Cheat,
                 "Allows any bonds to be specified when editing ResearchNet puzzles, even if they exceed the bond limit.",
                 Patch.AllowBondsForUnknownInNotes);
+            AddDef(Patch.DeclassifyDefenses, PatchType.Enhancement, "Shows cycles/reactors/symbols values after defense victories");
             AddDef(Patch.DefaultDebondInDisassemblyReactors, PatchType.Enhancement,
                    "Replace the Bond+ instruction with Bond- in disassembly reactor toolbars, since Bond+ is useless in them");
             AddDef(Patch.FixTelekinesis, PatchType.Bugfix, "Fixes the \"Telekinesis\" bug");

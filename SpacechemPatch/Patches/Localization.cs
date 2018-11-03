@@ -13,5 +13,8 @@ namespace SpacechemPatch.Patches
         {
             return null;
         }
+
+        [Decoy("#=qJJso63_DGgOjYlqQUmJtAw==")]
+        public static string Localize(string english, string localizationHint) => null;
     }
 }

@@ -11,7 +11,11 @@ namespace SpacechemPatch.Patches
         [Decoy(".ctor")]
         public BoundingBox(Vector2i topLeft, Vector2i dimensions)
         {
+        }
 
+        [Decoy(".ctor")]
+        public BoundingBox(int x, int y, int width, int height)
+        {
         }
 
         [Decoy("#=qzZCFhMSRiU$M7Tzmtv$20w==")]

@@ -6,7 +6,7 @@ using System.Text;
 namespace SpacechemPatch.Patches
 {
     [Decoy("#=qmYbaTK$qDSiMDRUe5TH7t4n4sXnPoqcIBAtkOsSPhR8=")]
-    internal sealed class SolutionRecordingScreen
+    internal sealed class SolutionRecordingScreen : IScreen
     {
         [Decoy("#=qNlt3wxwmjko9S5CtwXWVNA==")]
         private CapturedVideo currentlyCapturedVideo;

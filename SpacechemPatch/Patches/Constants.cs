@@ -12,5 +12,8 @@ namespace SpacechemPatch.Patches
         public static bool unknown1;
         [Decoy("#=qfpQbWzoxJ$ye5a3QjKCnPw==")]
         public static SpaceChemGame spaceChemGame;
+
+        [Decoy("#=qahD_OJprvpiXJTiKCXgDNpr5jxoc6RpUR7Xiup0elPQ=")]
+        public static bool ShowLeaderboards() => false;
     }
 }

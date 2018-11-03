@@ -11,6 +11,7 @@ namespace SpacechemPatch
         AllowGreekInResNet,
         AllowGreekInResNetProdAndSandbox,
         AllowIllegalBondsInResNet,
+        DeclassifyDefenses,
         DefaultDebondInDisassemblyReactors,
         FixTelekinesis,
         FixWrongOutput,

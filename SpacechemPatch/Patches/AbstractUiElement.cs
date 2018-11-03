@@ -6,8 +6,11 @@ using System.Text;
 namespace SpacechemPatch.Patches
 {
     [Decoy("#=qzw21PDVpgBEgpFsc1Bn5TthNWkRfIR00ae5kHzc3Phc=")]
-    abstract class AbstractUiElement
+    abstract class AbstractUiElement : AbstractUI
     {
+        [Decoy("op_Explicit")]
+        public static explicit operator AbstractUiElement(AbstractRenderable renderable) => null;
+
         [Decoy("#=qiMnF_huDZ_gmIgHP9WL2aQ==")]
         public static AbstractUiElement LayoutVertically(HorizontalAlignment alignment, int padding, IEnumerable<AbstractUiElement> elements)
         {

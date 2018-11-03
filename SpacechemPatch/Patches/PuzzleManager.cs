@@ -65,5 +65,8 @@ namespace SpacechemPatch.Patches
             }
             return false;
         }
+
+        [Decoy("#=qwU2gXPcB345VrTj6Ffudrw==")]
+        public static bool IsDefense(string puzzleName) => false;
     }
 }
