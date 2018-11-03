@@ -22,5 +22,11 @@ namespace SpacechemPatch.Patches
         {
             return false;
         }
+
+        [Decoy("#=qP$zaMfup7hWMBSbziLr1pHL_JT_q4fwUf$A2mDYcU6E=")]
+        public int GetMaxBonds()
+        {
+            return 0;
+        }
     }
 }

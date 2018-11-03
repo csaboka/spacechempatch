@@ -27,6 +27,8 @@ namespace SpacechemPatch
 
         static PatchInfo()
         {
+            AddDef(Patch.AllowBondsForUnknownInNotes, PatchType.Enhancement,
+                "Allows adding bonds to the unknown element (?) when editing output notes.");
             AddDef(Patch.AllowGreekInResNet, PatchType.Cheat,
                    "Adds full support for Greek sensors/annotations in all ResearchNet assignments",
                    Patch.AllowGreekInResNetProdAndSandbox);

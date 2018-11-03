@@ -18,6 +18,11 @@ It'll then be possible to choose the patches to apply, from the list below
 
 ## Available patches
 
+* `AllowBondsForUnknownInNotes`: The output note editor offers the unknown element (represented by a question mark) to allow
+  denoting variable or unknown atoms in the reactor output. The utility of this element is limited, however, because the game
+  treats it as a noble gas and won't allow any bonds on it. This enhancement alters the behavior so that the unknown element
+  accepts any bonds (as long as the other member of the bond doesn't exceed its own bond limit, of course). Note that the
+  element will still have zero bonds when you drop it into the molecule - you'll need to add the bonds you want manually.
 * `AllowGreekInResNet` & `AllowGreekInResNetProdAndSandbox`: Gives complete support for Greek annotations/sensors in ResearchNet levels.
   In the vanilla game it's possible to get Greek annotations/sensors in ResNet productions/sandbox, by copying a reactor from EotL, so the latter
   patch is merely a QoL one. It's not possible to have Greek sensors in ResNet research assignment, though, so the former patch makes the game

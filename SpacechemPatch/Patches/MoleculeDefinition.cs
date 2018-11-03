@@ -166,5 +166,76 @@ namespace SpacechemPatch.Patches
         {
 
         }
+
+        [Replaced("#=qEWMFMGYt$ds9yZCF1hDd_Q==", Patch.AllowBondsForUnknownInNotes)]
+        public bool AddAtomOrBond(DraggedAtomOrBondInfo atomOrBond, int x, int y)
+        {
+            Vector2i position = new Vector2i(x, y);
+            if (atomOrBond.mode == AtomOrBondDragMode.AtomDrag)
+            {
+                ReplaceAtomWithBondCountEnforcement(position, atomOrBond.atom);
+                return true;
+            }
+            if (atomOrBond.mode == AtomOrBondDragMode.BondOverride)
+                // This is the only line we've changed. This method can only be called from the molecule editor UI,
+                // and since the unknown element is only shown for output note editors, we can safely define special
+                // rules for it without breaking gameplay. If someone already hacked an unknown element into a custom
+                // puzzle input or output, they can also hack invalid bonds, so we aren't opening new exploits, either.
+                return SetBondCountWithSpecialUnknownHandling(new PotentialBond(position, atomOrBond.bondDirection), atomOrBond.bondCount);
+            if (atomOrBond.mode == AtomOrBondDragMode.BondRemoval)
+                return RemoveBond(new PotentialBond(position, atomOrBond.bondDirection));
+            return false;
+        }
+
+        [Decoy("#=qQH0U9w$CRrIgsuNXzn1TSA==")]
+        private void ReplaceAtomWithBondCountEnforcement(Vector2i position, Atom atom)
+        {
+        }
+
+        [Decoy("#=q2UHh48ywQ2poY0A8Bxu6Ug==")]
+        public bool RemoveBond(PotentialBond potentialBond)
+        {
+            return false;
+        }
+
+        [Injected]
+        public bool SetBondCountWithSpecialUnknownHandling(PotentialBond potentialBond, BondCount bondCount)
+        {
+            if (!atoms.ContainsKey(potentialBond.coords) || !atoms.ContainsKey(potentialBond.getCoordsOfOtherBonder()))
+            {
+                return false;
+            }
+            if (bondCount > (BondCount)GetBondCountAsInt(potentialBond))
+            {
+                Atom sourceAtom = atoms[potentialBond.coords];
+                if (sourceAtom.element != Element.Unknown &&
+                    (GetTotalBondsAt(potentialBond.coords) - GetBondCountAsInt(potentialBond) + bondCount > (BondCount)sourceAtom.GetMaxBonds()))
+                {
+                    // source atom would be over max. bonds
+                    return false;
+                }
+                Atom targetAtom = atoms[potentialBond.getCoordsOfOtherBonder()];
+                if (targetAtom.element != Element.Unknown &&
+                    (GetTotalBondsAt(potentialBond.getCoordsOfOtherBonder()) - GetBondCountAsInt(potentialBond) + bondCount > (BondCount)targetAtom.GetMaxBonds()))
+                {
+                    // target atom would be over max. bonds
+                    return false;
+                }
+            }
+            SetBondCount(potentialBond, new BondCount?(bondCount));
+            return true;
+        }
+
+        [Decoy("#=qs43NDZaM71S7Vvv2bGsbxFVtigjocHzMX0hvFioIORY=")]
+        private int GetBondCountAsInt(PotentialBond bond)
+        {
+            return 0;
+        }
+
+        [Decoy("#=qhm_cjQgiQdt8lty_PSYJd_vHIOsKU2AapEGcQrL9vOE=")]
+        private int GetTotalBondsAt(Vector2i position)
+        {
+            return 0;
+        }
     }
 }

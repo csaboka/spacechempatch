@@ -90,6 +90,8 @@
     <Compile Include="Patches\AbstractReactorType.cs" />
     <Compile Include="Patches\AbstractUiElement.cs" />
     <Compile Include="Patches\AngleInRadians.cs" />
+    <Compile Include="Patches\AtomOrBondDragMode.cs" />
+    <Compile Include="Patches\BondDirection.cs" />
     <Compile Include="Patches\BondEffectStyle.cs" />
     <Compile Include="Patches\BondInstruction.cs" />
     <Compile Include="Patches\BondType.cs" />
@@ -102,6 +104,7 @@
     <Compile Include="Patches\DefensePuzzle.cs" />
     <Compile Include="Patches\Direction.cs" />
     <Compile Include="Patches\DraggableStorageTank.cs" />
+    <Compile Include="Patches\DraggedAtomOrBondInfo.cs" />
     <Compile Include="Patches\FeatureType.cs" />
     <Compile Include="Patches\FuseInstruction.cs" />
     <Compile Include="Patches\FuserFeature.cs" />

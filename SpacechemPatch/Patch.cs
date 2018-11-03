@@ -7,6 +7,7 @@ namespace SpacechemPatch
 {
     enum Patch
     {
+        AllowBondsForUnknownInNotes,
         AllowGreekInResNet,
         AllowGreekInResNetProdAndSandbox,
         DefaultDebondInDisassemblyReactors,

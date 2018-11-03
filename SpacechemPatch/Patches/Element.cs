@@ -8,5 +8,7 @@ namespace SpacechemPatch.Patches
     [SpacechemPatch.Decoy("Element", @namespace = "SpaceChem")]
     enum Element
     {
+        Unknown = 0
+        // Add elements as needed. There's no point in replicating the whole periodic table here.
     }
 }
