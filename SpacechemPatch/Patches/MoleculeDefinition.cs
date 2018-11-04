@@ -187,6 +187,24 @@ namespace SpacechemPatch.Patches
             return false;
         }
 
+        [Replaced("#=qEWMFMGYt$ds9yZCF1hDd_Q==", Patch.AllowIllegalBondsInResNet)]
+        public bool AddAtomOrBond_AllowIllegal(DraggedAtomOrBondInfo atomOrBond, int x, int y)
+        {
+            Vector2i position = new Vector2i(x, y);
+            if (atomOrBond.mode == AtomOrBondDragMode.AtomDrag)
+            {
+                ReplaceAtomWithBondCountEnforcement(position, atomOrBond.atom);
+                return true;
+            }
+            if (atomOrBond.mode == AtomOrBondDragMode.BondOverride)
+                // This is the only line we've changed. In this version, we only care about
+                // the participating atoms being present, and deliberately ignore the bond limit.
+                return SetBondCountWithoutMaxBondsCheck(new PotentialBond(position, atomOrBond.bondDirection), atomOrBond.bondCount);
+            if (atomOrBond.mode == AtomOrBondDragMode.BondRemoval)
+                return RemoveBond(new PotentialBond(position, atomOrBond.bondDirection));
+            return false;
+        }
+
         [Decoy("#=qQH0U9w$CRrIgsuNXzn1TSA==")]
         private void ReplaceAtomWithBondCountEnforcement(Vector2i position, Atom atom)
         {
@@ -221,6 +239,17 @@ namespace SpacechemPatch.Patches
                     // target atom would be over max. bonds
                     return false;
                 }
+            }
+            SetBondCount(potentialBond, new BondCount?(bondCount));
+            return true;
+        }
+
+        [Injected]
+        public bool SetBondCountWithoutMaxBondsCheck(PotentialBond potentialBond, BondCount bondCount)
+        {
+            if (!atoms.ContainsKey(potentialBond.coords) || !atoms.ContainsKey(potentialBond.getCoordsOfOtherBonder()))
+            {
+                return false;
             }
             SetBondCount(potentialBond, new BondCount?(bondCount));
             return true;

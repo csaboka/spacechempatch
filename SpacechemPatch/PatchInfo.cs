@@ -28,13 +28,17 @@ namespace SpacechemPatch
         static PatchInfo()
         {
             AddDef(Patch.AllowBondsForUnknownInNotes, PatchType.Enhancement,
-                "Allows adding bonds to the unknown element (?) when editing output notes.");
+                "Allows adding bonds to the unknown element (?) when editing output notes.",
+                Patch.AllowIllegalBondsInResNet);
             AddDef(Patch.AllowGreekInResNet, PatchType.Cheat,
                    "Adds full support for Greek sensors/annotations in all ResearchNet assignments",
                    Patch.AllowGreekInResNetProdAndSandbox);
             AddDef(Patch.AllowGreekInResNetProdAndSandbox, PatchType.Enhancement,
                    "Adds full support for Greek sensors/annotations in ResearchNet production and sandbox assignments",
                    Patch.AllowGreekInResNet);
+            AddDef(Patch.AllowIllegalBondsInResNet, PatchType.Cheat,
+                "Allows any bonds to be specified when editing ResearchNet puzzles, even if they exceed the bond limit.",
+                Patch.AllowBondsForUnknownInNotes);
             AddDef(Patch.DefaultDebondInDisassemblyReactors, PatchType.Enhancement,
                    "Replace the Bond+ instruction with Bond- in disassembly reactor toolbars, since Bond+ is useless in them");
             AddDef(Patch.FixTelekinesis, PatchType.Bugfix, "Fixes the \"Telekinesis\" bug");
