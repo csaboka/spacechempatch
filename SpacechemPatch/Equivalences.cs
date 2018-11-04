@@ -11711,6 +11711,10 @@ namespace SpacechemPatch
                     [".ctor"] = ".ctor"
                 }
             },
+            ["#=qBqzSCxNWjNPtABUjoHPdXdmmMLWNmfIdJZwq3qjbt$8="] = new TypeMapping()
+            {
+                typeName = "#=qvSlWieZd308X4GqZkqCVfDVh9iAuPtm_mVlcRjR45rg="
+            },
             // enums
             ["#=qdRTIxzfvGW5aPQCMcMPe10Ffm8HqcCZZWjNp4lOnYjA="] = new TypeMapping()
             {
@@ -11771,7 +11775,11 @@ namespace SpacechemPatch
             ["#=qOgfE8lBMFeWPgW3U8uaBbmwywjXLM$H7Iq8cxYp$FME="] = new TypeMapping()
             {
                 typeName = "#=qS3Fb8VC8qtBBDLaTA2g$6LcltBKmemOIykBp8EuNNqM="
-            }
+            },
+            ["#=q3R7nWroE4ndLko_a2R2fQM5fO1uRvWfaWUGajvsYuXQ="] = new TypeMapping()
+            {
+                typeName = "#=qzqDmC9rYvocBubv9XMWxBvpu34nlT6YMEu2SzAkJKEM="
+            },
 
             // Unmatched top-level non-enum types: #=q6nFQ7j0czfMML633KX3NXw==, #=qBqzSCxNWjNPtABUjoHPdXdmmMLWNmfIdJZwq3qjbt$8=, #=qBW3QpGFIuxV5sSCs5OT5dbAwAeGDje_UNAdyp8bmiII=, #=qG4fRLTF7VgPjIT82MmidAKaNZJLG$uA83rXzQGp40b0=, #=qnH6iBO6MQt97JINRbHwrsw==, #=qqC60YH9eL7nVxVeHV2L4D707tbZfxtYtT3Yl9jgfZj_W39CBigyUDQPzPEj4I01c, #=qy0XryZJ1YjnJepAdJT57$Q==
 
