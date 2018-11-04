@@ -68,7 +68,7 @@ namespace SpacechemPatch
             AddDef(Patch.StricterCollisionChecks, PatchType.Bugfix,
                 "Fix most collision bugs by introducing some new collision checks and changing the timing of some others.");
             AddDef(Patch.SuperFastForward, PatchType.Enhancement,
-                   "Runs the simulation at maximum speed if you click on the fastest speed button while holding down Ctrl");
+                   "Runs the simulation at maximum speed if you click on any of the speed buttons while holding down Ctrl");
         }
 
         private PatchInfo(PatchType type, string description, Patch[] conflictingPatches)
