@@ -23,6 +23,13 @@ namespace SpacechemPatch.Patches
             this.y = y;
         }
 
+        [Decoy(".ctor")]
+        public Vector2i(Vector2i vector)
+        {
+            x = vector.x;
+            y = vector.y;
+        }
+
         [Decoy("op_Multiply")]
         public static Vector2f operator *(Vector2i vector, float multiplier)
         {

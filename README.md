@@ -31,6 +31,8 @@ It'll then be possible to choose the patches to apply, from the list below
   in ResearchNet puzzles. Puzzle creators have been building unique puzzles like this for a while now, by editing the puzzle data
   manually, but with this patch, they can do it a bit more easily. As a side effect, arbitrary bonds are also allowed in
   reactor output notes, so this patch is a superset of `AllowBondsForUnknownInNotes` and you can't turn on both at the same time.
+* `DeclassifyDefenses`: Shows the normal leaderboard/histograms after defense completion instead of the "classified" banner,
+  so that it's easy to see the stats. Sadly the game has no histogram data for these levels, but the friends scores are visible.
 * `DefaultDebondInDisassemblyReactors`: In disassembly reactors, the Bond+ instruction is always ignored because the bonders
   can only remove bonds in them. This patch replaces Bond+ with Bond- in the instruction toolbar for these reactors, so
   you don't need to manually switch them to the Bond- state.
