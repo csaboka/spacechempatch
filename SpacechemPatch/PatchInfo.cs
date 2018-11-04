@@ -29,14 +29,14 @@ namespace SpacechemPatch
         {
             AddDef(Patch.AllowBondsForUnknownInNotes, PatchType.Enhancement,
                 "Allows adding bonds to the unknown element (?) when editing output notes.",
-                Patch.AllowIllegalBondsInResNet);
+                Patch.AllowIllegalBondsInCustomPuzzles);
             AddDef(Patch.AllowGreekInResNet, PatchType.Cheat,
                    "Adds full support for Greek sensors/annotations in all ResearchNet assignments",
                    Patch.AllowGreekInResNetProdAndSandbox);
             AddDef(Patch.AllowGreekInResNetProdAndSandbox, PatchType.Enhancement,
                    "Adds full support for Greek sensors/annotations in ResearchNet production and sandbox assignments",
                    Patch.AllowGreekInResNet);
-            AddDef(Patch.AllowIllegalBondsInResNet, PatchType.Cheat,
+            AddDef(Patch.AllowIllegalBondsInCustomPuzzles, PatchType.Cheat,
                 "Allows any bonds to be specified when editing ResearchNet puzzles, even if they exceed the bond limit.",
                 Patch.AllowBondsForUnknownInNotes);
             AddDef(Patch.DeclassifyDefenses, PatchType.Enhancement, "Shows cycles/reactors/symbols values after defense victories");

@@ -10,7 +10,7 @@ namespace SpacechemPatch
         AllowBondsForUnknownInNotes,
         AllowGreekInResNet,
         AllowGreekInResNetProdAndSandbox,
-        AllowIllegalBondsInResNet,
+        AllowIllegalBondsInCustomPuzzles,
         DeclassifyDefenses,
         DefaultDebondInDisassemblyReactors,
         FixTelekinesis,

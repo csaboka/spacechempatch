@@ -27,7 +27,7 @@ It'll then be possible to choose the patches to apply, from the list below
   In the vanilla game it's possible to get Greek annotations/sensors in ResNet productions/sandbox, by copying a reactor from EotL, so the latter
   patch is merely a QoL one. It's not possible to have Greek sensors in ResNet research assignment, though, so the former patch makes the game
   easier and it's labeled as "Cheat".
-* `AllowIllegalBondsInResNet`: Allow bonds that exceed the bond limit of the participating atoms when editing input and output molecules
+* `AllowIllegalBondsInCustomPuzzles`: Allow bonds that exceed the bond limit of the participating atoms when editing input and output molecules
   in ResearchNet puzzles. Puzzle creators have been building unique puzzles like this for a while now, by editing the puzzle data
   manually, but with this patch, they can do it a bit more easily. As a side effect, arbitrary bonds are also allowed in
   reactor output notes, so this patch is a superset of `AllowBondsForUnknownInNotes` and you can't turn on both at the same time.

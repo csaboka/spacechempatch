@@ -187,7 +187,7 @@ namespace SpacechemPatch.Patches
             return false;
         }
 
-        [Replaced("#=qEWMFMGYt$ds9yZCF1hDd_Q==", Patch.AllowIllegalBondsInResNet)]
+        [Replaced("#=qEWMFMGYt$ds9yZCF1hDd_Q==", Patch.AllowIllegalBondsInCustomPuzzles)]
         public bool AddAtomOrBond_AllowIllegal(DraggedAtomOrBondInfo atomOrBond, int x, int y)
         {
             Vector2i position = new Vector2i(x, y);
