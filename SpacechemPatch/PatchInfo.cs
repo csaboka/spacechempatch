@@ -39,7 +39,8 @@ namespace SpacechemPatch
             AddDef(Patch.AllowIllegalBondsInCustomPuzzles, PatchType.Cheat,
                 "Allows any bonds to be specified when editing ResearchNet puzzles, even if they exceed the bond limit.",
                 Patch.AllowBondsForUnknownInNotes);
-            AddDef(Patch.DeclassifyDefenses, PatchType.Enhancement, "Shows cycles/reactors/symbols values after defense victories");
+            AddDef(Patch.DeclassifyDefenses, PatchType.Enhancement,
+                   "Shows cycles/reactors/symbols values of defenses, both after victory and on campaign screen");
             AddDef(Patch.DefaultDebondInDisassemblyReactors, PatchType.Enhancement,
                    "Replace the Bond+ instruction with Bond- in disassembly reactor toolbars, since Bond+ is useless in them");
             AddDef(Patch.FixTelekinesis, PatchType.Bugfix, "Fixes the \"Telekinesis\" bug");
@@ -67,7 +68,7 @@ namespace SpacechemPatch
             AddDef(Patch.StricterCollisionChecks, PatchType.Bugfix,
                 "Fix most collision bugs by introducing some new collision checks and changing the timing of some others.");
             AddDef(Patch.SuperFastForward, PatchType.Enhancement,
-                   "Runs the simulation at maximum speed if you click on the fastest speed button while holding down Ctrl");
+                   "Runs the simulation at maximum speed if you click on any of the speed buttons while holding down Ctrl");
         }
 
         private PatchInfo(PatchType type, string description, Patch[] conflictingPatches)
