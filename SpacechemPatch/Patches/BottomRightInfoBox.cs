@@ -11,12 +11,12 @@ namespace SpacechemPatch.Patches
         [Replaced("#=qpCRb4anQPm6V7O3YSBWP8Q==", Patch.ShowOver100kCycles)]
         private AbstractRenderable MakeStatLabel(int stat)
         {
-            if (stat < 100_000)
+            if (stat < 100000)
                 return AbstractRenderable.MakeLabel(FontManager.tooltip, stat.ToString());
-            else if (stat < 10_000_000 )
+            else if (stat < 10000000 )
                 return AbstractRenderable.MakeLabel(FontManager.tooltip, (stat/1000).ToString() + "K");
             else
-                return AbstractRenderable.MakeLabel(FontManager.tooltip, (stat / 1_000_000).ToString() + "M");
+                return AbstractRenderable.MakeLabel(FontManager.tooltip, (stat / 1000000).ToString() + "M");
         }
     }
 }
