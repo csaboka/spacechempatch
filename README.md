@@ -47,6 +47,8 @@ It'll then be possible to choose the patches to apply, from the list below
   compared to Windows. This can make the same solution have a different cycle score, or sometimes even fail, when played
   on a different OS than where it was created. This pair of patches allows you to pick either algorithm explicitly, instead
   of relying on what your .NET implementation provides.
+* `FixTelekinesis`: Fixes the Telekinesis bug, which, in very specific circumstances, allows a waldo to "hold" and manipulate
+  a molecule without touching it.
 * `MoreFeaturesInResNetResearch`: Increase the upper limit of allowed reactor features in custom ResearchNet research puzzles.
   You can have up to 4 sensors, fusion lasers, fission lasers and quantum tunnels in a puzzle now. A Split instruction triggers all
   fission lasers in a reactor and a Fuse instruction triggers all fusion lasers. Sensing instructions will activate if any of
