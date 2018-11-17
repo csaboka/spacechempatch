@@ -113,6 +113,7 @@ namespace SpacechemPatch
         private readonly Dictionary<string, MethodReference> methodReplacements = new Dictionary<string, MethodReference>();
         private readonly Dictionary<string, FieldReference> fieldReplacements = new Dictionary<string, FieldReference>();
         private readonly Dictionary<string, Dictionary<string, GenericParameter>> genericParameterReplacements = new Dictionary<string, Dictionary<string, GenericParameter>>();
+        private readonly List<TypeDefinition> injectedTypes = new List<TypeDefinition>();
 
         private TypeDefinition originalType;
 
@@ -251,10 +252,82 @@ namespace SpacechemPatch
             fieldReplacements.Add(originalInSource.Fields[0].FullName, originalType.Fields[0]);
         }
 
+        private void InjectTypes(IEnumerable<Patch> enabledPatches)
+        {
+            List<KeyValuePair<TypeDefinition, CustomAttribute>> injectedTypes = FindAnnotated(source.Types, "InjectedAttribute").ToList();
+            foreach (var pair in injectedTypes)
+            {
+                TypeDefinition sourceType = pair.Key;
+                CustomAttribute injectedAttribute = pair.Value;
+                CustomAttributeArgument[] patchesArgument = injectedAttribute.Fields.First(att => att.Name == "Patches").Argument.Value as CustomAttributeArgument[];
+                IEnumerable<Patch> patchesToEnableFor = from patchArgument in patchesArgument
+                                                        select (Patch)patchArgument.Value;
+                if (!patchesToEnableFor.Any(patch => enabledPatches.Contains(patch)))
+                {
+                    // type shouldn't be injected with these settings
+                    continue;
+                }
+                TypeDefinition targetType = new TypeDefinition(sourceType.Namespace, sourceType.Name, sourceType.Attributes, sourceType.BaseType);
+                target.Types.Add(targetType);
+                typeReplacements.Add(sourceType.FullName, targetType);
+                this.injectedTypes.Add(targetType);
+                foreach (InterfaceImplementation interfaceImplementation in sourceType.Interfaces)
+                {
+                    targetType.Interfaces.Add(new InterfaceImplementation(interfaceImplementation.InterfaceType));
+                }
+                foreach (FieldDefinition field in sourceType.Fields)
+                {
+                    InjectField(field);
+                }
+                foreach (MethodDefinition method in sourceType.Methods)
+                {
+                    InjectMethod(method);
+                }
+            }
+        }
+
+        private void FixupInjectedTypes()
+        {
+            // This second round of fixup is necessary in case injected types have references to each other,
+            // preventing the fixups inside InjectTypes() to replace everything.
+            foreach (TypeDefinition injectedType in injectedTypes)
+            {
+                injectedType.BaseType = FixupType(injectedType.BaseType);
+                for (int i = 0; i < injectedType.Interfaces.Count; i++)
+                {
+                    injectedType.Interfaces[i].InterfaceType = FixupType(injectedType.Interfaces[i].InterfaceType);
+                }
+                // fix up member fields
+                foreach (FieldDefinition field in injectedType.Fields)
+                {
+                    field.FieldType = FixupType(field.FieldType);
+                }
+                // fix up member methods
+                foreach (MethodDefinition method in injectedType.Methods)
+                {
+                    method.ReturnType = FixupType(method.ReturnType);
+                    foreach (ParameterDefinition parameter in method.Parameters)
+                    {
+                        parameter.ParameterType = FixupType(parameter.ParameterType);
+                    }
+                    for (int i = 0; i < method.Body.Instructions.Count; i++)
+                    {
+                        method.Body.Instructions[i] = FixupInstruction(method.Body.Instructions[i]);
+                    }
+                    foreach (VariableDefinition variable in method.Body.Variables)
+                    {
+                        variable.VariableType = FixupType(variable.VariableType);
+                    }
+                }
+            }
+        }
+
         public void ApplyPatches(IEnumerable<Patch> enabledPatches, ISymbolTranslator symbolTranslator)
         {
             InitOriginalType();
             CollectReplacements(symbolTranslator);
+            InjectTypes(enabledPatches);
+            FixupInjectedTypes();
             // We already have the list of types we should check for replacement methods, it's the contents of
             // typeReplacements. This dictionary will be modified during fixups, though, so to keep things
             // consistent, iterate on a copy instead of the field itself.
