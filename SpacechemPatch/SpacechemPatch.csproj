@@ -81,6 +81,7 @@
     <Compile Include="Patches\AbstractDraggable.cs" />
     <Compile Include="Patches\AbstractDraggablePrinter.cs" />
     <Compile Include="Patches\AbstractFeature.cs" />
+    <Compile Include="Patches\AbstractForcedRandom.cs" />
     <Compile Include="Patches\AbstractGame.cs" />
     <Compile Include="Patches\AbstractInput.cs" />
     <Compile Include="Patches\AbstractInstruction.cs" />
@@ -113,6 +114,8 @@
     <Compile Include="Patches\DraggedAtomOrBondInfo.cs" />
     <Compile Include="Patches\Empty.cs" />
     <Compile Include="Patches\FeatureType.cs" />
+    <Compile Include="Patches\ForcedLinuxRandom.cs" />
+    <Compile Include="Patches\ForcedWindowsRandom.cs" />
     <Compile Include="Patches\FuseInstruction.cs" />
     <Compile Include="Patches\FuserFeature.cs" />
     <Compile Include="Patches\HistogramsContent.cs" />
