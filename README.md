@@ -1,3 +1,9 @@
+# Obsolete Project
+
+**NOTE**: This project is now obsolete. Its goals are now pursued via the [SpaceChem Community Edition](https://github.com/spacechem-community-developers/SpaceChem-Community-Edition) project. Please visit that project for the latest gameplay enhancements.
+
+This project will stay online for posterity, but no changes will be made to it and newly reported issues won't be considered. Please share any improvement ideas in the Community Edition issue tracker instead.
+
 # SpaceChemPatch
 
 This program will modify your [SpaceChem](http://www.zachtronics.com/spacechem/) game executable to add new features to the game.
